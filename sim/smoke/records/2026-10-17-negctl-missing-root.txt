@@ -1,0 +1,4 @@
+$ PDK_ROOT=/nonexistent sim/smoke/run.sh
+FAIL: klt pdk find could not resolve sky130A (PDK_ROOT=/nonexistent); pin is: open_pdks f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7
+klt pdk find: no supported-layout PDK install providing variant 'sky130A' was found. Searched, in order: --pdk-root flag (/nonexistent). Point $PDK_ROOT (or --pdk-root) at an install, or install one, e.g. `ciel enable --pdk-family sky130 <version>` (or build open_pdks with `make install`).
+exit=2

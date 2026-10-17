@@ -1,0 +1,8 @@
+{
+  "pdk": "sky130",
+  "variant": "sky130A",
+  "open_pdks_commit": "f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7",
+  "sources_line": "open_pdks f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7",
+  "install": "pip install ciel==2.6.1; ciel enable --pdk-family sky130 -l sky130_fd_pr f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7",
+  "install_source": "2AMLogic/sky130-comparator#178 (quoted, not re-run here)"
+}

@@ -78,6 +78,24 @@ shuttle seat → measured silicon. **Current position: pre-spec.**
   ngspice; if it grows beyond that, cocotb + Icarus and Yosys/OpenROAD.
 - **Layout, DRC, LVS**: klayout-tools (`klt`).
 
+## Reproduce
+
+Needs `ngspice`, `jq` and [`klt`](https://github.com/2AMLogic/klayout-tools)
+(pinned in `sim/toolchain.json`), plus the sky130A PDK at the revision pinned
+in `sim/pdk.json`:
+
+```
+pip install ciel==2.6.1
+ciel enable --pdk-family sky130 -l sky130_fd_pr f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7
+sim/smoke/run.sh
+```
+
+The `ciel` install line is quoted from `2AMLogic/sky130-comparator#178`. The
+runner refuses to simulate if the installed PDK's `SOURCES` differs from the
+pin, and prints a record (ngspice version, PDK sha, sha256 of each model
+file, simulated results). The committed record is
+`sim/smoke/records/2026-10-17-smoke-tt.txt`.
+
 ## Repo layout
 
 ```
