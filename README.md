@@ -89,6 +89,24 @@ layout/        GDS + DRC/LVS reports (klayout-tools driven)
 measurements/  silicon characterization (empty until tape-out)
 ```
 
+## T1 evidence
+
+The block's evidence-tier state is graded by `klt signoff`, not hand-read.
+The block manifest is
+[`manifests/sky130-droop-detector.json`](manifests/sky130-droop-detector.json)
+and the committed verdict of record is
+[`manifests/sky130-droop-detector.signoff.json`](manifests/sky130-droop-detector.signoff.json).
+Pre-spec, every item is honestly `unmet` (`tier: null`). The
+`klayout-tools` version is pinned in
+[`.github/klt-version`](.github/klt-version); CI fails if the record drifts
+from a fresh render. To regenerate it:
+
+```
+uvx --from "klayout-tools==$(cat .github/klt-version)" klt signoff --manifest manifests/sky130-droop-detector.json --format json > manifests/sky130-droop-detector.signoff.json
+```
+
+(`klt signoff` exits 3 when any item is unmet; that is a valid run.)
+
 ## License
 
 Apache License 2.0 — see [LICENSE](LICENSE).
