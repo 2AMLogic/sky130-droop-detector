@@ -1,0 +1,3 @@
+$ PDK_ROOT=<scratch copy with empty SOURCES> sim/smoke/run.sh
+FAIL: SOURCES missing or empty at '/tmp/droop-negctl/sky130A/SOURCES'; pin is: open_pdks f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7
+exit=2

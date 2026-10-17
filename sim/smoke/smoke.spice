@@ -1,0 +1,28 @@
+* Smoke bench: proves the pinned PDK + ngspice flow runs. Not a spec bench.
+* tt / 27 C / 1.8 V by design. SIMULATED.
+.lib "__PDK_LIB__" tt
+.temp 27
+.param supply=1.8
+
+Vdd vdd 0 {supply}
+* DC probe: NMOS Id at Vgs=Vds=1.8 V
+Vg g 0 {supply}
+Vd d 0 {supply}
+XM1 d g 0 0 sky130_fd_pr__nfet_01v8 w=1 l=0.15
+
+* Inverter transient: propagation delay
+Vin in 0 pulse(0 {supply} 1n 100p 100p 5n 10n)
+XMP out in vdd vdd sky130_fd_pr__pfet_01v8 w=2 l=0.15
+XMN out in 0 0 sky130_fd_pr__nfet_01v8 w=1 l=0.15
+Cl out 0 10f
+
+.control
+op
+let id_ua = -i(Vd)*1e6
+echo "RESULT id_nfet_ua = $&id_ua"
+tran 10p 8n
+meas tran tphl trig v(in) val=0.9 rise=1 targ v(out) val=0.9 fall=1
+meas tran tplh trig v(in) val=0.9 fall=1 targ v(out) val=0.9 rise=1
+quit
+.endc
+.end
