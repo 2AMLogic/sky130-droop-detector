@@ -9,4 +9,5 @@ evidence.
   `sim/smoke/run.sh`. It fails closed on a missing or mismatched PDK
   revision. Smoke is tt / 27 C / 1.8 V by design; PVT corners belong to the
   spec benches, not here. Records and negative-control output are in
-  `smoke/records/`.
+  `smoke/records/`. `package.json`'s `check:ci`, `check:all` and `test` run it
+  with `RECORD=/dev/null`, so routine checks never touch `smoke/records/`.
