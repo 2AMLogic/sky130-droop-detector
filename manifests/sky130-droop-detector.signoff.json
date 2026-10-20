@@ -2,7 +2,7 @@
   "schema_version": 1,
   "block": "sky130-droop-detector",
   "kind": "analog",
-  "tier": null,
+  "tier": "T1",
   "t1_item_count": 11,
   "build_t1_item_count": 11,
   "t1_met_count": 0,
