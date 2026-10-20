@@ -67,7 +67,14 @@ continuous-time comparator keeps latency independent of any clock. The
 `sky130-comparator` clocked latched comparator stays a candidate (e.g. as a
 regenerative second stage) and is entered in `reuse.lock.json` as
 `status: evaluate`. **It is not adopted here**; adopt it, or record why not,
-once it is simulation-validated (its validation status was not examined).
+once it is simulation-validated. Its status, read from that repo's README on
+2026-10-20 (not re-measured): schematic designed and laid out with DRC/LVS
+evidence; four of five spec rows ratified, including *Decision time vs.
+overdrive* at ≤ 1.5 ns at 50 mV overdrive (measured 0.68 ns schematic,
+0.53 ns post-layout, `tt`/27 °C); the *Supply / power* row is still DRAFT.
+It is a 1.8 V core-device block (`nfet_01v8`/`pfet_01v8`), so under (a) it
+could only sit in a 1.8 V-class sub-domain of the detector, not on the
+3.3 V rail directly.
 
 - Rejected: **clocked comparator as the front end** (above).
 
