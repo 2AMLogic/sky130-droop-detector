@@ -48,27 +48,34 @@ a realistic rail model rather than a DC operating point.
   nanosecond-scale excursions on a rail that is already up. Same family of
   circuits, different block; the spec says so by name.
 
-## Target specification (DRAFT — engineering to ratify, see issue #1)
+## Target specification (PROPOSED — see [`spec/target-spec.md`](spec/target-spec.md), issue #2)
 
-All rows are *targets*, not results. The monitored rail is the `sky130-ldo`
-output (1.8 V nominal, ±2% regulation window, 0–50 mA, per that repo's
-ratified spec).
+All rows are *targets*, not results. The ratified-on-merge source of truth is
+[`spec/target-spec.md`](spec/target-spec.md) with
+[`DR-001`](spec/decision-records/DR-001-target-spec-ratification.md); this
+table must match it. The monitored rail is the `sky130-ldo` output (1.8 V
+nominal, ±2% regulation window, 0–50 mA, per that repo's ratified spec at
+`aaaae71`).
 
 | Parameter | Fallback | Target | Stretch |
 |---|---|---|---|
 | Monitored rail | 1.8 V (`sky130-ldo` output) | 1.8 V | any rail 1.6–1.95 V |
-| Threshold settings | 1 fixed level | 4 levels, 3–12% below nominal | 8 levels, programmable |
+| Detector supply | 3.3 V LDO input rail | 3.3 V LDO input rail | — |
+| Threshold reference | generated in-tree | generated in-tree, no sibling `consumes` edge | external pin (operator decision) |
+| Threshold settings | 1 fixed level, ≥ 5% below nominal | 4 levels, at 4 / 6 / 9 / 12% below nominal | 8 levels, programmable |
 | Threshold accuracy over PVT | ±3% of nominal | ±1.5% of nominal | ±0.75% |
 | Detection latency (100 mV overdrive) | < 20 ns | < 5 ns | < 1 ns |
 | Minimum detected droop width | 50 ns | 10 ns | 2 ns |
 | False-flag immunity | no flag for excursions inside the LDO's ±2% window | same, across PVT and noise | — |
+| Glitch filter | rejects comparator pulses shorter than a designed width | same; must pass the minimum-width droop, delay counted in latency | — |
 | Quiescent current | < 100 µA | < 50 µA | < 20 µA |
 | Output | sticky digital flag + clear | same, plus a live (non-sticky) flag | — |
+| Area | deferred (no floorplan yet) | deferred | — |
 | Signoff | DRC + LVS clean | DRC + LVS clean, post-layout re-verified | — |
 
 Maturity ladder: spec ratified → schematic simulated across PVT against
 the rail model → layout DRC/LVS-clean → post-layout re-verification →
-shuttle seat → measured silicon. **Current position: pre-spec.**
+shuttle seat → measured silicon. **Current position: spec proposed, awaiting ratification.**
 
 ## Tool flow
 
@@ -99,7 +106,7 @@ file, simulated results). The committed record is
 ## Repo layout
 
 ```
-spec/          ratified spec + decision records
+spec/          target spec + decision records
 design/        schematics / netlists (xschem)
 sim/           testbenches + PVT corner results (ngspice)
 verification/  rail-model and flag-logic checks
