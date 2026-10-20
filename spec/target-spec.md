@@ -71,7 +71,7 @@ Derived from these rows (arithmetic, mine, not the LDO's):
 | 10 | Output flags | sticky flag + clear | sticky flag + clear, plus a live (non-sticky) flag | — | See *Output* | `sim/tb_flag_logic`, `verification/flag_logic` |
 | 11 | Quiescent current | < 100 µA | < 50 µA | < 20 µA | Detector supply current, all levels enabled, flag idle, every corner | `sim/tb_iq` |
 | 12 | Area | not specified here | not specified here | — | **Deferred**: no number until a floorplan exists; DR-001 records the deferral | — |
-| 13 | Signoff | DRC + LVS clean | DRC + LVS clean, post-layout re-verified | — | `klt drc`, `klt lvs`, post-layout re-run of rows 5–8 | `layout/` reports, signoff manifest (#5) |
+| 13 | Signoff | DRC + LVS clean | DRC + LVS clean, post-layout re-verified | — | `klt drc`, `klt lvs`, post-layout re-run of rows 5–8 | `layout/` reports, graded through the block manifest `manifests/sky130-droop-detector.json` and its committed `klt signoff` report (#5, landed) |
 
 ### False-flag waveform set (row 8)
 
@@ -135,12 +135,27 @@ Plus an ideal step, as a third, additional case only.
 - Temperature: −40 / 27 / 125 °C.
 - Detector supply: 2.97 / 3.3 / 3.63 V. Monitored rail starting point:
   1.764 / 1.8 / 1.836 V. Both vary independently.
-- Row 5 adds a device-mismatch Monte Carlo (`mc` and the mismatch sections
-  that library provides, which `sky130-ldo` confirms exist but does not bind).
-  Exact section names are fixed against the pinned library when it is pinned.
-- **PDK/ngspice pin: pending #4.** The candidate PDK revision is
-  `f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7` as proposed in #4; it is not
-  pinned until #4 lands, and no row is graded before then.
+- Row 5 adds a device-mismatch Monte Carlo on the local-mismatch sections
+  `tt_mm`, `ss_mm`, `ff_mm`, `sf_mm`, `fs_mm` (per-instance `AGAUSS()`
+  terms) and the process Monte Carlo section `mc` of the same library.
+  All exist in the pinned library: the combined `sky130.lib.spice` installed
+  at the pin has sha256 `48de7c67…133c84`
+  (`sim/smoke/records/2026-10-17-smoke-tt.txt`), byte-identical to the copy
+  `sky130-ldo`'s DR-004 read at its own pin, where those sections are listed
+  at lines 730–838 and 1378. Which of the two mechanisms grades row 5, and
+  the pass criterion (N draws, sigma), is set by the row's testbench record,
+  not here.
+- **PDK/ngspice pin: landed, #4.** `sim/pdk.json` pins open_pdks
+  `f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7` (`sky130A`, installed with
+  `ciel`); `sim/toolchain.json` pins ngspice 46, xschem 3.4.7 and
+  klayout-tools 0.7.0. Every graded row runs against that pin. Note that
+  `sky130-ldo@aaaae71` is pinned to open_pdks
+  `c6d73a35f524070e85faff4a6a9eef49553ebc2b` (its `sim/pdk.json`); the
+  combined `.lib` file is identical between the two pins but the FET model
+  file `continuous/models_fet.spice` is not (sha256 `1adf908f…` at this pin
+  vs `18be82d0…` at the LDO's), so the netlist-derived rail model below is
+  the LDO netlist simulated under *this* repo's pin — evidence about that
+  netlist here, not a re-run of the LDO's own records.
 - Corner letters do not predict severity (`sky130-ldo` DR-004 caveat). The
   binding corner is found by measurement per row, never by inference.
 - Multi-corner and Monte Carlo runs are submitted as `klt sim` requests

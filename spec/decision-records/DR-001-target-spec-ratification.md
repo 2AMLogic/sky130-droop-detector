@@ -84,8 +84,11 @@ once it is simulation-validated (its validation status was not examined).
   `sky130-temp-por`.
 - **Area.** **Deferred**: no number until a floorplan exists. Not silently
   dropped; it is a row with the deferral recorded.
-- **Corner model files.** Named per `sky130-ldo` DR-004; the PDK pin waits
-  on #4.
+- **Corner model files.** Named per `sky130-ldo` DR-004 and verified
+  against this repo's own pin, which #4 has since landed (`sim/pdk.json`:
+  open_pdks `f6eeac7d…`; ngspice 46 in `sim/toolchain.json`). The LDO is
+  pinned to a different open_pdks revision (`c6d73a35…`); the spec's *PVT
+  corner box* records what is and is not identical between the two.
 
 ### Changes to README numbers
 
