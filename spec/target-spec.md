@@ -43,7 +43,11 @@ Derived from these rows (arithmetic, mine, not the LDO's):
 - ±2% window = **1.764–1.836 V**.
 - Allowed load-transient peak excursion of 150 mV = 8.3% of nominal, i.e. down
   to 1.650 V. A transient that is *compliant* with the LDO spec therefore
-  crosses the 4%, 6% and (at the edge) 9% levels below. That is intended: the
+  crosses the 4% and 6% levels below even at the worst-case trip point of
+  row 5 (1.692 − 0.027 = 1.665 V > 1.650 V). It does **not** reliably cross
+  the 9% level: 1.650 V sits 12 mV above the nominal 1.638 V trip, inside the
+  ±27 mV row 5 band, so whether a full-size compliant transient flags at 9% is
+  design-dependent and is not graded either way. That is intended: the
   detector reports droops the LDO is allowed to produce. It is why the
   false-flag set below stops at the ±2% window and not at the LDO transient.
 - The LDO's implementation does not yet meet several of its own ratified
@@ -84,7 +88,9 @@ at all four levels.
   cheap place for a glitch filter to be wrong.
 
 Excursions below the window (the ones that *must* flag) are the row 6/7
-sets, plus the LDO's compliant transient down to 1.650 V.
+sets, plus the LDO's compliant transient down to 1.650 V at the 4% and 6%
+levels (at 9% it is inside the row 5 band and not graded; at 12% it must
+not flag).
 
 ### Output (rows 10, and the consumer interface)
 
