@@ -84,7 +84,8 @@ at all four levels.
 - **W3** — noise: broadband noise on the rail with a 1.8 V ±2% envelope.
 - **W4** — slow excursion to the window edge (1.764 V) and back, on the
   load-transient time scale (1 µs edges, recovery ≤ 20 µs).
-- **W5** — a fast spike to the window edge (1 ns edges, 5 ns wide), the
+- **W5** — a fast spike to the window edge (1 ns edges, 5 ns wide; a
+  behavioural-envelope case, see *Rail model*), the
   cheap place for a glitch filter to be wrong.
 
 Excursions below the window (the ones that *must* flag) are the row 6/7
@@ -114,7 +115,8 @@ not flag).
 ## Rail model
 
 No detector row is verified against an ideal stepped source alone. The
-testbench rail has two forms and rows are graded on both:
+testbench rail has two forms. Each row is graded on the form that can
+physically reproduce its stimulus (operator ruling, 2026-10-20, on #8):
 
 1. **Netlist-derived (evidence).** The `sky130-ldo` schematic
    (`design/ldo_3v3in_1v8out.sch`) at the pinned commit, netlisted with
@@ -127,6 +129,21 @@ testbench rail has two forms and rows are graded on both:
    It is an assumption, not a measurement, and is labelled so wherever used.
 
 Plus an ideal step, as a third, additional case only.
+
+**Which form grades which row.** The netlist-derived model, loaded by the
+ratified C_out/ESR window (≥ 0.33 µF, ≤ 500 mΩ) and the ~1 µs load edges,
+cannot produce a nanosecond-scale droop: a 50 mA step gives ≈ 25 mV of ESR
+step and ΔV = I·t/C ≈ 1.5 mV in 10 ns. So:
+
+- **Netlist-derived model** grades rows 1 and 8 (W1–W4) and the
+  compliant-transient must-flag case (4% and 6% levels).
+- **Behavioural envelope** (with the fast edges it adds) grades rows 6, 7
+  and W5; the ideal step is run alongside as the additional case. These
+  rows are therefore graded against an *assumed* stimulus, labelled so in
+  their records.
+- Rows 2, 3, 5, 9, 10, 11 are supply- or logic-side rows; their rail is
+  the netlist-derived model where a rail waveform is needed and the
+  behavioural envelope where a fast edge is needed (rows 2 and 9).
 
 ## PVT corner box
 
