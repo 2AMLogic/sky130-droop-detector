@@ -25,8 +25,8 @@ sed "s#__PDK_LIB__#$lib#" "$here/smoke.spice" > "$work/smoke.spice"
 ngspice -b -o "$work/ngspice.log" "$work/smoke.spice" >/dev/null 2>&1 || {
   echo "FAIL: ngspice exited non-zero; log:" >&2; cat "$work/ngspice.log" >&2; exit 3; }
 
-for k in RESULT tphl tplh; do
-  grep -Eq "^(RESULT id_nfet_ua|$k) *=? *[0-9.eE+-]+" "$work/ngspice.log" || { echo "FAIL: no '$k' result in ngspice log" >&2; cat "$work/ngspice.log" >&2; exit 3; }
+for k in "RESULT id_nfet_ua" tphl tplh; do
+  grep -Eq "^$k *= *[0-9.eE+-]+" "$work/ngspice.log" || { echo "FAIL: no '$k' result in ngspice log" >&2; cat "$work/ngspice.log" >&2; exit 3; }
 done
 
 # Model files the netlist pulls in: the lib itself plus the tt-section includes.

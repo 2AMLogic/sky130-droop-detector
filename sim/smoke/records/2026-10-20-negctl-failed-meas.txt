@@ -1,0 +1,5 @@
+$ sim/smoke/run.sh   # scratch copy of sim/ with smoke.spice tphl targ val=0.9 -> val=5 (unreachable threshold)
+label: SIMULATED negative control; corner tt, 27 C, 1.8 V
+FAIL: no 'tphl' result in ngspice log
+ meas tran tphl trig v(in) val=0.9 rise=1 targ v(out) val=5 fall=1 failed!
+exit=3
