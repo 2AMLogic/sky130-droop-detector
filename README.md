@@ -61,11 +61,13 @@ nominal, ±2% regulation window, 0–50 mA, per that repo's ratified spec at
 |---|---|---|---|
 | Monitored rail | 1.8 V (`sky130-ldo` output) | 1.8 V | any rail 1.6–1.95 V |
 | Detector supply | 3.3 V LDO input rail | 3.3 V LDO input rail | — |
+| Threshold reference | generated in-tree | generated in-tree, no sibling `consumes` edge | external pin (operator decision) |
 | Threshold settings | 1 fixed level, ≥ 5% below nominal | 4 levels, at 4 / 6 / 9 / 12% below nominal | 8 levels, programmable |
 | Threshold accuracy over PVT | ±3% of nominal | ±1.5% of nominal | ±0.75% |
 | Detection latency (100 mV overdrive) | < 20 ns | < 5 ns | < 1 ns |
 | Minimum detected droop width | 50 ns | 10 ns | 2 ns |
 | False-flag immunity | no flag for excursions inside the LDO's ±2% window | same, across PVT and noise | — |
+| Glitch filter | rejects comparator pulses shorter than a designed width | same; must pass the minimum-width droop, delay counted in latency | — |
 | Quiescent current | < 100 µA | < 50 µA | < 20 µA |
 | Output | sticky digital flag + clear | same, plus a live (non-sticky) flag | — |
 | Area | deferred (no floorplan yet) | deferred | — |
