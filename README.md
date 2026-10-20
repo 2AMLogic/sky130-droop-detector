@@ -83,6 +83,24 @@ shuttle seat → measured silicon. **Current position: spec proposed, awaiting r
   ngspice; if it grows beyond that, cocotb + Icarus and Yosys/OpenROAD.
 - **Layout, DRC, LVS**: klayout-tools (`klt`).
 
+## Reproduce
+
+Needs `ngspice`, `jq` and [`klt`](https://github.com/2AMLogic/klayout-tools)
+(pinned in `sim/toolchain.json`), plus the sky130A PDK at the revision pinned
+in `sim/pdk.json`:
+
+```
+pip install ciel==2.6.1
+ciel enable --pdk-family sky130 -l sky130_fd_pr f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7
+sim/smoke/run.sh
+```
+
+The `ciel` install line is quoted from `2AMLogic/sky130-comparator#178`. The
+runner refuses to simulate if the installed PDK's `SOURCES` differs from the
+pin, and prints a record (ngspice version, PDK sha, sha256 of each model
+file, simulated results). The committed record is
+`sim/smoke/records/2026-10-17-smoke-tt.txt`.
+
 ## Repo layout
 
 ```
@@ -93,6 +111,24 @@ verification/  rail-model and flag-logic checks
 layout/        GDS + DRC/LVS reports (klayout-tools driven)
 measurements/  silicon characterization (empty until tape-out)
 ```
+
+## T1 evidence
+
+The block's evidence-tier state is graded by `klt signoff`, not hand-read.
+The block manifest is
+[`manifests/sky130-droop-detector.json`](manifests/sky130-droop-detector.json)
+and the committed verdict of record is
+[`manifests/sky130-droop-detector.signoff.json`](manifests/sky130-droop-detector.signoff.json).
+Pre-spec, every item is honestly `unmet` (`tier: null`). The
+`klayout-tools` version is pinned in
+[`.github/klt-version`](.github/klt-version); CI fails if the record drifts
+from a fresh render. To regenerate it:
+
+```
+uvx --from "klayout-tools==$(cat .github/klt-version)" klt signoff --manifest manifests/sky130-droop-detector.json --format json > manifests/sky130-droop-detector.signoff.json
+```
+
+(`klt signoff` exits 3 when any item is unmet; that is a valid run.)
 
 ## License
 
