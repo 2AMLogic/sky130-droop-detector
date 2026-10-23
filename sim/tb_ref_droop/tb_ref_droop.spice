@@ -1,0 +1,121 @@
+* tb_ref_droop: does the threshold reference move when (a) the monitored rail
+* collapses 1.8 -> 0.9 V, (b) the detector supply drops 3.3 -> 2.97 V?
+* tt / 27 C, select code 00. Both stimuli are IDEAL SOURCES, so this is a
+* reference-coupling check only; it is NOT the rail-model verdict (that is
+* tb_rail_model_check, and the rail-model re-run of this bench follows it).
+* The monitored rail reaches the design only through a bench-side ideal
+* comparator input (high impedance); threshold_ref has no pin for it.
+.lib "__PDK_LIB__" tt
+.include "__NETLIST__"
+.temp 27
+
+Vdd vdd33 0 3.3
+Vrail rail 0 1.8
+Vs0 s0 0 0
+Vs1 s1 0 0
+Xdut s0 s1 vdd33 0 vref vth threshold_ref
+Bcmp flag 0 V = 0.5-0.5*tanh((v(rail)-v(vth))*2000)
+Rcmp flag 0 1meg
+
+.control
+* baseline
+op
+set vref0 = $&v(vref)
+set vth0 = $&v(vth)
+echo "RESULT vref_nom_v = $vref0"
+echo "RESULT vth_l0_nom_v = $vth0"
+* all four levels, nominal (ideal-comparator trip = selected tap voltage)
+alter Vs0 dc = 0
+alter Vs1 dc = 0
+op
+let t = v(vth)
+echo "RESULT vtrip_l0_nom = $&t"
+alter Vs0 dc = 3.3
+alter Vs1 dc = 0
+op
+let t = v(vth)
+echo "RESULT vtrip_l1_nom = $&t"
+alter Vs0 dc = 0
+alter Vs1 dc = 3.3
+op
+let t = v(vth)
+echo "RESULT vtrip_l2_nom = $&t"
+alter Vs0 dc = 3.3
+alter Vs1 dc = 3.3
+op
+let t = v(vth)
+echo "RESULT vtrip_l3_nom = $&t"
+alter Vs0 dc = 0
+alter Vs1 dc = 0
+* (a) monitored rail 1.8 -> 0.9 V, DC
+alter Vrail dc = 0.9
+op
+let d = (v(vref)-$vref0)*1e3
+echo "RESULT vref_shift_rail_mv = $&d"
+let d = (v(vth)-$vth0)*1e3
+echo "RESULT vth_l0_shift_rail_mv = $&d"
+alter Vs0 dc = 0
+alter Vs1 dc = 0
+op
+let t = v(vth)
+echo "RESULT vtrip_l0_rail = $&t"
+alter Vs0 dc = 3.3
+alter Vs1 dc = 0
+op
+let t = v(vth)
+echo "RESULT vtrip_l1_rail = $&t"
+alter Vs0 dc = 0
+alter Vs1 dc = 3.3
+op
+let t = v(vth)
+echo "RESULT vtrip_l2_rail = $&t"
+alter Vs0 dc = 3.3
+alter Vs1 dc = 3.3
+op
+let t = v(vth)
+echo "RESULT vtrip_l3_rail = $&t"
+alter Vs0 dc = 0
+alter Vs1 dc = 0
+* (a) monitored rail collapse as a 5 ns edge, transient
+alter Vrail dc = 1.8
+alter Vrail pulse = [ 1.8 0.9 20n 5n 5n 100n 400n ]
+tran 0.1n 200n
+meas tran vref_tran_min min v(vref) from=0 to=200n
+meas tran vref_tran_max max v(vref) from=0 to=200n
+let dmax = (vref_tran_max-$vref0)*1e3
+let dmin = (vref_tran_min-$vref0)*1e3
+echo "RESULT vref_tran_dev_max_mv = $&dmax"
+echo "RESULT vref_tran_dev_min_mv = $&dmin"
+* (b) detector supply 3.3 -> 2.97 V, rail at 1.8 V: legitimately moves the reference
+alter Vrail dc = 1.8
+alter Vdd dc = 2.97
+op
+let d = (v(vref)-$vref0)*1e3
+echo "RESULT vref_shift_supply_mv = $&d"
+let d = (v(vth)-$vth0)*1e3
+echo "RESULT vth_l0_shift_supply_mv = $&d"
+alter Vs0 dc = 0
+alter Vs1 dc = 0
+op
+let t = v(vth)
+echo "RESULT vtrip_l0_supply = $&t"
+alter Vs0 dc = 3.3
+alter Vs1 dc = 0
+op
+let t = v(vth)
+echo "RESULT vtrip_l1_supply = $&t"
+alter Vs0 dc = 0
+alter Vs1 dc = 3.3
+op
+let t = v(vth)
+echo "RESULT vtrip_l2_supply = $&t"
+alter Vs0 dc = 3.3
+alter Vs1 dc = 3.3
+op
+let t = v(vth)
+echo "RESULT vtrip_l3_supply = $&t"
+alter Vs0 dc = 0
+alter Vs1 dc = 0
+quit
+.endc
+.end

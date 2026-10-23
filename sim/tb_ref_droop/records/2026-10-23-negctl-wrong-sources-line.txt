@@ -1,0 +1,3 @@
+$ PDK_PIN=<copy of sim/pdk.json with a wrong sources_line> sim/tb_ref_droop/run.sh
+FAIL: PDK revision mismatch; pin is 'open_pdks 0000000000000000000000000000000000000000', found 'open_pdks f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7' in /home/ubuntu/.ciel/sky130A/SOURCES
+exit=2
