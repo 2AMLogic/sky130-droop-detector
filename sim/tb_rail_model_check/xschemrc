@@ -1,0 +1,9 @@
+#### Project-local xschemrc for sim/tb_rail_model_check: resolve the pinned
+#### sky130A PDK symbol library (devices/*, sky130_fd_pr/*). PDK_ROOT and PDK
+#### come from the environment (run.sh exports them from `klt pdk find`).
+if {![info exists env(PDK_ROOT)] || ![info exists env(PDK)]} {
+  puts stderr "tb_rail_model_check: PDK_ROOT / PDK not set"
+} else {
+  source $env(PDK_ROOT)/$env(PDK)/libs.tech/xschem/xschemrc
+}
+set XSCHEM_START_WINDOW {}

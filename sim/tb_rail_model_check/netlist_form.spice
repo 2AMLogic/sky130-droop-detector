@@ -1,0 +1,17 @@
+* Netlist-form rail model body (circuit body for `klt sim`: no .control/.end).
+* sky130-ldo LDO (netlisted from the schematic at the pinned commit) loaded by
+* C_out + ESR and a 1 mA <-> 50 mA load step with 1 us edges. SIMULATED.
+* The .ic card is the LDO repo's 11-node regulating-branch seed (the
+* unconstrained .op hits a singular matrix); node values are from its
+* sim/load-transient/testbench/tb_load_transient.sch, tt / 27 C / 3.3 V.
+.param vsup=3.3
+.include ldo_3v3in_1v8out.spice
+VVIN vin 0 {vsup}
+VEN en 0 {vsup}
+VVREF vref 0 1.2
+XLDO vout vref en vin ldo_3v3in_1v8out
+COUT vout vesr {cout}
+RESR vesr 0 {resr}
+CDIR vout 0 {cdir}
+ILOAD vout 0 PULSE(1m 50m 1m 1u 1u 1m 4m)
+.ic v(vout)=1.8 v(xldo.fb)=1.2 v(xldo.n_fbb)=0.6 v(xldo.ea_out)={vsup-0.909} v(xldo.ea_cz)={vsup-0.909} v(xldo.ss)={vsup-0.027} v(xldo.biasp)={vsup-1.064} v(xldo.nb)=0.864 v(xldo.ea_tail)={vsup-0.768} v(xldo.ea_d1)=0.887 v(xldo.ea_d2)=0.888

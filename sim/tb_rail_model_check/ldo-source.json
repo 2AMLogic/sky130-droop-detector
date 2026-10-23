@@ -1,0 +1,12 @@
+{
+  "repo": "2AMLogic/sky130-ldo",
+  "commit": "aaaae71ee5b9edea017ccb1ccf6cfbd3f5f99f94",
+  "schematic": "design/ldo_3v3in_1v8out.sch",
+  "schematic_sha256": "1378c2d440e6ffc2224091972a162357c2634600e6e56cb51e4d6f96159fd2e3",
+  "symbol": "design/ldo_3v3in_1v8out.sym",
+  "symbol_sha256": "5e2db71d9ad60b7be49ca9a1cd4e4c4930ce6dd3cbb87c7233f140421ef5c669",
+  "vendored_at": "sim/tb_rail_model_check/src/",
+  "netlist": "ldo_3v3in_1v8out.spice",
+  "netlist_command": "klt netlist --pdk sky130A --rcfile xschemrc --block",
+  "ic_seed_source": "sky130-ldo@aaaae71 sim/load-transient/testbench/tb_load_transient.sch (IC_SEED)"
+}

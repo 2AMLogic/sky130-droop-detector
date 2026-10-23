@@ -1,0 +1,4 @@
+$ ENVELOPE_NEGCTL_MV=20 sim/tb_rail_model_check/run.sh   # W5 downward spike pushed 20 mV below the 1.764 V window edge
+FAIL: envelope bound check failed:
+  w5_dn_vmin = 1.744 (fail)
+exit=5
