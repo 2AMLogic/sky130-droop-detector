@@ -1,0 +1,31 @@
+label: SIMULATED (not measured); testbench sim/tb_rail_model_check; corner tt, 27 C, VIN 3.3 V, VREF 1.2 V, EN 3.3 V (no PVT sweep)
+ngspice: ngspice-46
+klt: klt 0.7.1.dev2517+g6bb7cf233677
+pdk_sources: open_pdks f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7
+model_lib_sha256: 48de7c677e2c6e7d09b2559279de9f818be71010a4aa933d728eb4db3b133c84
+ldo_source: 2AMLogic/sky130-ldo@aaaae71ee5b9edea017ccb1ccf6cfbd3f5f99f94 design/ldo_3v3in_1v8out.sch
+ldo_schematic_sha256: 1378c2d440e6ffc2224091972a162357c2634600e6e56cb51e4d6f96159fd2e3
+ldo_netlist_sha256: d9dded40ddf8013b23433d119835bc0b2cae587c0aecb1bb2b8c1199b16144a6  (sim/tb_rail_model_check/ldo_3v3in_1v8out.spice, klt netlist --check: match)
+ldo_pdk_note: the LDO repo pins a different open_pdks; this is that netlist simulated under THIS repo's pin
+
+== behavioural envelope (ASSUMPTION, not a measurement; asserted) ==
+stimulus: W1-W5, LDO-compliant transient (-150 mV, 1 us edges), row 6/7 droops to threshold-100 mV (1 ns edges), ideal step (additional)
+negative_control_mv: 0
+assertions: 78 declared, status pass
+  w4_recovery_us = 6.4975
+  w5_dn_vmin = 1.764
+  w5_up_vmax = 1.836
+  ct_vmin = 1.65
+  ct_recovery_us = 11.4775
+
+== netlist form (EVIDENCE; REPORTED, NOT GRADED: netlist-form figures are not checked against bounds) ==
+load: 1 mA <-> 50 mA, 1 us edges; pre-step level = mean over 0.8-0.999 ms; recovery = last exit from 1.8 V +-1 % after the edge
+backend: klt sim --batch-set (4 requests, one C_out/ESR point each)
+point c0p33u_esr0: job_id=klt-sim-68a3471559bf
+  v_pre_v=1.80052 peak_excursion_mv=193.01 recovery_us=96.7  (rise 96.7, fall 75.7)
+point c0p33u_esr500m: job_id=klt-sim-267688d8d442
+  v_pre_v=1.80052 peak_excursion_mv=177.27 recovery_us=96.7  (rise 96.7, fall 83.3)
+point c4p7u_esr0: job_id=klt-sim-3525d82632ed
+  v_pre_v=1.80051 peak_excursion_mv=85.14 recovery_us=612.5  (rise 99.7, fall 612.5)
+point c4p7u_esr500m: job_id=klt-sim-34e5b2cfc78f
+  v_pre_v=1.80052 peak_excursion_mv=77.8 recovery_us=571.9  (rise 99.5, fall 571.9)

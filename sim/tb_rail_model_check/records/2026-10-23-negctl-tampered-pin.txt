@@ -1,0 +1,3 @@
+$ PDK_ROOT=<scratch copy with tampered SOURCES> sim/tb_rail_model_check/run.sh
+FAIL: PDK revision mismatch; pin is 'open_pdks f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7', found 'open_pdks 0000000000000000000000000000000000000000' in /tmp/i17/pdkneg/sky130A/SOURCES
+exit=2
