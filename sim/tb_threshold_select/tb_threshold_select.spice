@@ -1,0 +1,46 @@
+* tb_threshold_select: static trip level for each 2-bit select code of
+* design/threshold_ref.spice, tt / 27 C, detector supply 3.3 V.
+* The monitored rail Vrail is an IDEAL SOURCE (swept DC); the comparator is an
+* ideal behavioural source (no offset, no delay, infinite gain-ish), so vtrip
+* here is the selected tap voltage itself, not a comparator result.
+.lib "__PDK_LIB__" tt
+.include "__NETLIST__"
+.temp 27
+.param vsup=3.3
+
+Vdd vdd33 0 {vsup}
+Vrail rail 0 1.9
+Vs0 s0 0 0
+Vs1 s1 0 0
+Xdut s0 s1 vdd33 0 vref vth threshold_ref
+* ideal comparator: flag = 1 when rail < vth
+Bcmp flag 0 V = 0.5-0.5*tanh((v(rail)-v(vth))*2000)
+
+.control
+op
+echo "RESULT vref_v = $&v(vref)"
+let iq_ua = -i(Vdd)*1e6
+echo "RESULT iq_ua = $&iq_ua"
+alter Vs0 dc = 0
+alter Vs1 dc = 0
+dc Vrail 1.9 1.5 -0.0005
+meas dc vtrip_l0 when v(flag)=0.5 rise=1
+echo "RESULT vtrip_l0 = $&vtrip_l0"
+alter Vs0 dc = 3.3
+alter Vs1 dc = 0
+dc Vrail 1.9 1.5 -0.0005
+meas dc vtrip_l1 when v(flag)=0.5 rise=1
+echo "RESULT vtrip_l1 = $&vtrip_l1"
+alter Vs0 dc = 0
+alter Vs1 dc = 3.3
+dc Vrail 1.9 1.5 -0.0005
+meas dc vtrip_l2 when v(flag)=0.5 rise=1
+echo "RESULT vtrip_l2 = $&vtrip_l2"
+alter Vs0 dc = 3.3
+alter Vs1 dc = 3.3
+dc Vrail 1.9 1.5 -0.0005
+meas dc vtrip_l3 when v(flag)=0.5 rise=1
+echo "RESULT vtrip_l3 = $&vtrip_l3"
+quit
+.endc
+.end
