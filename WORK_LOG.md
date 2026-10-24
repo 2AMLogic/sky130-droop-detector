@@ -3,6 +3,11 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage role. Newest first.
 
+### 2026-10-24
+
+- **PR #24**: refactor(sim): generate rail-model point inputs from one template
+- **Issue #23** (closed): Simplify: generate the four netlist-form request/wrapper files in run.sh instead of committing copies
+
 ### 2026-10-23
 
 - **PR #20**: feat(sim): add rail-model check bench (envelope bounds + LDO netlist form)
