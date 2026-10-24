@@ -3,6 +3,13 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage role. Newest first.
 
+### 2026-10-23
+
+- **PR #20**: feat(sim): add rail-model check bench (envelope bounds + LDO netlist form)
+- **PR #19**: feat: add threshold reference schematic with select and ref-droop benches
+- **Issue #17** (closed): Rail model bench: netlist-derived LDO rail and behavioural envelope, checked against the interface rows (sim/tb_rail_model_check)
+- **Issue #18** (closed): Threshold reference and 4-level tap network: first schematic with tb_ref_droop and tb_threshold_select at tt
+
 ### 2026-10-21
 
 - **PR #15**: Bump Repo Skills 0.24.3 -> 0.24.7
