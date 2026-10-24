@@ -1,5 +1,0 @@
-* Netlist-form rail model, one C_out/ESR point: c0p33u_esr500m.
-* ESR = 0 uses CDIR (no series element, ngspice cannot take a 0 ohm resistor);
-* ESR > 0 uses COUT in series with RESR. RESR is parked at 10m when unused.
-.param cdir=0 cout=0.33u resr=500m
-.include netlist_form.spice

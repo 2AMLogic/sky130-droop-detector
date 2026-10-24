@@ -61,12 +61,77 @@ env_n="$(jq '.corners[0].measurements|length' "$work/env/report.json")"
 env_bad="$(jq -r '.corners[0].measurements[]|select(.status!="pass")|"  \(.name) = \(.value) (\(.status))"' "$work/env/report.json")"
 
 # --- 2. netlist form, 4 C_out/ESR points via the batch fleet ------------------------
+# One request template and one point list (name:cdir:cout:resr). ESR = 0 uses cdir (ngspice
+# cannot take a 0 ohm resistor); ESR > 0 uses cout in series with resr, parked at 10m when unused.
+POINTS=(c0p33u_esr0:0.33u:0:10m c0p33u_esr500m:0:0.33u:500m c4p7u_esr0:4.7u:0:10m c4p7u_esr500m:0:4.7u:500m)
 mkdir -p "$work/nf"
-cp "$here"/netlist_form*.spice "$here"/netlist_form_*.request.json "$here/ldo_3v3in_1v8out.spice" "$work/nf/"
+cp "$here/netlist_form.spice" "$here/ldo_3v3in_1v8out.spice" "$work/nf/"
+for pt in "${POINTS[@]}"; do
+  IFS=: read -r p cdir cout resr <<<"$pt"
+  cat > "$work/nf/netlist_form_$p.spice" <<EOF
+* Netlist-form rail model, one C_out/ESR point: $p.
+* ESR = 0 uses CDIR (no series element, ngspice cannot take a 0 ohm resistor);
+* ESR > 0 uses COUT in series with RESR. RESR is parked at 10m when unused.
+.param cdir=$cdir cout=$cout resr=$resr
+.include netlist_form.spice
+EOF
+  sed "s/@NETLIST@/netlist_form_$p.spice/" > "$work/nf/netlist_form_$p.request.json" <<'EOF'
+{
+  "netlist": "@NETLIST@",
+  "models": {
+    "pdk": "sky130A",
+    "lib": "libs.tech/combined/sky130.lib.spice"
+  },
+  "corners": {
+    "process": [
+      "tt"
+    ],
+    "temperature_c": [
+      27
+    ]
+  },
+  "analysis": {
+    "kind": "tran",
+    "args": "200n 3m"
+  },
+  "measurements": [
+    {
+      "name": "v_pre",
+      "spice": ".meas tran v_pre avg v(vout) from=0.8m to=0.999m"
+    },
+    {
+      "name": "vmin_rise",
+      "spice": ".meas tran vmin_rise min v(vout) from=1m to=2.001m"
+    },
+    {
+      "name": "vmax_rise",
+      "spice": ".meas tran vmax_rise max v(vout) from=1m to=2.001m"
+    },
+    {
+      "name": "vmin_fall",
+      "spice": ".meas tran vmin_fall min v(vout) from=2.001m to=3m"
+    },
+    {
+      "name": "vmax_fall",
+      "spice": ".meas tran vmax_fall max v(vout) from=2.001m to=3m"
+    },
+    {
+      "name": "recovery_rise_us",
+      "expr": "vecmax(((abs(v(vout)-1.8)-0.018)/(abs(abs(v(vout)-1.8)-0.018)+1e-15)+1)/2*((time-1m)/(abs(time-1m)+1e-15)+1)/2*((2.001m-time)/(abs(2.001m-time)+1e-15)+1)/2*(time-1m))*1e6"
+    },
+    {
+      "name": "recovery_fall_us",
+      "expr": "vecmax(((abs(v(vout)-1.8)-0.018)/(abs(abs(v(vout)-1.8)-0.018)+1e-15)+1)/2*((time-2.001m)/(abs(time-2.001m)+1e-15)+1)/2*((3m-time)/(abs(3m-time)+1e-15)+1)/2*(time-2.001m))*1e6"
+    }
+  ]
+}
+EOF
+done
 nf_rc=0
 (cd "$work/nf" && $KLT sim --batch-set netlist_form_*.request.json -o "$work/nf/out" --format json \
   >"$work/nf/set.json" 2>"$work/nf/stderr.log") || nf_rc=$?
-for p in c0p33u_esr0 c0p33u_esr500m c4p7u_esr0 c4p7u_esr500m; do
+for pt in "${POINTS[@]}"; do
+  p="${pt%%:*}"
   rep="$work/nf/out/netlist_form_$p.request/report.json"
   [ -r "$rep" ] && jq -e '.corners[0].measurements|length>0' "$rep" >/dev/null 2>&1 \
     && [ "$(jq -r '[.corners[0].measurements[]|select(.value==null)]|length' "$rep")" = 0 ] \
@@ -97,7 +162,8 @@ rec="${RECORD:-/dev/stdout}"
   echo "== netlist form (EVIDENCE; REPORTED, NOT GRADED: netlist-form figures are not checked against bounds) =="
   echo "load: 1 mA <-> 50 mA, 1 us edges; pre-step level = mean over 0.8-0.999 ms; recovery = last exit from 1.8 V +-1 % after the edge"
   echo "backend: klt sim --batch-set (4 requests, one C_out/ESR point each)"
-  for p in c0p33u_esr0 c0p33u_esr500m c4p7u_esr0 c4p7u_esr500m; do
+  for pt in "${POINTS[@]}"; do
+    p="${pt%%:*}"
     rep="$work/nf/out/netlist_form_$p.request/report.json"
     echo "point $p: job_id=$(jq -r '.environment.remote.job_id // "none"' "$rep")"
     jq -r '.corners[0].measurements|map({(.name):.value})|add
