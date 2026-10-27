@@ -7,7 +7,10 @@ nanoseconds when the rail falls below a programmed threshold — designed by
 AI agents driving [klayout-tools](https://github.com/2AMLogic/klayout-tools)
 and the open-source xschem + ngspice flow.
 
-**Status: just opened, specification phase.** Nothing is designed yet.
+**Status: specification ratified (PR #8); schematic-level work in progress.**
+A threshold reference and its tap network are designed and simulated at a
+single corner; the comparator, glitch filter, flag and layout are not started.
+Every figure is simulated, with its corner and testbench named in its record.
 
 **Built agent-native.** Every specification, decision record, testbench, and
 line of documentation here is produced by AI agents working from a ratified
@@ -48,9 +51,9 @@ a realistic rail model rather than a DC operating point.
   nanosecond-scale excursions on a rail that is already up. Same family of
   circuits, different block; the spec says so by name.
 
-## Target specification (PROPOSED — see [`spec/target-spec.md`](spec/target-spec.md), issue #2)
+## Target specification (ratified — see [`spec/target-spec.md`](spec/target-spec.md), issue #2)
 
-All rows are *targets*, not results. The ratified-on-merge source of truth is
+All rows are *targets*, not results. The source of truth is
 [`spec/target-spec.md`](spec/target-spec.md) with
 [`DR-001`](spec/decision-records/DR-001-target-spec-ratification.md); this
 table must match it. The monitored rail is the `sky130-ldo` output (1.8 V
@@ -75,7 +78,7 @@ nominal, ±2% regulation window, 0–50 mA, per that repo's ratified spec at
 
 Maturity ladder: spec ratified → schematic simulated across PVT against
 the rail model → layout DRC/LVS-clean → post-layout re-verification →
-shuttle seat → measured silicon. **Current position: spec proposed, awaiting ratification.**
+shuttle seat → measured silicon. **Current position: spec ratified; schematic simulation under way (single corner so far, PVT sweep pending).**
 
 ## Tool flow
 
@@ -88,20 +91,45 @@ shuttle seat → measured silicon. **Current position: spec proposed, awaiting r
 ## Reproduce
 
 Needs `ngspice`, `jq` and [`klt`](https://github.com/2AMLogic/klayout-tools)
-(pinned in `sim/toolchain.json`), plus the sky130A PDK at the revision pinned
-in `sim/pdk.json`:
+(pinned in `sim/toolchain.json` and `.github/klt-version`), plus the sky130A
+PDK at the revision pinned in `sim/pdk.json`:
 
 ```
 pip install ciel==2.6.1
 ciel enable --pdk-family sky130 -l sky130_fd_pr f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7
-sim/smoke/run.sh
 ```
 
-The `ciel` install line is quoted from `2AMLogic/sky130-comparator#178`. The
+The `ciel` install line is quoted from `2AMLogic/sky130-comparator#178`. Every
 runner refuses to simulate if the installed PDK's `SOURCES` differs from the
-pin, and prints a record (ngspice version, PDK sha, sha256 of each model
-file, simulated results). The committed record is
-`sim/smoke/records/2026-10-17-smoke-tt.txt`.
+pin, and writes a record (ngspice version, PDK sha, simulated results) to
+`$RECORD` (stdout by default). Committed records are append-only evidence;
+reproduce into a scratch path, never over a committed record.
+
+| Bench | Command | Committed record |
+|---|---|---|
+| `sim/smoke` | `RECORD=/tmp/smoke.txt sim/smoke/run.sh` | `sim/smoke/records/2026-10-17-smoke-tt.txt` |
+| `sim/tb_threshold_select` | `RECORD=/tmp/ts.txt sim/tb_threshold_select/run.sh` | `sim/tb_threshold_select/records/2026-10-23-tb_threshold_select-tt.txt` |
+| `sim/tb_ref_droop` | `RECORD=/tmp/rd.txt sim/tb_ref_droop/run.sh` | `sim/tb_ref_droop/records/2026-10-23-tb_ref_droop-tt.txt` |
+| `sim/tb_rail_model_check` | `RECORD=/tmp/rm.txt sim/tb_rail_model_check/run.sh` | `sim/tb_rail_model_check/records/2026-10-23-rail-model-tt.txt` |
+
+`sim/tb_rail_model_check/run.sh` is different in kind: its netlist-form grid
+is four `klt sim --batch-set` requests that run on the Spot batch fleet, never
+as local `ngspice` loops, so it needs batch-fleet access. Its behavioural
+envelope is a single local unit.
+
+Negative controls (each is expected to exit non-zero; their records are
+committed alongside the passing ones):
+
+- `PDK_PIN=<pin file>` points `tb_ref_droop` and `tb_threshold_select` at a
+  pin whose `sources_line` is wrong
+  (`records/2026-10-23-negctl-wrong-sources-line.txt` in each bench).
+- `smoke`: empty, missing-root and tampered `SOURCES`, and a failed `.meas`
+  (`sim/smoke/records/*negctl*`, each header names the scratch edit made).
+- `ENVELOPE_NEGCTL_MV=<mV>` pushes the rail-model W5 spike out of bound
+  (`sim/tb_rail_model_check/records/2026-10-23-negctl-envelope-out-of-bound.txt`);
+  `records/2026-10-23-negctl-tampered-pin.txt` covers a tampered LDO source pin.
+
+`npm test` runs only the smoke bench with `RECORD=/dev/null`.
 
 ## Repo layout
 
@@ -121,8 +149,11 @@ The block manifest is
 [`manifests/sky130-droop-detector.json`](manifests/sky130-droop-detector.json)
 and the committed verdict of record is
 [`manifests/sky130-droop-detector.signoff.json`](manifests/sky130-droop-detector.signoff.json).
-Pre-spec, every item is honestly `unmet` (`tier: null`). The
-`klayout-tools` version is pinned in
+Items without cited evidence are honestly `unmet` (`tier: null`). Item 10
+(repo hygiene) is attested by `klt signoff --attest 10` from
+[`attest/item10.json`](attest/item10.json) into
+[`evidence/item10.json`](evidence/item10.json); CI re-runs it with `--check`.
+The `klayout-tools` version is pinned in
 [`.github/klt-version`](.github/klt-version); CI fails if the record drifts
 from a fresh render. To regenerate it:
 

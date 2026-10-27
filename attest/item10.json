@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "kind": "t1-attestation-inventory",
+  "t1_item": 10,
+  "description": "Repo hygiene for sky130-droop-detector: top-level docs, license, CI workflow and spec exist; JSON pins parse; every bench runner is syntactically valid. PDK-free checks only.",
+  "hygiene": [
+    "README.md",
+    "LICENSE",
+    "CLAUDE.md",
+    ".github/workflows/signoff.yml",
+    ".github/klt-version",
+    "spec/target-spec.md",
+    "sim/README.md",
+    "sim/pdk.json",
+    "sim/toolchain.json",
+    "manifests/sky130-droop-detector.json"
+  ],
+  "checks": [
+    {"name": "manifest-json-valid", "argv": ["python3", "-m", "json.tool", "manifests/sky130-droop-detector.json"]},
+    {"name": "pdk-pin-json-valid", "argv": ["python3", "-m", "json.tool", "sim/pdk.json"]},
+    {"name": "toolchain-json-valid", "argv": ["python3", "-m", "json.tool", "sim/toolchain.json"]},
+    {"name": "smoke-run-syntax", "argv": ["bash", "-n", "sim/smoke/run.sh"]},
+    {"name": "rail-model-run-syntax", "argv": ["bash", "-n", "sim/tb_rail_model_check/run.sh"]},
+    {"name": "ref-droop-run-syntax", "argv": ["bash", "-n", "sim/tb_ref_droop/run.sh"]},
+    {"name": "threshold-select-run-syntax", "argv": ["bash", "-n", "sim/tb_threshold_select/run.sh"]},
+    {"name": "envelope-generator-compiles", "argv": ["python3", "-I", "-c", "import ast,sys; ast.parse(open('sim/tb_rail_model_check/gen_envelope.py').read())"]}
+  ]
+}
