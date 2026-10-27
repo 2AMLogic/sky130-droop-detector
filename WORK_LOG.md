@@ -3,6 +3,11 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage role. Newest first.
 
+### 2026-10-27
+
+- **PR #41**: feat: attest T1 item 10 (repo hygiene) and document bench reproduction
+- **Issue #28** (closed): T1 item 10 (repo hygiene): README reproduction for every bench, PDK-free checks in CI, --attest 10
+
 ### 2026-10-24
 
 - **PR #24**: refactor(sim): generate rail-model point inputs from one template
