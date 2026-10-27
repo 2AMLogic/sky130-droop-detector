@@ -1,0 +1,26 @@
+label: SIMULATED (not measured); testbench sim/tb_comparator/tb_comparator.spice; corner tt, 27 C, detector supply 3.3 V
+stimulus: monitored rail = IDEAL SOURCE; comparator only (no glitch filter), 5 fF load on flag; NOT the row 6 grading (that is tb_latency with the rail model and filter)
+latency stimulus: rail falls from 1.8 V to tap - 100 mV with a 1 ns linear edge; t = 0 is the instant it reaches tap - 100 mV; latency = t = 0 to flag at 50% of its swing (1.65 V)
+ngspice: ngspice-46
+klt: klt 0.8.1.dev58+g78f36d8f316c
+pdk_sources: open_pdks f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7
+netlist_sha256: b5d2044ae2a7553ebf0ba12d6d663dc20f04524cfa638ea61ab7284ecdd3b052  design/comparator.spice
+model_files_sha256:
+  48de7c677e2c6e7d09b2559279de9f818be71010a4aa933d728eb4db3b133c84  sky130A/libs.tech/combined/sky130.lib.spice
+  1079c5af023f59628e61e4749be70e94d165c9dde71b93b8da63cbf7a857f35f  sky130A/libs.tech/combined/continuous/parameters_fet_tt.spice
+  bc2401ac75547b56a48cf11c1ab5dedb37c72d518a8ef3d5abf5d2cdea083be6  sky130A/libs.tech/combined/continuous/parameters_res_nom.spice
+  74a1f0933e3220061816ba11b15a2192760a1c95e250e67ffd1bde6b8a5e5ae9  sky130A/libs.tech/combined/continuous/parameters_cap_nom.spice
+  ac9df6f40a23e46d0aa65268e3006915e6da4e398017b562afbd17ce1d9e171f  sky130A/libs.tech/combined/continuous/models_global.spice
+  1adf908f0c00903a8056215e59fec1e548ccfeef02ac539e08dcde0e73a54361  sky130A/libs.tech/combined/continuous/models_fet.spice
+  dddf98199f127049c8f4386ee3e2e173a9098d0a4916be93055eb394d2a4555d  sky130A/libs.tech/combined/continuous/models_bjt.spice
+  afdcf7595bee58671b42d06647dc525da132e03d0891589d86af296f93bdaebf  sky130A/libs.tech/combined/continuous/models_diodes.spice
+  d406fec360a7a35e473b7ce260c5b5f0ad75c95faa26d1d24fb2aa32d2f1ae6f  sky130A/libs.tech/combined/continuous/models_resistors.spice
+  c31dc25abbb8948f2cbc0173e2dcd6eeaabb621d8d3aa7f017c15a89486293df  sky130A/libs.tech/combined/continuous/models_capacitors.spice
+  a1855dbd79d8a8aa1335aa4b99086c14a629bca1cf77250313bf6aa9719a72b9  sky130A/libs.tech/combined/corners/tt.spice
+  658f71e2e534f48984ca055aa3c73982dedc3e52abdaf16b324576dc0fdb62ac  sky130A/libs.tech/combined/corners/tt/specialized_cells.spice
+  27fc61d71d8b34bfc54421c9a7b251dedb7e9eb18d2949c998363b7582be7f4a  sky130A/libs.tech/combined/rescap/res_typical__cap_typical.spice
+  8857d79fd6ff76382e41703fa80608c3ec580ed93bf5dc21a82b4438cb0891f7  sky130A/libs.tech/combined/rescap/res_typical__cap_typical__lin.spice
+results (compared with spec rows 6 and 11 only as figures; row 11 is detector total, this is the comparator part):
+  tap 1.728 V: latency = 2.100 ns (row 6 target < 5 ns, comparator only); input-referred offset = +18.79 mV (trip 1.74679 V - tap, slow ramp); supply current idle = 26.60 uA (row 11 target < 50 uA, whole detector)
+  tap 1.584 V: latency = 2.871 ns (row 6 target < 5 ns, comparator only); input-referred offset = +18.32 mV (trip 1.60232 V - tap, slow ramp); supply current idle = 13.22 uA (row 11 target < 50 uA, whole detector)
+notes (SIMULATED, same corner/testbench): idle current is taken with the rail at 1.8 V, so it is higher at the 1.728 V tap (rail only 72 mV above the tap, first-stage output not fully saturated) than at 1.584 V. Adding threshold_ref's 22.85 uA (sim/tb_threshold_select record, code 00) to the 1.728 V figure gives about 49.5 uA, i.e. no margin against row 11 (< 50 uA) before the filter and flag logic (#27) are added; this is a finding for #27/#39, the spec is not relaxed. The offset is systematic (+18 mV, positive: trips with the rail above the tap) and is inside the row 5 +/-27 mV band at this corner only; row 5 is not graded here.

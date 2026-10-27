@@ -30,3 +30,9 @@ evidence.
   record to `$RECORD` (stdout by default) and are not wired into
   `package.json` checks because they write records. Records, including the
   wrong-`sources_line` negative controls, are in each bench's `records/`.
+- `tb_comparator/` — nominal-corner (tt / 27 C / 3.3 V) latency at 100 mV
+  overdrive, input-referred offset and idle supply current of
+  `design/comparator.spice` at the 1.728 V and 1.584 V taps, ideal rail source,
+  comparator only: `sim/tb_comparator/run.sh`. Same PDK-pin fail-closed
+  behaviour and `PDK_PIN` negative control as the benches above; records in
+  `tb_comparator/records/`. Not wired into `package.json` checks.
