@@ -1,0 +1,208 @@
+{
+  "schema_version": 1,
+  "kind": "generic",
+  "status": "pass",
+  "t1_item": 10,
+  "summary": "T1 item 10 (Repo hygiene): 18/18 attestation checks passed (klt signoff --attest)",
+  "source": "attest/item10.json",
+  "attestation": {
+    "producer": "klt signoff --attest",
+    "inventory_schema_version": 1,
+    "hash_algorithm": "sha256-raw-bytes",
+    "check_count": 18,
+    "passed_count": 18,
+    "checks": [
+      {
+        "check": "present",
+        "role": "hygiene",
+        "path": ".github/klt-version",
+        "passed": true,
+        "content_hash": "sha256:a66780da23103beaf12432b418508966b31a2a3a787f9468a5b6cdaa8667c1ef"
+      },
+      {
+        "check": "present",
+        "role": "hygiene",
+        "path": ".github/workflows/signoff.yml",
+        "passed": true,
+        "content_hash": "sha256:c72bc1702918683702d7bc5ae46e6acab55c56b55f064b2f9570a14c5e9a0fc7"
+      },
+      {
+        "check": "present",
+        "role": "hygiene",
+        "path": "CLAUDE.md",
+        "passed": true,
+        "content_hash": "sha256:8d228a89067f595b384aba92b7a1d1309c464396a5394d9f39fc33d6b5960f92"
+      },
+      {
+        "check": "present",
+        "role": "hygiene",
+        "path": "LICENSE",
+        "passed": true,
+        "content_hash": "sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+      },
+      {
+        "check": "present",
+        "role": "hygiene",
+        "path": "README.md",
+        "passed": true,
+        "content_hash": "sha256:1a9499844ac07ccc850fec73f6ccf67cf238721e9fc053310b25da2189ebef11"
+      },
+      {
+        "check": "present",
+        "role": "hygiene",
+        "path": "manifests/sky130-droop-detector.json",
+        "passed": true,
+        "content_hash": "sha256:e9c0c3d36f984a694fc63e4f67b0e7f76687931f617a8e4cf5d5b55d83842d48"
+      },
+      {
+        "check": "present",
+        "role": "hygiene",
+        "path": "sim/README.md",
+        "passed": true,
+        "content_hash": "sha256:96e35a92d05ecb71db8806e8997cb2a221f25f96552ab140597abff23fce5fb2"
+      },
+      {
+        "check": "present",
+        "role": "hygiene",
+        "path": "sim/pdk.json",
+        "passed": true,
+        "content_hash": "sha256:f76eaa3519898937be8a5c92091c764feee208285c444f2b2c54912066e1311d"
+      },
+      {
+        "check": "present",
+        "role": "hygiene",
+        "path": "sim/toolchain.json",
+        "passed": true,
+        "content_hash": "sha256:b48e853b1dfdeb3ff3086846f6d1f34ba44ae82fa4323dcaf4544c2429065ea0"
+      },
+      {
+        "check": "present",
+        "role": "hygiene",
+        "path": "spec/target-spec.md",
+        "passed": true,
+        "content_hash": "sha256:f19d4209d75a72ed005aa08b1f6cf2df0f65f679c14f5a63c20f3a178aecc9f9"
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "manifest-json-valid",
+        "argv": [
+          "python3",
+          "-m",
+          "json.tool",
+          "manifests/sky130-droop-detector.json"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "pdk-pin-json-valid",
+        "argv": [
+          "python3",
+          "-m",
+          "json.tool",
+          "sim/pdk.json"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "toolchain-json-valid",
+        "argv": [
+          "python3",
+          "-m",
+          "json.tool",
+          "sim/toolchain.json"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "smoke-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/smoke/run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "rail-model-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/tb_rail_model_check/run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "ref-droop-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/tb_ref_droop/run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "threshold-select-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/tb_threshold_select/run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "envelope-generator-compiles",
+        "argv": [
+          "python3",
+          "-I",
+          "-c",
+          "import ast,sys; ast.parse(open('sim/tb_rail_model_check/gen_envelope.py').read())"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      }
+    ]
+  },
+  "provenance": {
+    "klt_version": "0.8.0",
+    "klayout_version": null,
+    "pdk": null,
+    "deck": null,
+    "input": {
+      "path": {
+        "path": "attest/item10.json",
+        "scope": "repo"
+      },
+      "content_hash": "sha256:d1d39be3fe1d307dd69c086e8dca3ef630946be1115d18179a319f4df67a4ea5"
+    }
+  }
+}

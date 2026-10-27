@@ -1,7 +1,7 @@
 {
   "ngspice": "46",
   "xschem": "3.4.7",
-  "klayout_tools": "0.7.0",
+  "klayout_tools": "0.8.0",
   "klayout_tools_note": "Released pin; `klt pdk find` verified with `uvx --from klayout-tools==0.7.0`. The provisioned host klt is a dev build (0.7.1.dev1765+gb61f753d0369), which also reports compatibility: match; 0.7.0 reports not_declared, so run.sh checks SOURCES itself.",
   "recorded_on": "2026-10-17",
   "note": "ngspice/xschem are the host-provisioned versions at record time (curation saw ngspice-42 / xschem 3.4.4 earlier the same day); run.sh records the ngspice version it actually ran."

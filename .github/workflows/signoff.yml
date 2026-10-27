@@ -71,3 +71,11 @@ jobs:
           fi
           echo "Committed signoff record is fresh."
           python3 -c "import json; d=json.load(open('manifests/sky130-droop-detector.signoff.json')); print('tier verdict of record:', d['tier'], '(T1 items met: %d/%d)' % (d['t1_met_count'], d['t1_item_count']))"
+
+      # T1 item 10 (repo hygiene): re-attest from the committed inventory and
+      # fail if evidence/item10.json no longer reproduces or no longer passes.
+      # PDK-free checks only; nothing here installs ngspice or the PDK.
+      - name: Re-attest T1 item 10 against the committed evidence
+        run: |
+          klt signoff --attest 10 --inventory attest/item10.json \
+                      --check evidence/item10.json
