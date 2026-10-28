@@ -33,6 +33,7 @@ _None._
 Issues currently being built (`loom:building`).
 
 - **#26**: T1 item 1 (design sources): comparator schematic and netlist on the 3.3 V detector supply
+- **#45**: T1 status: correct spec/target-spec.md and DR-001 headers — ratified 2026-10-20 by the merge of PR #8, still read "proposed"
 
 ## PRs Awaiting Review
 
@@ -68,7 +69,7 @@ _None._
 | Very important | 0 |
 | Important | 1 |
 | Ready (`loom:issue`) | 0 |
-| In Progress (`loom:building`) | 1 |
+| In Progress (`loom:building`) | 2 |
 | PRs awaiting review | 1 |
 | Approved PRs awaiting merge | 0 |
 | Curated | 1 |
