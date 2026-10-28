@@ -1,10 +1,10 @@
-# Target specification — PROPOSED (ratifies via the PR that lands it)
+# Target specification — RATIFIED 2026-10-20
 
-**Status: proposed.** Ratified by the operator's approval of the PR that lands
+**Status: ratified 2026-10-20** by the operator's merge of [PR #8](https://github.com/2AMLogic/sky130-droop-detector/pull/8), which landed
 [`DR-001`](decision-records/DR-001-target-spec-ratification.md) (the
-ratification-via-PR path `sky130-ldo` used for its DR-006). Until that PR
-merges, nothing here is binding. Ratification fixes what the **targets**
-are; it is not a claim any design meets them — no design exists yet.
+ratification-via-PR path `sky130-ldo` used for its DR-006). Ratification
+fixes what the **targets** are; it is not a claim any design meets them — no
+design exists yet.
 
 Every figure below is a **target, fallback or stretch**, not a result. No
 simulated figure appears in this file. Whenever a result is later recorded
