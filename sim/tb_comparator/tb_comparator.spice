@@ -1,0 +1,38 @@
+* tb_comparator: design/comparator.spice at one tap, tt / 27 C, detector supply 3.3 V.
+* Comparator only (no glitch filter), so latency here is not the row 6 figure.
+* The monitored rail Vm is an IDEAL SOURCE (nominal-corner characterisation; the
+* rail-model forms of the spec are used by tb_latency, #38).
+* Latency stimulus (row 6 shape): rail falls from 1.8 V to vth - 100 mV with a
+* 1 ns linear edge, t = 0 is the instant it reaches vth - 100 mV.
+.lib "__PDK_LIB__" tt
+.include "__NETLIST__"
+.temp 27
+.param vsup=3.3
+.param vthv=__VTH__
+.param vlow=__VLOW__
+
+Vdd vdd33 0 {vsup}
+Vth vth 0 {vthv}
+Vm vm 0 1.8 pwl(0 1.8 5n 1.8 6n {vlow} 40n {vlow})
+Xdut vm vth vdd33 0 flag comparator
+Cl flag 0 5f
+
+.control
+* quiescent: rail above the tap, flag idle
+op
+let iq_ua = -i(Vdd)*1e6
+echo "RESULT iq_ua = $&iq_ua"
+* static trip: slow rail sweep, offset = trip - tap
+dc Vm 1.9 1.5 -0.0005
+meas dc vtrip when v(flag)=1.65 rise=1
+echo "RESULT vtrip = $&vtrip"
+* latency
+tran 0.01n 40n
+* the edge reaches vth - 100 mV at the end of the pwl ramp: t = 0 is 6 ns
+let tfull = 6e-9
+meas tran tf50 when v(flag)=1.65 rise=1
+echo "RESULT tfull = $&tfull"
+echo "RESULT tf50 = $&tf50"
+quit
+.endc
+.end
