@@ -1,9 +1,8 @@
 # DR-001: ratify the target specification
 
-- **Status**: **proposed** — ratified by the operator's approval of the PR
-  that lands it (the ratification-via-PR path `sky130-ldo` used for its
-  DR-006). Nothing here is binding until that PR merges.
-- **Date**: 2026-10-17
+- **Status**: **ratified 2026-10-20** by the operator's merge of [PR #8](https://github.com/2AMLogic/sky130-droop-detector/pull/8), which
+  landed it (the ratification-via-PR path `sky130-ldo` used for its DR-006).
+- **Date**: 2026-10-17 (drafted); 2026-10-20 (ratified)
 - **Author**: Builder agent (drafted per #2)
 - **Ratifies against / input to**: #2; gates #3 items 5–8.
 - **Supersedes**: none — first decision record in this repo.
@@ -20,7 +19,7 @@ every number is a target.
 
 ## Decision
 
-Adopt `spec/target-spec.md` as the proposed spec, with the README's numbers
+Adopt `spec/target-spec.md` as the spec, with the README's numbers
 carried unchanged except the three listed under *Changes to README numbers*.
 The three judgment calls below are **recommendations for the operator to
 accept or overrule at PR review**.
@@ -126,7 +125,7 @@ rows conflict.
 
 ## Status notes
 
-`proposed` until the operator approves the PR landing it. The three
+Ratified 2026-10-20 by the operator's merge of [PR #8](https://github.com/2AMLogic/sky130-droop-detector/pull/8). The three
 recommendations in (a)–(c) are the items to rule on. No klayout-tools gap
 was met while scoping (documents only, no tool used beyond planning), so
 none was filed.
