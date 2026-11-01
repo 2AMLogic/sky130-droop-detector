@@ -31,7 +31,7 @@
         "role": "hygiene",
         "path": "CLAUDE.md",
         "passed": true,
-        "content_hash": "sha256:8d228a89067f595b384aba92b7a1d1309c464396a5394d9f39fc33d6b5960f92"
+        "content_hash": "sha256:461a67d6989d61791e886d96d07c10b7ed84c56d9e0958ba42ed358563e2ba6c"
       },
       {
         "check": "present",
