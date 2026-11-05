@@ -3,14 +3,14 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 10,
-  "summary": "T1 item 10 (Repo hygiene): 18/18 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 10 (Repo hygiene): 21/21 attestation checks passed (klt signoff --attest)",
   "source": "attest/item10.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 18,
-    "passed_count": 18,
+    "check_count": 21,
+    "passed_count": 21,
     "checks": [
       {
         "check": "present",
@@ -52,14 +52,14 @@
         "role": "hygiene",
         "path": "manifests/sky130-droop-detector.json",
         "passed": true,
-        "content_hash": "sha256:fcbe59c3c8c31dabd3e9328a21bebcb34d9e97f65a113f2e12d1dd62678f3bd8"
+        "content_hash": "sha256:d8d49f4e7a44a41cbd59043f49ad52fe62631917067333e5c2814f2c71e10e7b"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "sim/README.md",
         "passed": true,
-        "content_hash": "sha256:5e57afa8075b2973d87e2f25ba60135dd83154ca02815ce87d5d1aeee8e442fb"
+        "content_hash": "sha256:f4d5f07853e9e4c1bca6eede469604b130939fdbbb6a205bb932bce2c9ce2d93"
       },
       {
         "check": "present",
@@ -179,6 +179,45 @@
       {
         "check": "command",
         "role": "audit",
+        "name": "latency-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/tb_latency/run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "min-width-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/tb_min_width/run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "supply-headroom-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/tb_supply_headroom/run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
         "name": "envelope-generator-compiles",
         "argv": [
           "python3",
@@ -202,7 +241,7 @@
         "path": "attest/item10.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:d1d39be3fe1d307dd69c086e8dca3ef630946be1115d18179a319f4df67a4ea5"
+      "content_hash": "sha256:59b63c0d38e79e0b8555050bf8e851209335cf240dfa27d242b44752afca20e6"
     }
   }
 }

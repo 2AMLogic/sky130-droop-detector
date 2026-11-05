@@ -1,0 +1,3 @@
+$ NEGCTL_DROP_KEY=r2_v3p30_l0_droop_lmax sim/tb_supply_headroom/run.sh
+FAIL: no 'r2_v3p30_l0_droop_lmax' result in ngspice log
+exit=3

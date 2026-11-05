@@ -36,6 +36,20 @@ evidence.
   comparator only: `sim/tb_comparator/run.sh`. Same PDK-pin fail-closed
   behaviour and `PDK_PIN` negative control as the benches above; records in
   `tb_comparator/records/`. Not wired into `package.json` checks.
+- `tb_latency/`, `tb_min_width/`, `tb_supply_headroom/` — the dynamic benches of
+  `design/detector_top.spice` (spec rows 6, 7, 2) against the behavioural-envelope
+  rail (1 ns edges, 1 kohm load; an assumption, not a measurement), tt / 27 C /
+  3.3 V single corner, one local ngspice process each (cases play inside it):
+  `sim/tb_latency/run.sh` (100 mV overdrive, 4 levels x 3 start points plus the
+  ideal step alongside, t = 0 at full overdrive, `live` at 50% of swing),
+  `sim/tb_min_width/run.sh` (2 / 10 / 50 ns droops, every level, `live` must
+  reach VOH), `sim/tb_supply_headroom/run.sh` (detector supply 3.3 / 2.97 V and
+  2.97 V sagging by an assumed 0.1 / 0.3 V, droop must flag, sag alone must not).
+  Same PDK-pin fail-closed behaviour and `PDK_PIN` negative control as the
+  benches above, plus `NEGCTL_DROP_KEY=<result key>` for the missing-result
+  control. A row the design misses is reported in the record, not relaxed;
+  corner campaigns are #34/#35. Records and negative controls in each
+  `records/`. Not wired into `package.json` checks.
 - `tb_threshold_accuracy/` — static trip point per select code of
   `design/detector_top.spice` (real reference, comparator, filter, flag logic) on
   a slow ideal-source ramp, spec row 5 corner-grid half:
