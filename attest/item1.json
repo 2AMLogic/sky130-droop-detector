@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "kind": "t1-attestation-inventory",
+  "t1_item": 1,
+  "description": "Design sources for sky130-droop-detector: every xschem schematic and symbol, and the netlist derived from each (klt netlist --block --check must report match).",
+  "sources": [
+    "design/threshold_ref.sch",
+    "design/threshold_ref.sym",
+    "design/comparator.sch",
+    "design/comparator.sym",
+    "design/glitch_filter.sch",
+    "design/glitch_filter.sym",
+    "design/flag_logic.sch",
+    "design/flag_logic.sym",
+    "design/detector_top.sch",
+    "design/xschemrc"
+  ],
+  "derived": [
+    {
+      "path": "design/threshold_ref.spice",
+      "generator": "klt netlist --block",
+      "check": {
+        "argv": [
+          "klt",
+          "netlist",
+          "design/threshold_ref.sch",
+          "-o",
+          "design/threshold_ref.spice",
+          "--block",
+          "--check",
+          "--pdk",
+          "sky130A",
+          "--rcfile",
+          "design/xschemrc"
+        ],
+        "local_only": true
+      }
+    },
+    {
+      "path": "design/comparator.spice",
+      "generator": "klt netlist --block",
+      "check": {
+        "argv": [
+          "klt",
+          "netlist",
+          "design/comparator.sch",
+          "-o",
+          "design/comparator.spice",
+          "--block",
+          "--check",
+          "--pdk",
+          "sky130A",
+          "--rcfile",
+          "design/xschemrc"
+        ],
+        "local_only": true
+      }
+    },
+    {
+      "path": "design/glitch_filter.spice",
+      "generator": "klt netlist --block",
+      "check": {
+        "argv": [
+          "klt",
+          "netlist",
+          "design/glitch_filter.sch",
+          "-o",
+          "design/glitch_filter.spice",
+          "--block",
+          "--check",
+          "--pdk",
+          "sky130A",
+          "--rcfile",
+          "design/xschemrc"
+        ],
+        "local_only": true
+      }
+    },
+    {
+      "path": "design/flag_logic.spice",
+      "generator": "klt netlist --block",
+      "check": {
+        "argv": [
+          "klt",
+          "netlist",
+          "design/flag_logic.sch",
+          "-o",
+          "design/flag_logic.spice",
+          "--block",
+          "--check",
+          "--pdk",
+          "sky130A",
+          "--rcfile",
+          "design/xschemrc"
+        ],
+        "local_only": true
+      }
+    },
+    {
+      "path": "design/detector_top.spice",
+      "generator": "klt netlist --block",
+      "check": {
+        "argv": [
+          "klt",
+          "netlist",
+          "design/detector_top.sch",
+          "-o",
+          "design/detector_top.spice",
+          "--block",
+          "--check",
+          "--pdk",
+          "sky130A",
+          "--rcfile",
+          "design/xschemrc"
+        ],
+        "local_only": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,360 @@
+{
+  "schema_version": 1,
+  "kind": "generic",
+  "status": "pass",
+  "t1_item": 1,
+  "summary": "T1 item 1 (Design sources): 20/20 attestation checks passed (klt signoff --attest)",
+  "source": "attest/item1.json",
+  "attestation": {
+    "producer": "klt signoff --attest",
+    "inventory_schema_version": 1,
+    "hash_algorithm": "sha256-raw-bytes",
+    "check_count": 20,
+    "passed_count": 20,
+    "checks": [
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/comparator.sch",
+        "passed": true,
+        "content_hash": "sha256:beeb6c0737b31c238cd4b63ba3e8a0a1a9715959e423ce740ccd6fa510bcbf43"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/comparator.sym",
+        "passed": true,
+        "content_hash": "sha256:c8dd8d1f52a376e923633f9571f0ac4d84c2c9a158e592b31e77b9d54facba1a"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/detector_top.sch",
+        "passed": true,
+        "content_hash": "sha256:053efd4ba26d15f11a6b158598e1c48636ccdc6888624401dddba4f2dc389960"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/flag_logic.sch",
+        "passed": true,
+        "content_hash": "sha256:dafb90c78d65c32244f1acdfc0c418820fdf6a372c84a5887262b88e72f9633c"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/flag_logic.sym",
+        "passed": true,
+        "content_hash": "sha256:018536f461bd524bf0fdb5ea46a17c2418909025d5eb3a77f81b4eacc7db601e"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/glitch_filter.sch",
+        "passed": true,
+        "content_hash": "sha256:ea3ae26eaadab85f444b098f3ed2e708e3fdb58dd95972fe69a5a34a79ed162a"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/glitch_filter.sym",
+        "passed": true,
+        "content_hash": "sha256:89ec8be759a8558f6c8a6fd73e3afb4334d0f6d2c6ba25686d0c8a71138dfd47"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/threshold_ref.sch",
+        "passed": true,
+        "content_hash": "sha256:858d634a0b49cef08e63440041c32c6a8ccc0e35fd16d3e09cfb7f4a3afb97a1"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/threshold_ref.sym",
+        "passed": true,
+        "content_hash": "sha256:b2ca8c0f3244c00fe7446c02830d10db1e7d9c4eeee077643f193ad9eb5cc4cc"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/xschemrc",
+        "passed": true,
+        "content_hash": "sha256:d0beb3ee305bd60f77a1c06c435de69ccc51a1de35c7c26bfef63a6a9a07a289"
+      },
+      {
+        "check": "present",
+        "role": "derived",
+        "path": "design/comparator.spice",
+        "passed": true,
+        "content_hash": "sha256:b5d2044ae2a7553ebf0ba12d6d663dc20f04524cfa638ea61ab7284ecdd3b052"
+      },
+      {
+        "check": "present",
+        "role": "derived",
+        "path": "design/detector_top.spice",
+        "passed": true,
+        "content_hash": "sha256:0fca89f6b4b0a9d83a0bd641c2db4a681412f746af856f71a932d59d7fd7d95f"
+      },
+      {
+        "check": "present",
+        "role": "derived",
+        "path": "design/flag_logic.spice",
+        "passed": true,
+        "content_hash": "sha256:a375b2323e232dd291b0bad91db7fe2adbab2c64826b4cd285733c8d79501779"
+      },
+      {
+        "check": "present",
+        "role": "derived",
+        "path": "design/glitch_filter.spice",
+        "passed": true,
+        "content_hash": "sha256:7cf6b4274526ac44ab221ecdc331bcbfcb010c13957845da423590bb0586b6ce"
+      },
+      {
+        "check": "present",
+        "role": "derived",
+        "path": "design/threshold_ref.spice",
+        "passed": true,
+        "content_hash": "sha256:e3c2fa0619ae99cb55ecad978884a74530eddc845eff9d81e994a3463a0205ae"
+      },
+      {
+        "check": "command",
+        "role": "freshness",
+        "target": "design/comparator.spice",
+        "generator": "klt netlist --block",
+        "argv": [
+          "klt",
+          "netlist",
+          "design/comparator.sch",
+          "-o",
+          "design/comparator.spice",
+          "--block",
+          "--check",
+          "--pdk",
+          "sky130A",
+          "--rcfile",
+          "design/xschemrc"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true,
+        "local_only": true
+      },
+      {
+        "check": "command",
+        "role": "freshness",
+        "target": "design/detector_top.spice",
+        "generator": "klt netlist --block",
+        "argv": [
+          "klt",
+          "netlist",
+          "design/detector_top.sch",
+          "-o",
+          "design/detector_top.spice",
+          "--block",
+          "--check",
+          "--pdk",
+          "sky130A",
+          "--rcfile",
+          "design/xschemrc"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true,
+        "local_only": true
+      },
+      {
+        "check": "command",
+        "role": "freshness",
+        "target": "design/flag_logic.spice",
+        "generator": "klt netlist --block",
+        "argv": [
+          "klt",
+          "netlist",
+          "design/flag_logic.sch",
+          "-o",
+          "design/flag_logic.spice",
+          "--block",
+          "--check",
+          "--pdk",
+          "sky130A",
+          "--rcfile",
+          "design/xschemrc"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true,
+        "local_only": true
+      },
+      {
+        "check": "command",
+        "role": "freshness",
+        "target": "design/glitch_filter.spice",
+        "generator": "klt netlist --block",
+        "argv": [
+          "klt",
+          "netlist",
+          "design/glitch_filter.sch",
+          "-o",
+          "design/glitch_filter.spice",
+          "--block",
+          "--check",
+          "--pdk",
+          "sky130A",
+          "--rcfile",
+          "design/xschemrc"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true,
+        "local_only": true
+      },
+      {
+        "check": "command",
+        "role": "freshness",
+        "target": "design/threshold_ref.spice",
+        "generator": "klt netlist --block",
+        "argv": [
+          "klt",
+          "netlist",
+          "design/threshold_ref.sch",
+          "-o",
+          "design/threshold_ref.spice",
+          "--block",
+          "--check",
+          "--pdk",
+          "sky130A",
+          "--rcfile",
+          "design/xschemrc"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true,
+        "local_only": true
+      }
+    ]
+  },
+  "provenance": {
+    "klt_version": "0.9.1.dev17+gd76e6fe1cb7a",
+    "klayout_version": null,
+    "pdk": null,
+    "deck": null,
+    "input": {
+      "paths": [
+        {
+          "path": {
+            "path": "attest/item1.json",
+            "scope": "repo"
+          },
+          "content_hash": "sha256:39b30be0a45b97721ca9d70f5cd60d59a84c5b51433a9c25ba780b2fa5330ae7"
+        },
+        {
+          "path": {
+            "path": "design/comparator.sch",
+            "scope": "repo"
+          },
+          "content_hash": "sha256:beeb6c0737b31c238cd4b63ba3e8a0a1a9715959e423ce740ccd6fa510bcbf43"
+        },
+        {
+          "path": {
+            "path": "design/comparator.spice",
+            "scope": "repo"
+          },
+          "content_hash": "sha256:b5d2044ae2a7553ebf0ba12d6d663dc20f04524cfa638ea61ab7284ecdd3b052"
+        },
+        {
+          "path": {
+            "path": "design/comparator.sym",
+            "scope": "repo"
+          },
+          "content_hash": "sha256:c8dd8d1f52a376e923633f9571f0ac4d84c2c9a158e592b31e77b9d54facba1a"
+        },
+        {
+          "path": {
+            "path": "design/detector_top.sch",
+            "scope": "repo"
+          },
+          "content_hash": "sha256:053efd4ba26d15f11a6b158598e1c48636ccdc6888624401dddba4f2dc389960"
+        },
+        {
+          "path": {
+            "path": "design/detector_top.spice",
+            "scope": "repo"
+          },
+          "content_hash": "sha256:0fca89f6b4b0a9d83a0bd641c2db4a681412f746af856f71a932d59d7fd7d95f"
+        },
+        {
+          "path": {
+            "path": "design/flag_logic.sch",
+            "scope": "repo"
+          },
+          "content_hash": "sha256:dafb90c78d65c32244f1acdfc0c418820fdf6a372c84a5887262b88e72f9633c"
+        },
+        {
+          "path": {
+            "path": "design/flag_logic.spice",
+            "scope": "repo"
+          },
+          "content_hash": "sha256:a375b2323e232dd291b0bad91db7fe2adbab2c64826b4cd285733c8d79501779"
+        },
+        {
+          "path": {
+            "path": "design/flag_logic.sym",
+            "scope": "repo"
+          },
+          "content_hash": "sha256:018536f461bd524bf0fdb5ea46a17c2418909025d5eb3a77f81b4eacc7db601e"
+        },
+        {
+          "path": {
+            "path": "design/glitch_filter.sch",
+            "scope": "repo"
+          },
+          "content_hash": "sha256:ea3ae26eaadab85f444b098f3ed2e708e3fdb58dd95972fe69a5a34a79ed162a"
+        },
+        {
+          "path": {
+            "path": "design/glitch_filter.spice",
+            "scope": "repo"
+          },
+          "content_hash": "sha256:7cf6b4274526ac44ab221ecdc331bcbfcb010c13957845da423590bb0586b6ce"
+        },
+        {
+          "path": {
+            "path": "design/glitch_filter.sym",
+            "scope": "repo"
+          },
+          "content_hash": "sha256:89ec8be759a8558f6c8a6fd73e3afb4334d0f6d2c6ba25686d0c8a71138dfd47"
+        },
+        {
+          "path": {
+            "path": "design/threshold_ref.sch",
+            "scope": "repo"
+          },
+          "content_hash": "sha256:858d634a0b49cef08e63440041c32c6a8ccc0e35fd16d3e09cfb7f4a3afb97a1"
+        },
+        {
+          "path": {
+            "path": "design/threshold_ref.spice",
+            "scope": "repo"
+          },
+          "content_hash": "sha256:e3c2fa0619ae99cb55ecad978884a74530eddc845eff9d81e994a3463a0205ae"
+        },
+        {
+          "path": {
+            "path": "design/threshold_ref.sym",
+            "scope": "repo"
+          },
+          "content_hash": "sha256:b2ca8c0f3244c00fe7446c02830d10db1e7d9c4eeee077643f193ad9eb5cc4cc"
+        },
+        {
+          "path": {
+            "path": "design/xschemrc",
+            "scope": "repo"
+          },
+          "content_hash": "sha256:d0beb3ee305bd60f77a1c06c435de69ccc51a1de35c7c26bfef63a6a9a07a289"
+        }
+      ],
+      "content_hash": "sha256:34c632ca37b5c6ba90169097eb81dc0cb01172e07ed0feb6c8af27e310045580"
+    }
+  }
+}
