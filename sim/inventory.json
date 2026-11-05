@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "kind": "t1-attestation-inventory",
+  "t1_item": 9,
+  "description": "Testbench inventory for sky130-droop-detector. Spec rows (spec/target-spec.md): 1 sim/tb_rail_model_check; 2 sim/tb_supply_headroom; 3 sim/tb_ref_droop; 4 sim/tb_threshold_select; 5 sim/tb_threshold_accuracy (corner grid; device-mismatch Monte Carlo tb_threshold_mc is item 6, #35); 6 sim/tb_latency; 7 sim/tb_min_width; 8 sim/tb_false_flag; 9 sim/tb_filter; 10 sim/tb_flag_logic + verification/flag_logic; 11 sim/tb_iq; sim/tb_comparator is the comparator-only bench behind rows 5-6. Cold start: sim/run_all.sh (optional PDK_ROOT; writes no records). Each bench is one corner (tt / 27 C / 3.3 V by default); the corner box is #34.",
+  "testbenches": [
+    "sim/tb_rail_model_check/run.sh",
+    "sim/tb_supply_headroom/run.sh",
+    "sim/tb_ref_droop/run.sh",
+    "sim/tb_threshold_select/run.sh",
+    "sim/tb_threshold_accuracy/run.sh",
+    "sim/tb_latency/run.sh",
+    "sim/tb_min_width/run.sh",
+    "sim/tb_false_flag/run.sh",
+    "sim/tb_filter/run.sh",
+    "sim/tb_flag_logic/run.sh",
+    "verification/flag_logic/run.sh",
+    "sim/tb_iq/run.sh",
+    "sim/tb_comparator/run.sh",
+    "sim/smoke/run.sh"
+  ],
+  "cold_start": {
+    "argv": [
+      "bash",
+      "sim/run_all.sh"
+    ],
+    "local_only": true,
+    "timeout_s": 7200
+  },
+  "pins": {
+    "pdk": {
+      "name": "sky130A",
+      "revision": "f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7"
+    },
+    "tools": {
+      "klt": "0.8.0",
+      "ngspice": "46",
+      "xschem": "3.4.7"
+    }
+  }
+}
