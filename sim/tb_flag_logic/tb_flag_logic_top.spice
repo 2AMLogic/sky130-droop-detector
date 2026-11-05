@@ -1,0 +1,30 @@
+* tb_flag_logic (part B): full design/detector_top.spice, tt / 27 C, detector supply 3.3 V,
+* select 00 (threshold 1.728 V). Rail model = behavioural envelope (spec 'Rail model'
+* form 2, an ASSUMPTION): PWL droops to threshold - 100 mV with 1 ns linear edges plus
+* +/-10 mV 20 MHz ripple in series; NOT an ideal step alone. clr is active high.
+* The "live_in" trace column is the filtered flag inside the DUT (xdut.flag_f).
+.lib "__PDK_LIB__" tt
+.include "__NETLIST__"
+.temp 27
+Vdd vdd33 0 3.3
+Vs0 s0 0 0
+Vs1 s1 0 0
+Vclr clr 0 pwl(__CLR_PWL__)
+Vr0 r0 0 pwl(__RAIL_PWL__)
+Vrip rail r0 dc 0 sin(0 10m 20meg)
+Xdut rail s0 s1 clr vdd33 0 live sticky detector_top
+Cl1 live 0 100f
+Cl2 sticky 0 100f
+
+.control
+tran 0.02n __TSTOP__
+set wr_vecnames
+set wr_singlescale
+wrdata __TRACE__ v(xdut.flag_f) v(clr) v(live) v(sticky)
+meas tran vmax_live max v(live) from=0 to=__TSTOP__
+meas tran vmax_sticky max v(sticky) from=0 to=__TSTOP__
+echo "RESULT vmax_live = $&vmax_live"
+echo "RESULT vmax_sticky = $&vmax_sticky"
+quit
+.endc
+.end
