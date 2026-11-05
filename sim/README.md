@@ -55,3 +55,15 @@ evidence.
   The three benches above fail closed on the PDK pin (`PDK_PIN`) and on a missing
   result key (`NEGCTL_DROP=<key>`), write the record to `$RECORD` and are not wired
   into `package.json` checks because they write records.
+- `tb_filter/` — spec row 9: `design/glitch_filter.spice` alone with a pulse-width
+  sweep (reject-width bracket at 0.01 ns resolution; 5 / 10 / 50 ns pulses must pass), then
+  `design/detector_top.spice` at all four levels with behavioural-envelope rail droops of
+  50 / 10 / 2 ns (live flag must assert for 50 and 10 ns; 2 ns, the row 7 stretch, is
+  reported only): `sim/tb_filter/run.sh`. About 4 minutes. tt / 27 C / 3.3 V, fails closed
+  on the PDK pin (`PDK_PIN` negative control); records in `tb_filter/records/`.
+- `tb_flag_logic/` — spec row 10: `design/flag_logic.spice` alone (set, hold, clear, CLR while
+  the condition persists) and `detector_top` under rail-model droops, graded by
+  `verification/flag_logic/check.py`: `sim/tb_flag_logic/run.sh`. Cold start: CLR
+  asserted for the first 20-30 ns, latch power-up state not assumed. Same pin
+  fail-closed behaviour; records in `tb_flag_logic/records/`. Neither new bench is wired
+  into `package.json` checks (they write records and run for minutes).
