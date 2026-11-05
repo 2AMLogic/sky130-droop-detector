@@ -1,0 +1,52 @@
+label: SIMULATED (not measured); testbench sim/tb_false_flag/ (gen_envelope_ff.py + tb_false_flag_netlist.spice); corner tt, 27 C, detector supply 3.3 V; one corner
+stimulus: rail model, NOT an ideal source alone. envelope form = ASSUMPTION (behavioural envelope, spec "Rail model" form 2) for W1-W5; netlist form = EVIDENCE (sky130-ldo netlist, C_out 0.33 uF, ESR 0, 1<->50 mA load step) for W1 settled level and the W4-type load transient (reported). W5 also as an ideal step (additional case)
+negative-control push (mV below the window on W4): 0
+ngspice: ngspice-46
+klt: klt 0.9.1.dev98+g1a4358a1522a
+pdk_sources: open_pdks f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7
+netlist_sha256: 0fca89f6b4b0a9d83a0bd641c2db4a681412f746af856f71a932d59d7fd7d95f  design/detector_top.spice
+ldo_netlist_sha256: d9dded40ddf8013b23433d119835bc0b2cae587c0aecb1bb2b8c1199b16144a6  sim/tb_rail_model_check/ldo_3v3in_1v8out.spice
+model_files_sha256:
+  48de7c677e2c6e7d09b2559279de9f818be71010a4aa933d728eb4db3b133c84  sky130A/libs.tech/combined/sky130.lib.spice
+  1079c5af023f59628e61e4749be70e94d165c9dde71b93b8da63cbf7a857f35f  sky130A/libs.tech/combined/continuous/parameters_fet_tt.spice
+  bc2401ac75547b56a48cf11c1ab5dedb37c72d518a8ef3d5abf5d2cdea083be6  sky130A/libs.tech/combined/continuous/parameters_res_nom.spice
+  74a1f0933e3220061816ba11b15a2192760a1c95e250e67ffd1bde6b8a5e5ae9  sky130A/libs.tech/combined/continuous/parameters_cap_nom.spice
+  ac9df6f40a23e46d0aa65268e3006915e6da4e398017b562afbd17ce1d9e171f  sky130A/libs.tech/combined/continuous/models_global.spice
+  1adf908f0c00903a8056215e59fec1e548ccfeef02ac539e08dcde0e73a54361  sky130A/libs.tech/combined/continuous/models_fet.spice
+  dddf98199f127049c8f4386ee3e2e173a9098d0a4916be93055eb394d2a4555d  sky130A/libs.tech/combined/continuous/models_bjt.spice
+  afdcf7595bee58671b42d06647dc525da132e03d0891589d86af296f93bdaebf  sky130A/libs.tech/combined/continuous/models_diodes.spice
+  d406fec360a7a35e473b7ce260c5b5f0ad75c95faa26d1d24fb2aa32d2f1ae6f  sky130A/libs.tech/combined/continuous/models_resistors.spice
+  c31dc25abbb8948f2cbc0173e2dcd6eeaabb621d8d3aa7f017c15a89486293df  sky130A/libs.tech/combined/continuous/models_capacitors.spice
+  a1855dbd79d8a8aa1335aa4b99086c14a629bca1cf77250313bf6aa9719a72b9  sky130A/libs.tech/combined/corners/tt.spice
+  658f71e2e534f48984ca055aa3c73982dedc3e52abdaf16b324576dc0fdb62ac  sky130A/libs.tech/combined/corners/tt/specialized_cells.spice
+  27fc61d71d8b34bfc54421c9a7b251dedb7e9eb18d2949c998363b7582be7f4a  sky130A/libs.tech/combined/rescap/res_typical__cap_typical.spice
+  8857d79fd6ff76382e41703fa80608c3ec580ed93bf5dc21a82b4438cb0891f7  sky130A/libs.tech/combined/rescap/res_typical__cap_typical__lin.spice
+results (flag asserted = v(live) or v(sticky) >= 0.36 V, the spec VOL bound; levels = codes 00/01/10/11 = 4/6/9/12 % below nominal):
+  w1_lo [envelope, graded]: rail 1.7640..1.7640 V; max live over 4 levels 1.897e-09 no flag
+  w1_nom [envelope, graded]: rail 1.8000..1.8000 V; max live over 4 levels 1.897e-09 no flag
+  w1_hi [envelope, graded]: rail 1.8360..1.8360 V; max live over 4 levels 1.897e-09 no flag
+  w2_1k [envelope, graded]: rail 1.7820..1.8180 V; max live over 4 levels 1.897e-09 no flag
+  w2_100k [envelope, graded]: rail 1.7820..1.8180 V; max live over 4 levels 1.897e-09 no flag
+  w2_10m [envelope, graded]: rail 1.7821..1.8179 V; max live over 4 levels 1.897e-09 no flag
+  w3 [envelope, graded]: rail 1.7895..1.8120 V; max live over 4 levels 1.897e-09 no flag
+  w4 [envelope, graded]: rail 1.7640..1.8000 V; max live over 4 levels 1.897e-09 no flag
+  w5_env_dn [envelope, graded]: rail 1.7640..1.8000 V; max live over 4 levels 1.899e-09 no flag
+  w5_env_up [envelope, graded]: rail 1.8000..1.8360 V; max live over 4 levels 1.899e-09 no flag
+  w5_ideal_dn [envelope, graded]: rail 1.7640..1.8000 V; max live over 4 levels 6.666e-09 no flag
+  w5_ideal_up [envelope, graded]: rail 1.8000..1.8360 V; max live over 4 levels 6.728e-09 no flag
+  sticky level 0 over the whole envelope run [graded]: max 2.222e-09 V; no flag
+  sticky level 1 over the whole envelope run [graded]: max 2.317e-09 V; no flag
+  sticky level 2 over the whole envelope run [graded]: max 2.358e-09 V; no flag
+  sticky level 3 over the whole envelope run [graded]: max 2.373e-09 V; no flag
+  W1 settled level [netlist-derived, graded]: rail 1.7955..1.7995 V
+    level 0: max live 1.897e-09 V, max sticky 1.897e-09 V; no flag
+    level 1: max live 1.897e-09 V, max sticky 1.897e-09 V; no flag
+    level 2: max live 1.897e-09 V, max sticky 1.897e-09 V; no flag
+    level 3: max live 1.897e-09 V, max sticky 1.897e-09 V; no flag
+  load-step excursion [netlist-derived, REPORTED, not graded as a false flag]: rail 1.6061..1.9262 V (window 1.764..1.836 V)
+    the LDO netlist model itself leaves the +-2 % window under this load step, so a flag here is not a false flag; this bears on sky130-ldo, not on this block
+    level 0: max live 1.638e+00 V (flag asserted)
+    level 1: max live 1.638e+00 V (flag asserted)
+    level 2: max live 1.638e+00 V (flag asserted)
+    level 3: max live 1.897e-09 V (no flag)
+verdict (this corner, graded cases only): zero flags

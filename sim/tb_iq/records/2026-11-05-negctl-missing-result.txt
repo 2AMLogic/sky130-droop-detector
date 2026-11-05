@@ -1,0 +1,16 @@
+negative control: dropping the iq_l1_ua RESULT line must fail closed (exit non-zero)
+command: NEGCTL_DROP=iq_l1_ua tb_iq/run.sh
+exit code: 3
+stderr (first 12 lines):
+FAIL: no 'iq_l1_ua' result in ngspice log
+x3.xlogic.xr2.x0.t1                 6.2874e-05
+x3.xlogic.xr2.x0.t2                     1.6368
+x3.xlogic.sb                               3.3
+x3.xlogic.rb                               3.3
+x3.xlogic.q                                3.3
+x3.xlogic.qb                       1.53334e-08
+x3.xlogic.n_q                          2.63028
+x3.xlogic.n_qb                     7.66671e-09
+x3.xlogic.qn                       7.79426e-09
+l3                                 1.89675e-09
+st3                                    1.63686

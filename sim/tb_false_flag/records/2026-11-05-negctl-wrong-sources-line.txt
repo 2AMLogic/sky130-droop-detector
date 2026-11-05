@@ -1,0 +1,5 @@
+negative control: pin file with sources_line 'open_pdks 0000000000000000000000000000000000000000' must fail closed
+command: PDK_PIN=/tmp/badpin.json tb_false_flag/run.sh
+exit code: 2
+stderr (first 12 lines):
+FAIL: PDK revision mismatch; pin is 'open_pdks 0000000000000000000000000000000000000000', found 'open_pdks f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7' in /home/ubuntu/.ciel/sky130A/SOURCES
