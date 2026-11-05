@@ -14,4 +14,14 @@
   --block --check --pdk sky130A --rcfile <PDK>/libs.tech/xschem/xschemrc`
   must report `match`.
 
-No comparator, filter or flag logic yet. See the repo README for scope.
+- `comparator.sch` — continuous-time comparator on the 3.3 V detector supply
+  (DR-001 (c)): a resistor-biased NMOS differential pair (`g5v0d10v5`) with a
+  PMOS mirror load and two inverter stages. Inputs `vmon` (monitored 1.8 V
+  rail) and `vth` (the selected `threshold_ref` tap) go to transistor gates
+  only, so no device supply pin connects to the monitored rail and no sense
+  network is needed. `flag` is high (from `vdd33`) while `vmon < vth`; the
+  glitch filter (#27) is its only load. Pins: `vmon vth vdd33 gnd flag`.
+- `comparator.spice` — committed `klt netlist --block` output, same staleness
+  command as above with `comparator` in place of `threshold_ref`.
+
+No filter or flag logic yet. See the repo README for scope.
