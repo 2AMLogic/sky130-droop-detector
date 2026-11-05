@@ -1,0 +1,16 @@
+negative control: dropping the w3_live_l1 RESULT line must fail closed (exit non-zero)
+command: NEGCTL_DROP=w3_live_l1 tb_false_flag/run.sh
+exit code: 3
+stderr (first 12 lines):
+FAIL: no 'w3_live_l1' result in the env leg
+RESULT w5_env_up_live_l0 = 1.8977E-09
+w5_env_up_live_l1   =  1.89806e-09 at=  1.10444e-03
+RESULT w5_env_up_live_l1 = 1.89806E-09
+w5_env_up_live_l2   =  1.89859e-09 at=  1.10444e-03
+RESULT w5_env_up_live_l2 = 1.89859E-09
+w5_env_up_live_l3   =  1.89880e-09 at=  1.10444e-03
+RESULT w5_env_up_live_l3 = 1.8988E-09
+w5_ideal_dn_vmin    =  1.76400e+00 at=  1.10468e-03
+RESULT w5_ideal_dn_vmin = 1.764
+w5_ideal_dn_vmax    =  1.80000e+00 at=  1.10471e-03
+RESULT w5_ideal_dn_vmax = 1.8

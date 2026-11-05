@@ -1,0 +1,44 @@
+negative control: W4 pushed 60 mV below the window edge (1.704 V): the bench must see the flag and exit non-zero (4)
+command: NEGCTL_MV=60 tb_false_flag/run.sh
+exit code: 4
+stderr (first 12 lines):
+FAIL: flag asserted in a graded false-flag case
+stdout (record, excluding hash lines):
+label: SIMULATED (not measured); testbench sim/tb_false_flag/ (gen_envelope_ff.py + tb_false_flag_netlist.spice); corner tt, 27 C, detector supply 3.3 V; one corner
+stimulus: rail model, NOT an ideal source alone. envelope form = ASSUMPTION (behavioural envelope, spec "Rail model" form 2) for W1-W5; netlist form = EVIDENCE (sky130-ldo netlist, C_out 0.33 uF, ESR 0, 1<->50 mA load step) for W1 settled l
+negative-control push (mV below the window on W4): 60
+ngspice: ngspice-46
+klt: klt 0.9.1.dev98+g1a4358a1522a
+pdk_sources: open_pdks f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7
+netlist_sha256: 0fca89f6b4b0a9d83a0bd641c2db4a681412f746af856f71a932d59d7fd7d95f  design/detector_top.spice
+ldo_netlist_sha256: d9dded40ddf8013b23433d119835bc0b2cae587c0aecb1bb2b8c1199b16144a6  sim/tb_rail_model_check/ldo_3v3in_1v8out.spice
+model_files_sha256:
+results (flag asserted = v(live) or v(sticky) >= 0.36 V, the spec VOL bound; levels = codes 00/01/10/11 = 4/6/9/12 % below nominal):
+  w1_lo [envelope, graded]: rail 1.7640..1.7640 V; max live over 4 levels 1.897e-09 no flag
+  w1_nom [envelope, graded]: rail 1.8000..1.8000 V; max live over 4 levels 1.897e-09 no flag
+  w1_hi [envelope, graded]: rail 1.8360..1.8360 V; max live over 4 levels 1.897e-09 no flag
+  w2_1k [envelope, graded]: rail 1.7820..1.8180 V; max live over 4 levels 1.897e-09 no flag
+  w2_100k [envelope, graded]: rail 1.7820..1.8180 V; max live over 4 levels 1.897e-09 no flag
+  w2_10m [envelope, graded]: rail 1.7821..1.8179 V; max live over 4 levels 1.897e-09 no flag
+  w3 [envelope, graded]: rail 1.7895..1.8120 V; max live over 4 levels 1.897e-09 no flag
+  w4 [envelope, graded]: rail 1.7040..1.8000 V; max live over 4 levels 1.638e+00 FLAG
+  w5_env_dn [envelope, graded]: rail 1.7640..1.8000 V; max live over 4 levels 1.899e-09 no flag
+  w5_env_up [envelope, graded]: rail 1.8000..1.8360 V; max live over 4 levels 1.899e-09 no flag
+  w5_ideal_dn [envelope, graded]: rail 1.7640..1.8000 V; max live over 4 levels 6.666e-09 no flag
+  w5_ideal_up [envelope, graded]: rail 1.8000..1.8360 V; max live over 4 levels 6.728e-09 no flag
+  sticky level 0 over the whole envelope run [graded]: max 1.718e+00 V; FLAG
+  sticky level 1 over the whole envelope run [graded]: max 1.718e+00 V; FLAG
+  sticky level 2 over the whole envelope run [graded]: max 2.358e-09 V; no flag
+  sticky level 3 over the whole envelope run [graded]: max 2.373e-09 V; no flag
+  W1 settled level [netlist-derived, graded]: rail 1.7955..1.7995 V
+    level 0: max live 1.897e-09 V, max sticky 1.897e-09 V; no flag
+    level 1: max live 1.897e-09 V, max sticky 1.897e-09 V; no flag
+    level 2: max live 1.897e-09 V, max sticky 1.897e-09 V; no flag
+    level 3: max live 1.897e-09 V, max sticky 1.897e-09 V; no flag
+  load-step excursion [netlist-derived, REPORTED, not graded as a false flag]: rail 1.6061..1.9262 V (window 1.764..1.836 V)
+    the LDO netlist model itself leaves the +-2 % window under this load step, so a flag here is not a false flag; this bears on sky130-ldo, not on this block
+    level 0: max live 1.638e+00 V (flag asserted)
+    level 1: max live 1.638e+00 V (flag asserted)
+    level 2: max live 1.638e+00 V (flag asserted)
+    level 3: max live 1.897e-09 V (no flag)
+verdict (this corner, graded cases only): FLAGS ASSERTED
