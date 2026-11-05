@@ -1,0 +1,3 @@
+$ NEGCTL_DROP_KEY=r7_l0_w10_lmax sim/tb_min_width/run.sh
+FAIL: no 'r7_l0_w10_lmax' result in ngspice log
+exit=3
