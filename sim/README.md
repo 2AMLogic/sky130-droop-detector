@@ -36,3 +36,22 @@ evidence.
   comparator only: `sim/tb_comparator/run.sh`. Same PDK-pin fail-closed
   behaviour and `PDK_PIN` negative control as the benches above; records in
   `tb_comparator/records/`. Not wired into `package.json` checks.
+- `tb_threshold_accuracy/` — static trip point per select code of
+  `design/detector_top.spice` (real reference, comparator, filter, flag logic) on
+  a slow ideal-source ramp, spec row 5 corner-grid half:
+  `sim/tb_threshold_accuracy/run.sh`. One corner per run (default tt / 27 C /
+  3.3 V; `PROC`, `TEMP_C`, `VSUP` select another so the #34 campaign can drive it).
+  No Monte Carlo (that is `tb_threshold_mc`, #35). Records and negative controls in
+  `tb_threshold_accuracy/records/`.
+- `tb_false_flag/` — spec row 8: W1–W5 applied to the detector at all four levels,
+  zero live/sticky flags required: `sim/tb_false_flag/run.sh`. W1–W5 come from the
+  behavioural-envelope rail (W5 also as an ideal step, additional case); the
+  netlist-derived `sky130-ldo` rail grades the settled W1 level and reports the
+  load-step excursion. Negative controls: wrong PDK pin, missing result key and
+  `NEGCTL_MV=60` (a forced flag). Two sequential local ngspice runs, about 3 min.
+- `tb_iq/` — spec row 11: detector supply current per select code with the flag
+  idle: `sim/tb_iq/run.sh`. One corner per run (same `PROC`/`TEMP_C`/`VSUP`
+  variables). Records and negative controls in `tb_iq/records/`.
+  The three benches above fail closed on the PDK pin (`PDK_PIN`) and on a missing
+  result key (`NEGCTL_DROP=<key>`), write the record to `$RECORD` and are not wired
+  into `package.json` checks because they write records.
