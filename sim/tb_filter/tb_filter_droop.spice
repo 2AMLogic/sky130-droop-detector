@@ -1,0 +1,25 @@
+* tb_filter (part B): full design/detector_top.spice (comparator -> glitch filter ->
+* flag logic) at one select level, tt / 27 C, detector supply 3.3 V.
+* Rail model = behavioural envelope (spec "Rail model", form 2, an ASSUMPTION):
+* a PWL droop to (threshold - 100 mV) with 1 ns linear edges, plus +/-10 mV (about
+* 0.55 % of nominal, inside the +/-2 % LDO window) of 20 MHz ripple in series. It is
+* NOT an ideal step alone. Droop list, level code and .meas lines come from run.sh.
+.lib "__PDK_LIB__" tt
+.include "__NETLIST__"
+.temp 27
+Vdd vdd33 0 3.3
+Vs0 s0 0 __S0__
+Vs1 s1 0 __S1__
+Vclr clr 0 0
+Vr0 r0 0 pwl(__PWL__)
+Vrip rail r0 dc 0 sin(0 10m 20meg)
+Xdut rail s0 s1 clr vdd33 0 live sticky detector_top
+Cl1 live 0 100f
+Cl2 sticky 0 100f
+
+.control
+tran 0.02n __TSTOP__
+__MEAS__
+quit
+.endc
+.end

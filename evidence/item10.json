@@ -3,14 +3,14 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 10,
-  "summary": "T1 item 10 (Repo hygiene): 18/18 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 10 (Repo hygiene): 21/21 attestation checks passed (klt signoff --attest)",
   "source": "attest/item10.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 18,
-    "passed_count": 18,
+    "check_count": 21,
+    "passed_count": 21,
     "checks": [
       {
         "check": "present",
@@ -59,7 +59,7 @@
         "role": "hygiene",
         "path": "sim/README.md",
         "passed": true,
-        "content_hash": "sha256:dee80b7aac57b873fbc61ab592d3f58ea7594adf1b585df8b632018824e32ae5"
+        "content_hash": "sha256:4b0a40f0d7a7d748d3d4b92e2a9672320cf5390babc02df89eaf64584e67d1e3"
       },
       {
         "check": "present",
@@ -179,6 +179,45 @@
       {
         "check": "command",
         "role": "audit",
+        "name": "latency-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/tb_latency/run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "min-width-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/tb_min_width/run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "supply-headroom-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/tb_supply_headroom/run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
         "name": "envelope-generator-compiles",
         "argv": [
           "python3",
@@ -193,7 +232,7 @@
     ]
   },
   "provenance": {
-    "klt_version": "0.9.1.dev17+gd76e6fe1cb7a",
+    "klt_version": "0.8.0",
     "klayout_version": null,
     "pdk": null,
     "deck": null,
@@ -202,7 +241,7 @@
         "path": "attest/item10.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:d1d39be3fe1d307dd69c086e8dca3ef630946be1115d18179a319f4df67a4ea5"
+      "content_hash": "sha256:59b63c0d38e79e0b8555050bf8e851209335cf240dfa27d242b44752afca20e6"
     }
   }
 }
