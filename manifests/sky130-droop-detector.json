@@ -2,6 +2,10 @@
   "block": "sky130-droop-detector",
   "kind": "analog",
   "evidence": {
+    "1": {
+      "file": "evidence/item1.json",
+      "content_hash": "sha256:34c632ca37b5c6ba90169097eb81dc0cb01172e07ed0feb6c8af27e310045580"
+    },
     "10": {
       "file": "evidence/item10.json",
       "content_hash": "sha256:d1d39be3fe1d307dd69c086e8dca3ef630946be1115d18179a319f4df67a4ea5"

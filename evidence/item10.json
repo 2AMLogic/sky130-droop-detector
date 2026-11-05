@@ -52,14 +52,14 @@
         "role": "hygiene",
         "path": "manifests/sky130-droop-detector.json",
         "passed": true,
-        "content_hash": "sha256:e9c0c3d36f984a694fc63e4f67b0e7f76687931f617a8e4cf5d5b55d83842d48"
+        "content_hash": "sha256:fcbe59c3c8c31dabd3e9328a21bebcb34d9e97f65a113f2e12d1dd62678f3bd8"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "sim/README.md",
         "passed": true,
-        "content_hash": "sha256:96e35a92d05ecb71db8806e8997cb2a221f25f96552ab140597abff23fce5fb2"
+        "content_hash": "sha256:dee80b7aac57b873fbc61ab592d3f58ea7594adf1b585df8b632018824e32ae5"
       },
       {
         "check": "present",
@@ -193,7 +193,7 @@
     ]
   },
   "provenance": {
-    "klt_version": "0.8.0",
+    "klt_version": "0.9.1.dev17+gd76e6fe1cb7a",
     "klayout_version": null,
     "pdk": null,
     "deck": null,

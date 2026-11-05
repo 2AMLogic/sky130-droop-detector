@@ -1,0 +1,56 @@
+** sch_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-27/design/flag_logic.sch
+.subckt flag_logic live_in clr vdd33 gnd live sticky
+*.ipin live_in
+*.ipin clr
+*.iopin vdd33
+*.iopin gnd
+*.opin live
+*.opin sticky
+XR1 vcl vdd33 gnd sky130_fd_pr__res_xhigh_po_1p41 L=600 mult=1 m=1
+XM1 vcl vcl c1 gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0 sb=0
++ sd=0 mult=1 m=1
+XM2 c1 c1 c2 gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0 sb=0 sd=0
++ mult=1 m=1
+XM3 c2 c2 gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0 sb=0 sd=0
++ mult=1 m=1
+XM4 vdd33 vcl vlim gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0 sb=0
++ sd=0 mult=1 m=1
+XR2 gnd vlim gnd sky130_fd_pr__res_xhigh_po_1p41 L=1200 mult=1 m=1
+XC1 vlim gnd sky130_fd_pr__cap_mim_m3_1 W=10 L=10 MF=1 m=1
+XM5 sb live_in vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0
++ sb=0 sd=0 mult=1 m=1
+XM6 sb live_in gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0
++ sd=0 mult=1 m=1
+XM7 rb clr vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0
++ sd=0 mult=1 m=1
+XM8 rb clr gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=1 nf=1 ad=0.29 as=0.29 pd=2.58 ps=2.58 nrd=0.29 nrs=0.29 sa=0 sb=0 sd=0
++ mult=1 m=1
+XM9 q sb vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0
++ sd=0 mult=1 m=1
+XM10 q qb vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0
++ sd=0 mult=1 m=1
+XM11 q sb n_q gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0 sd=0
++ mult=1 m=1
+XM12 n_q qb gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0 sd=0
++ mult=1 m=1
+XM13 qb rb vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0
++ sd=0 mult=1 m=1
+XM14 qb q vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0
++ sd=0 mult=1 m=1
+XM15 qb rb n_qb gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0 sd=0
++ mult=1 m=1
+XM16 n_qb q gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0 sd=0
++ mult=1 m=1
+XM17 qn q vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0
++ sd=0 mult=1 m=1
+XM18 qn q gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=1 nf=1 ad=0.29 as=0.29 pd=2.58 ps=2.58 nrd=0.29 nrs=0.29 sa=0 sb=0 sd=0
++ mult=1 m=1
+XM19 live sb vlim vlim sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=12 nf=1 ad=3.48 as=3.48 pd=24.58 ps=24.58 nrd=0.0241666666666667
++ nrs=0.0241666666666667 sa=0 sb=0 sd=0 mult=1 m=1
+XM20 live sb gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0
++ sd=0 mult=1 m=1
+XM21 sticky qn vlim vlim sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=12 nf=1 ad=3.48 as=3.48 pd=24.58 ps=24.58 nrd=0.0241666666666667
++ nrs=0.0241666666666667 sa=0 sb=0 sd=0 mult=1 m=1
+XM22 sticky qn gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0
++ sd=0 mult=1 m=1
+.ends
