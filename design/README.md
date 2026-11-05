@@ -62,4 +62,4 @@ design/<name>.sch -o design/<name>.spice --block --check --pdk sky130A
 --rcfile design/xschemrc` must report `match`. The T1 item 1 inventory is
 `attest/item1.json` (evidence `evidence/item1.json`).
 
-No testbench exists yet for the filter, flag logic or top. See the repo README for scope.
+Filter and flag-logic benches: `sim/tb_filter`, `sim/tb_flag_logic`, `verification/flag_logic` (see `sim/README.md`); no bench yet for the top at other rows. See the repo README for scope.
