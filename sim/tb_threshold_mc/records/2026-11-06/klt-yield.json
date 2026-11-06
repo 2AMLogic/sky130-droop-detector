@@ -1,0 +1,3311 @@
+{
+  "samples": "/tmp/mcrun2/keep/samples.json",
+  "limits": "/tmp/mcrun2/keep/limits.json",
+  "source": {
+    "kind": "sample-set",
+    "netlist": null,
+    "monte_carlo": null,
+    "sample_count": 7200
+  },
+  "schema_version": 1,
+  "confidence": 0.95,
+  "target_ci_halfwidth": 0.01,
+  "min_samples": 2,
+  "status": "fail",
+  "measurement_count": 24,
+  "measurements": [
+    {
+      "name": "vtrip_l0_tt_mm",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.701,
+        "max": 1.755,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.747574666666666,
+        "stddev": 0.012263881666666643,
+        "min": 1.7123,
+        "max": 1.78007,
+        "median": 1.74739,
+        "skewness": -0.16348057145772985,
+        "excess_kurtosis": -0.3589825798357795,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.6393552258285042,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.71,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.6550839107544923,
+            "high": 0.7607133255002907
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.7274914622553363,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.6866039753831907,
+            "high": 0.768378949127482
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.733862266827155,
+        "cpk": 0.20182118340546756,
+        "cpk_confidence_interval": {
+          "low": 0.1607795314060102,
+          "high": 0.24286283540492493
+        },
+        "sigma_to_spec": 0.6054635502164027,
+        "sigma_to_spec_confidence_interval": {
+          "low": 0.4823385942180306,
+          "high": 0.7285885062147748
+        },
+        "limiting_side": "upper"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.05281470737289917,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 7910,
+        "required_n_for_target": null,
+        "verdict": "insufficient",
+        "method": "normal-approximation",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.03333333333333333,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.016098167562620162,
+              "high": 0.060445322201263474
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.028453963908264466,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.016096348140460903,
+              "high": 0.04081157967606803
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.71,
+        "degradation_detected": true,
+        "verdict": "detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": 0.6054635502164027,
+        "lower_bound": 0.4823385942180306,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l0_tt_mm': N = 300 resolves the yield only to +/-0.0528 at 95% confidence; 7910 samples are needed for the requested +/-0.01",
+        "measurement 'vtrip_l0_tt_mm': sigma_to_spec lower bound 0.4823 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l0_ss_mm",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.701,
+        "max": 1.755,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.787755233333333,
+        "stddev": 0.01260274048920908,
+        "min": 1.75621,
+        "max": 1.83017,
+        "median": 1.787555,
+        "skewness": 0.18690799486339862,
+        "excess_kurtosis": 0.006159179956453542,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.3217531871435701,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.0,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.0,
+            "high": 0.012220974694292897
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.004674020635853254,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.00145025932438564,
+            "high": 0.007897781947320867
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.7141303915371496,
+        "cpk": -0.866352133526815,
+        "cpk_confidence_interval": {
+          "low": -0.9453729009368871,
+          "high": -0.7873313661167428
+        },
+        "sigma_to_spec": -2.599056400580445,
+        "sigma_to_spec_confidence_interval": {
+          "low": -2.836118702810661,
+          "high": -2.3619940983502286
+        },
+        "limiting_side": "upper"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.006110487347146448,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 183,
+        "required_n_for_target": null,
+        "verdict": "sufficient",
+        "method": "clopper-pearson-zero-failures",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.03333333333333333,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.016098167562620162,
+              "high": 0.060445322201263474
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.028453963908264466,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.016096348140460903,
+              "high": 0.04081157967606803
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.0,
+        "degradation_detected": false,
+        "verdict": "not_detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": -2.599056400580445,
+        "lower_bound": -2.836118702810661,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l0_ss_mm': the negative_control's empirical yield (0.033333, CI [0.016098, 0.060445]) is not statistically distinguishable from the nominal draw's (0.000000, CI [0.000000, 0.012221]) -- the deliberate defect did not show up as the degradation the statistics claim to detect",
+        "measurement 'vtrip_l0_ss_mm': sigma_to_spec lower bound -2.8361 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l0_ff_mm",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.701,
+        "max": 1.755,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.7067000666666667,
+        "stddev": 0.012213616147297822,
+        "min": 1.67291,
+        "max": 1.74002,
+        "median": 1.70665,
+        "skewness": -0.0985639271425087,
+        "excess_kurtosis": -0.3271636688030024,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.3505439771347347,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.7033333333333334,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.6481450388832339,
+            "high": 0.7544533500276753
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.6796035833843546,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.6369716483197234,
+            "high": 0.7222355184489857
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.7368824999458624,
+        "cpk": 0.1555659027848677,
+        "cpk_confidence_interval": {
+          "low": 0.11583903059529377,
+          "high": 0.19529277497444164
+        },
+        "sigma_to_spec": 0.4666977083546031,
+        "sigma_to_spec_confidence_interval": {
+          "low": 0.3475170917858813,
+          "high": 0.5858783249233249
+        },
+        "limiting_side": "lower"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.053154155572220696,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 8016,
+        "required_n_for_target": null,
+        "verdict": "insufficient",
+        "method": "normal-approximation",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.03333333333333333,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.016098167562620162,
+              "high": 0.060445322201263474
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.028453963908264466,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.016096348140460903,
+              "high": 0.04081157967606803
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.7033333333333334,
+        "degradation_detected": true,
+        "verdict": "detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": 0.4666977083546031,
+        "lower_bound": 0.3475170917858813,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l0_ff_mm': N = 300 resolves the yield only to +/-0.0532 at 95% confidence; 8016 samples are needed for the requested +/-0.01",
+        "measurement 'vtrip_l0_ff_mm': sigma_to_spec lower bound 0.3475 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l0_sf_mm",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.701,
+        "max": 1.755,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.6602069666666657,
+        "stddev": 0.013210699719893202,
+        "min": 1.62414,
+        "max": 1.69883,
+        "median": 1.6604100000000002,
+        "skewness": -0.0009325303649393991,
+        "excess_kurtosis": -0.10973431008231271,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.12278385006928405,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.0,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.0,
+            "high": 0.012220974694292897
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.0010079549548107636,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 8.624587780076229e-05,
+            "high": 0.001929664031820765
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.6812659579603804,
+        "cpk": -1.0292927752571805,
+        "cpk_confidence_interval": {
+          "low": -1.1200036524573116,
+          "high": -0.9385818980570495
+        },
+        "sigma_to_spec": -3.0878783257715416,
+        "sigma_to_spec_confidence_interval": {
+          "low": -3.3600109573719346,
+          "high": -2.8157456941711487
+        },
+        "limiting_side": "lower"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.006110487347146448,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 183,
+        "required_n_for_target": null,
+        "verdict": "sufficient",
+        "method": "clopper-pearson-zero-failures",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.03333333333333333,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.016098167562620162,
+              "high": 0.060445322201263474
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.028453963908264466,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.016096348140460903,
+              "high": 0.04081157967606803
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.0,
+        "degradation_detected": false,
+        "verdict": "not_detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": -3.0878783257715416,
+        "lower_bound": -3.3600109573719346,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l0_sf_mm': the negative_control's empirical yield (0.033333, CI [0.016098, 0.060445]) is not statistically distinguishable from the nominal draw's (0.000000, CI [0.000000, 0.012221]) -- the deliberate defect did not show up as the degradation the statistics claim to detect",
+        "measurement 'vtrip_l0_sf_mm': sigma_to_spec lower bound -3.3600 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l0_fs_mm",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.701,
+        "max": 1.755,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.8329192000000005,
+        "stddev": 0.012436185013323765,
+        "min": 1.79932,
+        "max": 1.86631,
+        "median": 1.833235,
+        "skewness": 0.08706109110988057,
+        "excess_kurtosis": -0.32134956500979994,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.22086279153764374,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.0,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.0,
+            "high": 0.012220974694292897
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 1.8578838458460613e-10,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.0,
+            "high": 7.986038917239409e-10
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.7236946049256773,
+        "cpk": -2.088507580004647,
+        "cpk_confidence_interval": {
+          "low": -2.2600963227508855,
+          "high": -1.9169188372584085
+        },
+        "sigma_to_spec": -6.265522740013941,
+        "sigma_to_spec_confidence_interval": {
+          "low": -6.780288968252656,
+          "high": -5.750756511775226
+        },
+        "limiting_side": "upper"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.006110487347146448,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 183,
+        "required_n_for_target": null,
+        "verdict": "sufficient",
+        "method": "clopper-pearson-zero-failures",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.03333333333333333,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.016098167562620162,
+              "high": 0.060445322201263474
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.028453963908264466,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.016096348140460903,
+              "high": 0.04081157967606803
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.0,
+        "degradation_detected": false,
+        "verdict": "not_detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": -6.265522740013941,
+        "lower_bound": -6.780288968252656,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l0_fs_mm': the negative_control's empirical yield (0.033333, CI [0.016098, 0.060445]) is not statistically distinguishable from the nominal draw's (0.000000, CI [0.000000, 0.012221]) -- the deliberate defect did not show up as the degradation the statistics claim to detect",
+        "measurement 'vtrip_l0_fs_mm': sigma_to_spec lower bound -6.7803 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l0_mc",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.701,
+        "max": 1.755,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.7471961999999992,
+        "stddev": 0.004705274727459551,
+        "min": 1.73072,
+        "max": 1.75979,
+        "median": 1.74726,
+        "skewness": -0.22317772937484187,
+        "excess_kurtosis": 0.3713933513078813,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.31499283268153566,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.9566666666666667,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.9270385357797188,
+            "high": 0.976728158995317
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.9513938892182323,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.9338083602071962,
+            "high": 0.9689794182292685
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 1.9127469746828591,
+        "cpk": 0.5528405496678322,
+        "cpk_confidence_interval": {
+          "low": 0.49465035120894946,
+          "high": 0.6110307481267151
+        },
+        "sigma_to_spec": 1.6585216490034966,
+        "sigma_to_spec_confidence_interval": {
+          "low": 1.4839510536268483,
+          "high": 1.8330922443801452
+        },
+        "limiting_side": "upper"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.024844811607799056,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 1593,
+        "required_n_for_target": null,
+        "verdict": "insufficient",
+        "method": "normal-approximation",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.03333333333333333,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.016098167562620162,
+              "high": 0.060445322201263474
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.028453963908264466,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.016096348140460903,
+              "high": 0.04081157967606803
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.9566666666666667,
+        "degradation_detected": true,
+        "verdict": "detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": 1.6585216490034966,
+        "lower_bound": 1.4839510536268483,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l0_mc': N = 300 resolves the yield only to +/-0.0248 at 95% confidence; 1593 samples are needed for the requested +/-0.01",
+        "measurement 'vtrip_l0_mc': sigma_to_spec lower bound 1.4840 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l1_tt_mm",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.665,
+        "max": 1.719,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.7112142333333331,
+        "stddev": 0.012210183742912075,
+        "min": 1.67616,
+        "max": 1.7423,
+        "median": 1.71116,
+        "skewness": -0.18109287325218512,
+        "excess_kurtosis": -0.3508234147869471,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.6394296665279328,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.7133333333333334,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.6585583037079077,
+            "high": 0.7638383079479236
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.7380708227776092,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.6976536755847094,
+            "high": 0.778487969970509
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.7370896449633237,
+        "cpk": 0.21254844400373457,
+        "cpk_confidence_interval": {
+          "low": 0.17116038396581723,
+          "high": 0.2539365040416519
+        },
+        "sigma_to_spec": 0.6376453320112037,
+        "sigma_to_spec_confidence_interval": {
+          "low": 0.5134811518974517,
+          "high": 0.7618095121249557
+        },
+        "limiting_side": "upper"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.05264000212000797,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 7856,
+        "required_n_for_target": null,
+        "verdict": "insufficient",
+        "method": "normal-approximation",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.03666666666666667,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.018443460812460725,
+              "high": 0.06465851819629792
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.03364752966216054,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.019805325097421722,
+              "high": 0.04748973422689935
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.7133333333333334,
+        "degradation_detected": true,
+        "verdict": "detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": 0.6376453320112037,
+        "lower_bound": 0.5134811518974517,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l1_tt_mm': N = 300 resolves the yield only to +/-0.0526 at 95% confidence; 7856 samples are needed for the requested +/-0.01",
+        "measurement 'vtrip_l1_tt_mm': sigma_to_spec lower bound 0.5135 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l1_ss_mm",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.665,
+        "max": 1.719,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.7505594666666666,
+        "stddev": 0.012575731434763005,
+        "min": 1.71904,
+        "max": 1.79313,
+        "median": 1.75065,
+        "skewness": 0.18772101365621385,
+        "excess_kurtosis": 0.019756479511769953,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.34321584748325434,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.0,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.0,
+            "high": 0.012220974694292897
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.006044200799574732,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.002099598612329334,
+            "high": 0.00998880298682013
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.7156641382402118,
+        "cpk": -0.8365177227896509,
+        "cpk_confidence_interval": {
+          "low": -0.9134457666981874,
+          "high": -0.7595896788811143
+        },
+        "sigma_to_spec": -2.5095531683689525,
+        "sigma_to_spec_confidence_interval": {
+          "low": -2.7403373000945623,
+          "high": -2.278769036643343
+        },
+        "limiting_side": "upper"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.006110487347146448,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 183,
+        "required_n_for_target": null,
+        "verdict": "sufficient",
+        "method": "clopper-pearson-zero-failures",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.03666666666666667,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.018443460812460725,
+              "high": 0.06465851819629792
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.03364752966216054,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.019805325097421722,
+              "high": 0.04748973422689935
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.0,
+        "degradation_detected": false,
+        "verdict": "not_detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": -2.5095531683689525,
+        "lower_bound": -2.7403373000945623,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l1_ss_mm': the negative_control's empirical yield (0.036667, CI [0.018443, 0.064659]) is not statistically distinguishable from the nominal draw's (0.000000, CI [0.000000, 0.012221]) -- the deliberate defect did not show up as the degradation the statistics claim to detect",
+        "measurement 'vtrip_l1_ss_mm': sigma_to_spec lower bound -2.7403 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l1_ff_mm",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.665,
+        "max": 1.719,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.6712412999999995,
+        "stddev": 0.01222395405829873,
+        "min": 1.63734,
+        "max": 1.70391,
+        "median": 1.67129,
+        "skewness": -0.11563383125216355,
+        "excess_kurtosis": -0.33932953513767217,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.37696038286752337,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.71,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.6550839107544923,
+            "high": 0.7607133255002907
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.6951304940430302,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.6530001785695325,
+            "high": 0.7372608095165278
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.7362593116005692,
+        "cpk": 0.17019315709230456,
+        "cpk_confidence_interval": {
+          "low": 0.13008288735413126,
+          "high": 0.21030342683047787
+        },
+        "sigma_to_spec": 0.5105794712769137,
+        "sigma_to_spec_confidence_interval": {
+          "low": 0.3902486620623938,
+          "high": 0.6309102804914336
+        },
+        "limiting_side": "lower"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.05281470737289917,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 7910,
+        "required_n_for_target": null,
+        "verdict": "insufficient",
+        "method": "normal-approximation",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.03666666666666667,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.018443460812460725,
+              "high": 0.06465851819629792
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.03364752966216054,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.019805325097421722,
+              "high": 0.04748973422689935
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.71,
+        "degradation_detected": true,
+        "verdict": "detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": 0.5105794712769137,
+        "lower_bound": 0.3902486620623938,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l1_ff_mm': N = 300 resolves the yield only to +/-0.0528 at 95% confidence; 7910 samples are needed for the requested +/-0.01",
+        "measurement 'vtrip_l1_ff_mm': sigma_to_spec lower bound 0.3902 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l1_sf_mm",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.665,
+        "max": 1.719,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.6257759666666673,
+        "stddev": 0.01322878186497125,
+        "min": 1.58942,
+        "max": 1.66472,
+        "median": 1.62616,
+        "skewness": -0.01796336723589919,
+        "excess_kurtosis": -0.10653529235555803,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.10777247704743931,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.0,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.0,
+            "high": 0.012220974694292897
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.0015131561735683974,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.0002202522324575649,
+            "high": 0.0028060601146792296
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.6803347497800447,
+        "cpk": -0.9883508482665556,
+        "cpk_confidence_interval": {
+          "low": -1.0760880340546057,
+          "high": -0.9006136624785054
+        },
+        "sigma_to_spec": -2.9650525447996667,
+        "sigma_to_spec_confidence_interval": {
+          "low": -3.228264102163817,
+          "high": -2.7018409874355163
+        },
+        "limiting_side": "lower"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.006110487347146448,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 183,
+        "required_n_for_target": null,
+        "verdict": "sufficient",
+        "method": "clopper-pearson-zero-failures",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.03666666666666667,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.018443460812460725,
+              "high": 0.06465851819629792
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.03364752966216054,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.019805325097421722,
+              "high": 0.04748973422689935
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.0,
+        "degradation_detected": false,
+        "verdict": "not_detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": -2.9650525447996667,
+        "lower_bound": -3.228264102163817,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l1_sf_mm': the negative_control's empirical yield (0.036667, CI [0.018443, 0.064659]) is not statistically distinguishable from the nominal draw's (0.000000, CI [0.000000, 0.012221]) -- the deliberate defect did not show up as the degradation the statistics claim to detect",
+        "measurement 'vtrip_l1_sf_mm': sigma_to_spec lower bound -3.2283 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l1_fs_mm",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.665,
+        "max": 1.719,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.7947657333333333,
+        "stddev": 0.01243604077521318,
+        "min": 1.76175,
+        "max": 1.82732,
+        "median": 1.795105,
+        "skewness": 0.07683190215954523,
+        "excess_kurtosis": -0.3416151189976322,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.26848986729730767,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.0,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.0,
+            "high": 0.012220974694292897
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 5.560402854076984e-10,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.0,
+            "high": 2.29487006676583e-09
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.7237029986214184,
+        "cpk": -2.0308106817068143,
+        "cpk_confidence_interval": {
+          "low": -2.197891289408698,
+          "high": -1.8637300740049305
+        },
+        "sigma_to_spec": -6.092432045120443,
+        "sigma_to_spec_confidence_interval": {
+          "low": -6.5936738682260945,
+          "high": -5.5911902220147915
+        },
+        "limiting_side": "upper"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.006110487347146448,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 183,
+        "required_n_for_target": null,
+        "verdict": "sufficient",
+        "method": "clopper-pearson-zero-failures",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.03666666666666667,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.018443460812460725,
+              "high": 0.06465851819629792
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.03364752966216054,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.019805325097421722,
+              "high": 0.04748973422689935
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.0,
+        "degradation_detected": false,
+        "verdict": "not_detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": -6.092432045120443,
+        "lower_bound": -6.5936738682260945,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l1_fs_mm': the negative_control's empirical yield (0.036667, CI [0.018443, 0.064659]) is not statistically distinguishable from the nominal draw's (0.000000, CI [0.000000, 0.012221]) -- the deliberate defect did not show up as the degradation the statistics claim to detect",
+        "measurement 'vtrip_l1_fs_mm': sigma_to_spec lower bound -6.5937 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l1_mc",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.665,
+        "max": 1.719,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.7108576999999996,
+        "stddev": 0.0046606643680027595,
+        "min": 1.69459,
+        "max": 1.72335,
+        "median": 1.710935,
+        "skewness": -0.22242257913600758,
+        "excess_kurtosis": 0.372682024836112,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.30999198958970514,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.97,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.9438164517583858,
+            "high": 0.9861921804444738
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.9596835518825194,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.9440857402078131,
+            "high": 0.9752813635572257
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 1.9310551649649874,
+        "cpk": 0.5823418692479759,
+        "cpk_confidence_interval": {
+          "low": 0.5223316221963773,
+          "high": 0.6423521162995746
+        },
+        "sigma_to_spec": 1.747025607743928,
+        "sigma_to_spec_confidence_interval": {
+          "low": 1.5669948665891318,
+          "high": 1.9270563488987236
+        },
+        "limiting_side": "upper"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.021187864343043983,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 1118,
+        "required_n_for_target": null,
+        "verdict": "insufficient",
+        "method": "normal-approximation",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.03666666666666667,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.018443460812460725,
+              "high": 0.06465851819629792
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.03364752966216054,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.019805325097421722,
+              "high": 0.04748973422689935
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.97,
+        "degradation_detected": true,
+        "verdict": "detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": 1.747025607743928,
+        "lower_bound": 1.5669948665891318,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l1_mc': N = 300 resolves the yield only to +/-0.0212 at 95% confidence; 1118 samples are needed for the requested +/-0.01",
+        "measurement 'vtrip_l1_mc': sigma_to_spec lower bound 1.5670 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l2_tt_mm",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.611,
+        "max": 1.665,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.6567186999999999,
+        "stddev": 0.012212785694703273,
+        "min": 1.62132,
+        "max": 1.68832,
+        "median": 1.6567850000000002,
+        "skewness": -0.17777161527116625,
+        "excess_kurtosis": -0.32198294966719754,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.5557770307571055,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.73,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.6759812268278944,
+            "high": 0.7794117346713108
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.7510501901365191,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.7112579430600635,
+            "high": 0.7908424372129746
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.7369326069402281,
+        "cpk": 0.22602814806867488,
+        "cpk_confidence_interval": {
+          "low": 0.18418381121407446,
+          "high": 0.2678724849232753
+        },
+        "sigma_to_spec": 0.6780844442060247,
+        "sigma_to_spec_confidence_interval": {
+          "low": 0.5525514336422234,
+          "high": 0.8036174547698259
+        },
+        "limiting_side": "upper"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.05171525392170817,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 7572,
+        "required_n_for_target": null,
+        "verdict": "insufficient",
+        "method": "normal-approximation",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.05,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.028251201968496835,
+              "high": 0.08112735717076397
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.04352360905513451,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.027133385986255924,
+              "high": 0.059913832124013106
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.73,
+        "degradation_detected": true,
+        "verdict": "detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": 0.6780844442060247,
+        "lower_bound": 0.5525514336422234,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l2_tt_mm': N = 300 resolves the yield only to +/-0.0517 at 95% confidence; 7572 samples are needed for the requested +/-0.01",
+        "measurement 'vtrip_l2_tt_mm': sigma_to_spec lower bound 0.5526 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l2_ss_mm",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.611,
+        "max": 1.665,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.6947910333333334,
+        "stddev": 0.012561632722476948,
+        "min": 1.66273,
+        "max": 1.73622,
+        "median": 1.69472,
+        "skewness": 0.18377687670422338,
+        "excess_kurtosis": -0.030432225829707615,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.3205160268171265,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.01,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.002067007235092345,
+            "high": 0.028944511255691252
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.008855883826181065,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.003561009012229801,
+            "high": 0.014150758640132328
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.716467373217815,
+        "cpk": -0.7905297554732473,
+        "cpk_confidence_interval": {
+          "low": -0.8642675499077525,
+          "high": -0.7167919610387422
+        },
+        "sigma_to_spec": -2.371589266419742,
+        "sigma_to_spec_confidence_interval": {
+          "low": -2.5928026497232572,
+          "high": -2.1503758831162267
+        },
+        "limiting_side": "upper"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.013438752010299454,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 381,
+        "required_n_for_target": null,
+        "verdict": "insufficient",
+        "method": "normal-approximation",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.05,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.028251201968496835,
+              "high": 0.08112735717076397
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.04352360905513451,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.027133385986255924,
+              "high": 0.059913832124013106
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.01,
+        "degradation_detected": false,
+        "verdict": "not_detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": -2.371589266419742,
+        "lower_bound": -2.5928026497232572,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l2_ss_mm': N = 300 resolves the yield only to +/-0.0134 at 95% confidence; 381 samples are needed for the requested +/-0.01",
+        "measurement 'vtrip_l2_ss_mm': the negative_control's empirical yield (0.050000, CI [0.028251, 0.081127]) is not statistically distinguishable from the nominal draw's (0.010000, CI [0.002067, 0.028945]) -- the deliberate defect did not show up as the degradation the statistics claim to detect",
+        "measurement 'vtrip_l2_ss_mm': sigma_to_spec lower bound -2.5928 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l2_ff_mm",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.611,
+        "max": 1.665,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.6181701,
+        "stddev": 0.012253636044498669,
+        "min": 1.58283,
+        "max": 1.65104,
+        "median": 1.61843,
+        "skewness": -0.12371738974258371,
+        "excess_kurtosis": -0.31346490350000034,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.3344313803049886,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.7166666666666667,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.662036046081723,
+            "high": 0.7669599073682982
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.7207071472450745,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.6795354142472578,
+            "high": 0.7618788802428911
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.7344758704532115,
+        "cpk": 0.1950468681013532,
+        "cpk_confidence_interval": {
+          "low": 0.15421616110375702,
+          "high": 0.23587757509894935
+        },
+        "sigma_to_spec": 0.5851406043040596,
+        "sigma_to_spec_confidence_interval": {
+          "low": 0.46264848331127106,
+          "high": 0.7076327252968481
+        },
+        "limiting_side": "lower"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.052461930643287635,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 7801,
+        "required_n_for_target": null,
+        "verdict": "insufficient",
+        "method": "normal-approximation",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.05,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.028251201968496835,
+              "high": 0.08112735717076397
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.04352360905513451,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.027133385986255924,
+              "high": 0.059913832124013106
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.7166666666666667,
+        "degradation_detected": true,
+        "verdict": "detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": 0.5851406043040596,
+        "lower_bound": 0.46264848331127106,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l2_ff_mm': N = 300 resolves the yield only to +/-0.0525 at 95% confidence; 7801 samples are needed for the requested +/-0.01",
+        "measurement 'vtrip_l2_ff_mm': sigma_to_spec lower bound 0.4626 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l2_sf_mm",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.611,
+        "max": 1.665,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.5740840999999992,
+        "stddev": 0.013278131196957348,
+        "min": 1.53773,
+        "max": 1.61317,
+        "median": 1.5743049999999998,
+        "skewness": -0.030273538922240793,
+        "excess_kurtosis": -0.10976026691921836,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.11730560286058554,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.0033333333333333335,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 8.438913231781614e-05,
+            "high": 0.018431252048067004
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.0027162464699205247,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.0006284766725560748,
+            "high": 0.004804016267284975
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.6778062263808884,
+        "cpk": -0.9267343286094349,
+        "cpk_confidence_interval": {
+          "low": -1.0100397574927864,
+          "high": -0.8434288997260835
+        },
+        "sigma_to_spec": -2.780202985828305,
+        "sigma_to_spec_confidence_interval": {
+          "low": -3.030119272478359,
+          "high": -2.5302866991782507
+        },
+        "limiting_side": "lower"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.009173431457874593,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 128,
+        "required_n_for_target": null,
+        "verdict": "sufficient",
+        "method": "normal-approximation",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.05,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.028251201968496835,
+              "high": 0.08112735717076397
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.04352360905513451,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.027133385986255924,
+              "high": 0.059913832124013106
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.0033333333333333335,
+        "degradation_detected": false,
+        "verdict": "not_detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": -2.780202985828305,
+        "lower_bound": -3.030119272478359,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l2_sf_mm': the negative_control's empirical yield (0.050000, CI [0.028251, 0.081127]) is not statistically distinguishable from the nominal draw's (0.003333, CI [0.000084, 0.018431]) -- the deliberate defect did not show up as the degradation the statistics claim to detect",
+        "measurement 'vtrip_l2_sf_mm': sigma_to_spec lower bound -3.0301 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l2_fs_mm",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.611,
+        "max": 1.665,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.7376870000000009,
+        "stddev": 0.012472945183013577,
+        "min": 1.70575,
+        "max": 1.7712,
+        "median": 1.73813,
+        "skewness": 0.08612005388541392,
+        "excess_kurtosis": -0.35536602098201797,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.3005354207704894,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.0,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.0,
+            "high": 0.012220974694292897
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 2.8119606729043835e-09,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.0,
+            "high": 1.0894421944754573e-08
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.7215617376605455,
+        "cpk": -1.9425243713086158,
+        "cpk_confidence_interval": {
+          "low": -2.102719571473649,
+          "high": -1.7823291711435827
+        },
+        "sigma_to_spec": -5.8275731139258475,
+        "sigma_to_spec_confidence_interval": {
+          "low": -6.308158714420946,
+          "high": -5.346987513430748
+        },
+        "limiting_side": "upper"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.006110487347146448,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 183,
+        "required_n_for_target": null,
+        "verdict": "sufficient",
+        "method": "clopper-pearson-zero-failures",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.05,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.028251201968496835,
+              "high": 0.08112735717076397
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.04352360905513451,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.027133385986255924,
+              "high": 0.059913832124013106
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.0,
+        "degradation_detected": false,
+        "verdict": "not_detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": -5.8275731139258475,
+        "lower_bound": -6.308158714420946,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l2_fs_mm': the negative_control's empirical yield (0.050000, CI [0.028251, 0.081127]) is not statistically distinguishable from the nominal draw's (0.000000, CI [0.000000, 0.012221]) -- the deliberate defect did not show up as the degradation the statistics claim to detect",
+        "measurement 'vtrip_l2_fs_mm': sigma_to_spec lower bound -6.3082 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l2_mc",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.611,
+        "max": 1.665,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.656471966666666,
+        "stddev": 0.004593568915723427,
+        "min": 1.64038,
+        "max": 1.66881,
+        "median": 1.65662,
+        "skewness": -0.22262417944726065,
+        "excess_kurtosis": 0.3846338985013187,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.31330897793951373,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.9766666666666667,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.9525174349702192,
+            "high": 0.990568497938205
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.9683099644383059,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.9550141006715769,
+            "high": 0.9816058282050348
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 1.95926090695923,
+        "cpk": 0.6188386045646825,
+        "cpk_confidence_interval": {
+          "low": 0.5565261200894009,
+          "high": 0.6811510890399641
+        },
+        "sigma_to_spec": 1.8565158136940476,
+        "sigma_to_spec_confidence_interval": {
+          "low": 1.6695783602682028,
+          "high": 2.0434532671198924
+        },
+        "limiting_side": "upper"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.019025531483992886,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 876,
+        "required_n_for_target": null,
+        "verdict": "insufficient",
+        "method": "normal-approximation",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.05,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.028251201968496835,
+              "high": 0.08112735717076397
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.04352360905513451,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.027133385986255924,
+              "high": 0.059913832124013106
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.9766666666666667,
+        "degradation_detected": true,
+        "verdict": "detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": 1.8565158136940476,
+        "lower_bound": 1.6695783602682028,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l2_mc': N = 300 resolves the yield only to +/-0.0190 at 95% confidence; 876 samples are needed for the requested +/-0.01",
+        "measurement 'vtrip_l2_mc': sigma_to_spec lower bound 1.6696 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l3_tt_mm",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.557,
+        "max": 1.611,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.6023381000000005,
+        "stddev": 0.01226512605372291,
+        "min": 1.5648,
+        "max": 1.63422,
+        "median": 1.602745,
+        "skewness": -0.18640803064860972,
+        "excess_kurtosis": -0.3080582693213989,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.6355373583136688,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.75,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.6970059979539658,
+            "high": 0.7979812553984464
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.7598656135481736,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.720529515883503,
+            "high": 0.7992017112128442
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.7337878111141126,
+        "cpk": 0.2354072830032933,
+        "cpk_confidence_interval": {
+          "low": 0.19323205261502452,
+          "high": 0.2775825133915621
+        },
+        "sigma_to_spec": 0.7062218490098799,
+        "sigma_to_spec_confidence_interval": {
+          "low": 0.5796961578450736,
+          "high": 0.8327475401746862
+        },
+        "limiting_side": "upper"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.05048762872224033,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 7203,
+        "required_n_for_target": null,
+        "verdict": "insufficient",
+        "method": "normal-approximation",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.056666666666666664,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.03335331151668594,
+              "high": 0.08918040443416214
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.055633279430243175,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.03650349663102166,
+              "high": 0.07476306222946469
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.75,
+        "degradation_detected": true,
+        "verdict": "detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": 0.7062218490098799,
+        "lower_bound": 0.5796961578450736,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l3_tt_mm': N = 300 resolves the yield only to +/-0.0505 at 95% confidence; 7203 samples are needed for the requested +/-0.01",
+        "measurement 'vtrip_l3_tt_mm': sigma_to_spec lower bound 0.5797 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l3_ss_mm",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.557,
+        "max": 1.611,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.6390622999999997,
+        "stddev": 0.012635248423322096,
+        "min": 1.60681,
+        "max": 1.68068,
+        "median": 1.6390500000000001,
+        "skewness": 0.18851724117832827,
+        "excess_kurtosis": -0.07496621748671028,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.33075858012549064,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.013333333333333334,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.003644514052066874,
+            "high": 0.03378489626191622
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.013177053360816095,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.006041565678384192,
+            "high": 0.020312541043248
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.7122930787326539,
+        "cpk": -0.7403178541970062,
+        "cpk_confidence_interval": {
+          "low": -0.8106277552135772,
+          "high": -0.6700079531804353
+        },
+        "sigma_to_spec": -2.220953562591019,
+        "sigma_to_spec_confidence_interval": {
+          "low": -2.4318832656407317,
+          "high": -2.010023859541306
+        },
+        "limiting_side": "upper"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.015070191104924673,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 506,
+        "required_n_for_target": null,
+        "verdict": "insufficient",
+        "method": "normal-approximation",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.056666666666666664,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.03335331151668594,
+              "high": 0.08918040443416214
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.055633279430243175,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.03650349663102166,
+              "high": 0.07476306222946469
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.013333333333333334,
+        "degradation_detected": false,
+        "verdict": "not_detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": -2.220953562591019,
+        "lower_bound": -2.4318832656407317,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l3_ss_mm': N = 300 resolves the yield only to +/-0.0151 at 95% confidence; 506 samples are needed for the requested +/-0.01",
+        "measurement 'vtrip_l3_ss_mm': the negative_control's empirical yield (0.056667, CI [0.033353, 0.089180]) is not statistically distinguishable from the nominal draw's (0.013333, CI [0.003645, 0.033785]) -- the deliberate defect did not show up as the degradation the statistics claim to detect",
+        "measurement 'vtrip_l3_ss_mm': sigma_to_spec lower bound -2.4319 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l3_ff_mm",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.557,
+        "max": 1.611,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.5651286333333325,
+        "stddev": 0.012243424901142736,
+        "min": 1.52873,
+        "max": 1.59754,
+        "median": 1.5656599999999998,
+        "skewness": -0.12546304855803658,
+        "excess_kurtosis": -0.31620599981040654,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.3510616210596267,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.7366666666666667,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.6829748805747551,
+            "high": 0.7856163520339838
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.7465390657035149,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.7065233797997774,
+            "high": 0.7865547516072524
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.7350884309471278,
+        "cpk": 0.22130608602755417,
+        "cpk_confidence_interval": {
+          "low": 0.17962420526695885,
+          "high": 0.26298796678814945
+        },
+        "sigma_to_spec": 0.6639182580826625,
+        "sigma_to_spec_confidence_interval": {
+          "low": 0.5388726158008765,
+          "high": 0.7889639003644484
+        },
+        "limiting_side": "lower"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.051320735729614375,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 7453,
+        "required_n_for_target": null,
+        "verdict": "insufficient",
+        "method": "normal-approximation",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.056666666666666664,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.03335331151668594,
+              "high": 0.08918040443416214
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.055633279430243175,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.03650349663102166,
+              "high": 0.07476306222946469
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.7366666666666667,
+        "degradation_detected": true,
+        "verdict": "detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": 0.6639182580826625,
+        "lower_bound": 0.5388726158008765,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l3_ff_mm': N = 300 resolves the yield only to +/-0.0513 at 95% confidence; 7453 samples are needed for the requested +/-0.01",
+        "measurement 'vtrip_l3_ff_mm': sigma_to_spec lower bound 0.5389 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l3_sf_mm",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.557,
+        "max": 1.611,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.5223804666666652,
+        "stddev": 0.01320798845316039,
+        "min": 1.48673,
+        "max": 1.56016,
+        "median": 1.5226799999999998,
+        "skewness": -0.01884341485956721,
+        "excess_kurtosis": -0.1309380226490422,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.13209801191915757,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.0033333333333333335,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 8.438913231781614e-05,
+            "high": 0.018431252048067004
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.004382254618900627,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.0013188438052430724,
+            "high": 0.007445665432558183
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.6814058046701653,
+        "cpk": -0.8737018877150584,
+        "cpk_confidence_interval": {
+          "low": -0.9532407840381814,
+          "high": -0.7941629913919355
+        },
+        "sigma_to_spec": -2.6211056631451752,
+        "sigma_to_spec_confidence_interval": {
+          "low": -2.8597223521145443,
+          "high": -2.382488974175806
+        },
+        "limiting_side": "lower"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.009173431457874593,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 128,
+        "required_n_for_target": null,
+        "verdict": "sufficient",
+        "method": "normal-approximation",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.056666666666666664,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.03335331151668594,
+              "high": 0.08918040443416214
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.055633279430243175,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.03650349663102166,
+              "high": 0.07476306222946469
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.0033333333333333335,
+        "degradation_detected": false,
+        "verdict": "not_detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": -2.6211056631451752,
+        "lower_bound": -2.8597223521145443,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l3_sf_mm': the negative_control's empirical yield (0.056667, CI [0.033353, 0.089180]) is not statistically distinguishable from the nominal draw's (0.003333, CI [0.000084, 0.018431]) -- the deliberate defect did not show up as the degradation the statistics claim to detect",
+        "measurement 'vtrip_l3_sf_mm': sigma_to_spec lower bound -2.8597 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l3_fs_mm",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.557,
+        "max": 1.611,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.6806220666666676,
+        "stddev": 0.01248250919680749,
+        "min": 1.64769,
+        "max": 1.71378,
+        "median": 1.681025,
+        "skewness": 0.08077754690839016,
+        "excess_kurtosis": -0.3326392048735185,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.26768545529712984,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.0,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.0,
+            "high": 0.012220974694292897
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 1.2195094545274814e-08,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.0,
+            "high": 4.446234716359437e-08
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.7210088819563487,
+        "cpk": -1.8591899424749752,
+        "cpk_confidence_interval": {
+          "low": -2.012901817002435,
+          "high": -1.7054780679475154
+        },
+        "sigma_to_spec": -5.5775698274249255,
+        "sigma_to_spec_confidence_interval": {
+          "low": -6.038705451007305,
+          "high": -5.116434203842546
+        },
+        "limiting_side": "upper"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.006110487347146448,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 183,
+        "required_n_for_target": null,
+        "verdict": "sufficient",
+        "method": "clopper-pearson-zero-failures",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.056666666666666664,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.03335331151668594,
+              "high": 0.08918040443416214
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.055633279430243175,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.03650349663102166,
+              "high": 0.07476306222946469
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.0,
+        "degradation_detected": false,
+        "verdict": "not_detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": -5.5775698274249255,
+        "lower_bound": -6.038705451007305,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l3_fs_mm': the negative_control's empirical yield (0.056667, CI [0.033353, 0.089180]) is not statistically distinguishable from the nominal draw's (0.000000, CI [0.000000, 0.012221]) -- the deliberate defect did not show up as the degradation the statistics claim to detect",
+        "measurement 'vtrip_l3_fs_mm': sigma_to_spec lower bound -6.0387 is below target_sigma 3"
+      ]
+    },
+    {
+      "name": "vtrip_l3_mc",
+      "unit": null,
+      "n": 300,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.557,
+        "max": 1.611,
+        "target_sigma": 3.0,
+        "min_converged_samples": 300
+      },
+      "source_corners": [],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.6020971333333338,
+        "stddev": 0.004521733372412939,
+        "min": 1.58628,
+        "max": 1.61429,
+        "median": 1.60221,
+        "skewness": -0.22092106079673762,
+        "excess_kurtosis": 0.39337754378154033,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 0.32092794901562804,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "consistent"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.98,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.9569789173264842,
+            "high": 0.9926258379982733
+          },
+          "n": 300
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.9755180402651702,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.9643788285579364,
+            "high": 0.986657251972404
+          },
+          "n": 300
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 1.9903871499608843,
+        "cpk": 0.6563019041165716,
+        "cpk_confidence_interval": {
+          "low": 0.5915738654114022,
+          "high": 0.721029942821741
+        },
+        "sigma_to_spec": 1.968905712349715,
+        "sigma_to_spec_confidence_interval": {
+          "low": 1.7747215962342067,
+          "high": 2.163089828465223
+        },
+        "limiting_side": "upper"
+      },
+      "sample_size": {
+        "n": 300,
+        "observed_ci_halfwidth": 0.017823460335894548,
+        "target_ci_halfwidth": 0.01,
+        "required_n": 753,
+        "required_n_for_target": null,
+        "verdict": "insufficient",
+        "method": "normal-approximation",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N",
+        "n": 300,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.056666666666666664,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.03335331151668594,
+              "high": 0.08918040443416214
+            },
+            "n": 300
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.055633279430243175,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.03650349663102166,
+              "high": 0.07476306222946469
+            },
+            "n": 300
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.98,
+        "degradation_detected": true,
+        "verdict": "detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "sigma_target": {
+        "k": 3.0,
+        "sigma_to_spec": 1.968905712349715,
+        "lower_bound": 1.7747215962342067,
+        "gate": "lower_bound",
+        "met": false
+      },
+      "converged_n": {
+        "n_requested": 300,
+        "n_converged": 300,
+        "min_converged_samples": 300,
+        "verdict": "sufficient"
+      },
+      "status": "fail",
+      "warnings": [
+        "measurement 'vtrip_l3_mc': N = 300 resolves the yield only to +/-0.0178 at 95% confidence; 753 samples are needed for the requested +/-0.01",
+        "measurement 'vtrip_l3_mc': sigma_to_spec lower bound 1.7747 is below target_sigma 3"
+      ]
+    }
+  ],
+  "warnings": [
+    "at least one measurement's negative_control did not show the expected degradation -- see that measurement's own warnings"
+  ]
+}
