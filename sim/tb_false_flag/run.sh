@@ -54,14 +54,7 @@ bad=0
   echo "label: SIMULATED (not measured); testbench sim/$bench/ (gen_envelope_ff.py + tb_false_flag_netlist.spice); corner $PROC, $TEMP_C C, detector supply $VSUP V; one corner"
   echo "stimulus: rail model, NOT an ideal source alone. envelope form = ASSUMPTION (behavioural envelope, spec \"Rail model\" form 2) for W1-W5; netlist form = EVIDENCE (sky130-ldo netlist, C_out 0.33 uF, ESR 0, 1<->50 mA load step) for W1 settled level and the W4-type load transient (reported). W5 also as an ideal step (additional case)"
   echo "negative-control push (mV below the window on W4): $NEGCTL_MV"
-  echo "ngspice: $(ngspice --version | grep -m1 -o 'ngspice-[0-9.]*')"
-  echo "klt: $($KLT --version)"
-  echo "pdk_sources: $got"
-  echo "netlist_sha256: $(sha256sum "$net" | cut -d' ' -f1)  design/detector_top.spice"
-  echo "ldo_netlist_sha256: $(sha256sum "$ldo" | cut -d' ' -f1)  sim/tb_rail_model_check/ldo_3v3in_1v8out.spice"
-  echo "model_files_sha256:"
-  while read -r f; do [ -r "$f" ] || { echo "FAIL: unreadable model file $f" >&2; exit 2; }
-    printf '  %s  %s\n' "$(sha256sum "$f" | cut -d' ' -f1)" "${f#"$root"/}"; done < "$work/files"
+  pdk_record_header netlist_sha256 "$net" design/detector_top.spice ldo_netlist_sha256 "$ldo" sim/tb_rail_model_check/ldo_3v3in_1v8out.spice
   echo "results (flag asserted = v(live) or v(sticky) >= 0.36 V, the spec VOL bound; levels = codes 00/01/10/11 = 4/6/9/12 % below nominal):"
   for c in $cases; do
     out="$(awk -v a="$(get env ${c}_live_l0)" -v b="$(get env ${c}_live_l1)" -v c="$(get env ${c}_live_l2)" -v d="$(get env ${c}_live_l3)" \

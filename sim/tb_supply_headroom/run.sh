@@ -73,13 +73,7 @@ rec="${RECORD:-/dev/stdout}"
   echo "label: SIMULATED (not measured); testbench sim/tb_supply_headroom/tb_supply_headroom.spice; corner tt, 27 C (single corner; no PVT sweep)"
   echo "stimulus: monitored rail = BEHAVIOURAL ENVELOPE (assumption, spec 'Rail model' form 2): 1.8 V -> threshold - 100 mV, 1 ns edges, 60 ns hold, 1 kohm load ('droop'), or held at 1.8 V ('quiet'). Detector supply 3.3 V / 2.97 V / 2.97 V sagging by 0.1 V / by 0.3 V: the sag depths and timing are ASSUMED (the spec fixes none): 10 ns edges, starting 10 ns before the rail edge, held 100 ns"
   echo "measure: droop must ASSERT (live >= 1.44 V VOH floor from 95 ns to 300 ns, live before the event <= 0.36 V); quiet (supply sag only) must stay QUIET (live <= 0.36 V VOL ceiling and never above 1.95 V); latency as in tb_latency (t=0 at full overdrive, live at 50% of its swing); 100 fF load (assumption)"
-  echo "ngspice: $(ngspice --version | grep -m1 -o 'ngspice-[0-9.]*')"
-  echo "klt: $($KLT --version)"
-  echo "pdk_sources: $got"
-  echo "netlist_sha256: $(sha256sum "$net" | cut -d' ' -f1)  design/detector_top.spice"
-  echo "model_files_sha256:"
-  while read -r f; do [ -r "$f" ] || { echo "FAIL: unreadable model file $f" >&2; exit 2; }
-    printf '  %s  %s\n' "$(sha256sum "$f" | cut -d' ' -f1)" "${f#"$root"/}"; done < "$work/files"
+  pdk_record_header netlist_sha256 "$net" design/detector_top.spice
   echo "results:"
   bad=0
   for sp in "${SUPPLIES[@]}"; do read -r sn sv sag <<<"$sp"

@@ -44,13 +44,7 @@ nom=(1.728 1.692 1.638 1.584)
 {
   echo "label: SIMULATED (not measured); testbench sim/$bench/$bench.spice; corner $PROC, $TEMP_C C, detector supply $VSUP V; one corner, no Monte Carlo"
   echo "stimulus: monitored rail = IDEAL SOURCE, 1.8 -> 1.55 V linear over 250 us (1 mV/us, static trip point); real design/detector_top.spice; trip = vmon where live crosses 0.9 V"
-  echo "ngspice: $(ngspice --version | grep -m1 -o 'ngspice-[0-9.]*')"
-  echo "klt: $($KLT --version)"
-  echo "pdk_sources: $got"
-  echo "netlist_sha256: $(sha256sum "$net" | cut -d' ' -f1)  design/detector_top.spice"
-  echo "model_files_sha256:"
-  while read -r f; do [ -r "$f" ] || { echo "FAIL: unreadable model file $f" >&2; exit 2; }
-    printf '  %s  %s\n' "$(sha256sum "$f" | cut -d' ' -f1)" "${f#"$root"/}"; done < "$work/files"
+  pdk_record_header netlist_sha256 "$net" design/detector_top.spice
   echo "results:"
   echo "  target band: +/-27 mV (+/-1.5% of 1.8 V); fallback band: +/-54 mV (+/-3%); immunity floor: highest level must sit below the 1.764 V window edge (3.5% below nominal at target)"
   echo "  no verdict for spec row 5 is made here: one corner, untrimmed, no mismatch Monte Carlo (tb_threshold_mc, #35)"

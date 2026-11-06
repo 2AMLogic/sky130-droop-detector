@@ -34,13 +34,7 @@ lv() { # tag title
 {
   echo "label: SIMULATED (not measured); testbench sim/tb_ref_droop/tb_ref_droop.spice; corner tt, 27 C"
   echo "stimulus: IDEAL SOURCES (coupling check only, not the rail-model verdict): monitored rail 1.8 -> 0.9 V (DC and a 5 ns edge); detector supply 3.3 -> 2.97 V (DC)"
-  echo "ngspice: $(ngspice --version | grep -m1 -o 'ngspice-[0-9.]*')"
-  echo "klt: $($KLT --version)"
-  echo "pdk_sources: $got"
-  echo "netlist_sha256: $(sha256sum "$net" | cut -d' ' -f1)  design/threshold_ref.spice"
-  echo "model_files_sha256:"
-  while read -r f; do [ -r "$f" ] || { echo "FAIL: unreadable model file $f" >&2; exit 2; }
-    printf '  %s  %s\n' "$(sha256sum "$f" | cut -d' ' -f1)" "${f#"$root"/}"; done < "$work/files"
+  pdk_record_header netlist_sha256 "$net" design/threshold_ref.spice
   echo "results:"
   echo "  vref_nom_v = $(get vref_nom_v)"
   echo "  vref_shift_mv, monitored rail 1.8 -> 0.9 V: DC $(get vref_shift_rail_mv) mV; during 5 ns edge max $(get vref_tran_dev_max_mv) / min $(get vref_tran_dev_min_mv) mV"
