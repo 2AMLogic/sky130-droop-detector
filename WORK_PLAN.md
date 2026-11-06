@@ -8,7 +8,7 @@ region between the markers is machine-generated and overwritten each time.
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
 
-_None._
+- **#46**: docs: mark target spec and DR-001 ratified by PR #8
 
 ## Very Important
 
@@ -45,7 +45,7 @@ PRs waiting on Judge (`loom:review-requested`).
 
 PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
-_None._
+- **#46**: docs: mark target spec and DR-001 ratified by PR #8
 
 ## Proposed
 
@@ -65,13 +65,13 @@ _None._
 
 | Bucket | Count |
 |------|-------|
-| Operator merge-risk holds | 0 |
+| Operator merge-risk holds | 1 |
 | Very important | 0 |
 | Important | 1 |
 | Ready (`loom:issue`) | 0 |
 | In Progress (`loom:building`) | 2 |
 | PRs awaiting review | 1 |
-| Approved PRs awaiting merge | 0 |
+| Approved PRs awaiting merge | 1 |
 | Curated | 1 |
 | Architect / Hermit proposals | 1 |
 | Active epics | 0 |
