@@ -17,21 +17,18 @@ bench=tb_threshold_accuracy
 PROC="${PROC:-tt}"; TEMP_C="${TEMP_C:-27}"; VSUP="${VSUP:-3.3}"
 export OMP_NUM_THREADS=1
 . "$sim/lib/pdk_pin.sh"
+. "$sim/lib/ngspice_run.sh"
 pdk_pin_resolve
 net="$sim/../design/detector_top.spice"
 [ -r "$net" ] || { echo "FAIL: netlist unreadable: $net" >&2; exit 2; }
-work="$(mktemp -d)"; trap 'rm -rf "$work"' EXIT
+sim_workdir
 sed "s#__PDK_LIB__#$lib#;s#__NETLIST__#$net#;s#__PROC__#$PROC#;s#__TEMP__#$TEMP_C#;s#__VSUP__#$VSUP#" \
   "$here/$bench.spice" > "$work/tb.spice"
 if [ -n "${NEGCTL_DROP:-}" ]; then sed -i "/RESULT $NEGCTL_DROP =/d" "$work/tb.spice"; fi
-ngspice -b -o "$work/ngspice.log" "$work/tb.spice" >/dev/null 2>&1 || {
-  echo "FAIL: ngspice exited non-zero; log:" >&2; tail -40 "$work/ngspice.log" >&2; exit 3; }
+ngspice_run "$work/tb.spice" "$work/ngspice.log"
 
 keys="vtrip_l0 vtrip_l1 vtrip_l2 vtrip_l3 idle_max_l0 idle_max_l1 idle_max_l2 idle_max_l3"
-for k in $keys; do
-  grep -Eq "^RESULT $k = [0-9.eE+-]+" "$work/ngspice.log" || { echo "FAIL: no '$k' result in ngspice log" >&2; tail -40 "$work/ngspice.log" >&2; exit 3; }
-done
-get() { sed -n "s/^RESULT $1 = //p" "$work/ngspice.log" | head -n1; }
+require_results "$work/ngspice.log" $keys
 for i in 0 1 2 3; do
   awk -v v="$(get idle_max_l$i)" 'BEGIN{exit !(v<0.36)}' || { echo "FAIL: live flag not idle (VOL > 0.36 V) before the ramp, level $i" >&2; exit 3; }
 done

@@ -20,6 +20,7 @@ fail() { echo "FAIL: $1" >&2; exit "${2:-2}"; }
 
 # --- PDK pin (shared gate, sim/lib/pdk_pin.sh; exits 2 on any pin/PDK failure) ---
 . "$sim/lib/pdk_pin.sh"
+. "$sim/lib/ngspice_run.sh"
 pdk_pin_resolve
 export PDK_ROOT="$root" PDK="$variant"
 
@@ -32,7 +33,7 @@ for k in schematic symbol; do
   [ "$(sha256sum "$f" | cut -d' ' -f1)" = "$(jq -er ".${k}_sha256" "$ldo")" ] \
     || fail "vendored LDO $k does not match the pinned sha256 (commit $ldo_commit)"
 done
-work="$(mktemp -d)"; trap 'rm -rf "$work"' EXIT
+sim_workdir
 tail -n +4 "$here/ldo_3v3in_1v8out.spice" > "$work/ldo_headerless.spice"   # drop the 3-line provenance header
 $KLT netlist --pdk "$variant" --pdk-root "$root" --rcfile "$here/xschemrc" --block --check \
   -o "$work/ldo_headerless.spice" "$here/src/ldo_3v3in_1v8out.sch" >"$work/netlist-check.log" 2>&1 \

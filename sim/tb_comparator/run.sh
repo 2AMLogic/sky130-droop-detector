@@ -9,22 +9,21 @@ set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 sim="$here/.."
 . "$sim/lib/pdk_pin.sh"
+. "$sim/lib/ngspice_run.sh"
 pdk_pin_resolve
 net="$sim/../design/comparator.spice"
 [ -r "$net" ] || { echo "FAIL: netlist unreadable: $net" >&2; exit 2; }
-work="$(mktemp -d)"; trap 'rm -rf "$work"' EXIT
+sim_workdir
 
 taps=(1.728 1.584)
 for vth in "${taps[@]}"; do
   sed "s#__PDK_LIB__#$lib#;s#__NETLIST__#$net#;s#__VTH__#$vth#;s#__VLOW__#$(awk -v t="$vth" 'BEGIN{printf "%.3f", t-0.1}')#" "$here/tb_comparator.spice" > "$work/tb_$vth.spice"
-  ngspice -b -o "$work/ngspice_$vth.log" "$work/tb_$vth.spice" >/dev/null 2>&1 || {
-    echo "FAIL: ngspice exited non-zero at tap $vth; log:" >&2; cat "$work/ngspice_$vth.log" >&2; exit 3; }
-  for k in iq_ua vtrip tfull tf50; do
-    grep -Eq "^RESULT $k = [0-9.eE+-]+" "$work/ngspice_$vth.log" || {
-      echo "FAIL: no '$k' result at tap $vth in ngspice log" >&2; cat "$work/ngspice_$vth.log" >&2; exit 3; }
-  done
+  NGSPICE_CTX="at tap $vth"
+  ngspice_run "$work/tb_$vth.spice" "$work/ngspice_$vth.log"
+  require_results "$work/ngspice_$vth.log" iq_ua vtrip tfull tf50
 done
-get() { sed -n "s/^RESULT $2 = //p" "$work/ngspice_$1.log" | head -n1; }
+NGSPICE_CTX=
+get() { result_of "$work/ngspice_$1.log" "$2"; }   # get <tap> <key>
 
 pdk_model_files tt "$work/files"
 rec="${RECORD:-/dev/stdout}"
