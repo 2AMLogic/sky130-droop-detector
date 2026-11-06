@@ -10,22 +10,8 @@
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 sim="$here/.."
-pin="${PDK_PIN:-$sim/pdk.json}"
-variant="$(jq -er .variant "$pin")"
-want="$(jq -er .sources_line "$pin")"
-KLT="${KLT:-klt}"
-
-found="$($KLT pdk find --pdk "$variant" ${PDK_ROOT:+--pdk-root "$PDK_ROOT"} 2>&1)" || {
-  echo "FAIL: klt pdk find could not resolve $variant (PDK_ROOT=${PDK_ROOT:-unset}); pin is: $want" >&2
-  echo "$found" >&2; exit 2; }
-root="$(sed -n 's/^root: //p' <<<"$found")"
-src="$root/$variant/SOURCES"
-[ -n "$root" ] && [ -s "$src" ] || { echo "FAIL: SOURCES missing or empty at '$src'; pin is: $want" >&2; exit 2; }
-got="$(head -n1 "$src")"
-[ "$got" = "$want" ] || { echo "FAIL: PDK revision mismatch; pin is '$want', found '$got' in $src" >&2; exit 2; }
-
-lib="$root/$variant/libs.tech/combined/sky130.lib.spice"
-[ -r "$lib" ] || { echo "FAIL: model lib unreadable: $lib" >&2; exit 2; }
+. "$sim/lib/pdk_pin.sh"
+pdk_pin_resolve
 net="$sim/../design/detector_top.spice"
 [ -r "$net" ] || { echo "FAIL: netlist unreadable: $net" >&2; exit 2; }
 work="$(mktemp -d)"; trap 'rm -rf "$work"' EXIT
@@ -74,8 +60,7 @@ for k in "${keys[@]}"; do
 done
 get() { sed -n "s/^RESULT $1 = //p" "$work/ngspice.log" | head -n1; }
 
-cdir="$(dirname "$lib")"
-{ echo "$lib"; sed -n '/^\.lib tt$/,/^\.endl tt$/p' "$lib" | sed -n 's/^\.include *//p' | sed "s#^#$cdir/#"; } > "$work/files"
+pdk_model_files tt "$work/files"
 rec="${RECORD:-/dev/stdout}"
 {
   echo "label: SIMULATED (not measured); testbench sim/tb_latency/tb_latency.spice; corner tt, 27 C, detector supply 3.3 V (single corner; no PVT sweep)"
