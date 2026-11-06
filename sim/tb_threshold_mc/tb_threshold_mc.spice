@@ -1,0 +1,15 @@
+* tb_threshold_mc: static trip point of design/detector_top.spice at one select code.
+* Circuit body for `klt sim` (no .control/.end; klt adds .lib/.temp, the supply alter
+* and the DC analysis). The monitored rail Vrail is an IDEAL SOURCE swept slowly
+* (static trip point, spec row 5); the rail model is not used because row 5 is a
+* static accuracy figure. Detector output `live` (through glitch filter and flag
+* logic) is the decision, so the trip includes comparator offset and filter threshold.
+* __SELS__ and __NETLIST__ are filled in by run.sh.
+.include "__NETLIST__"
+Vdd vdd33 0 3.3
+Vrail rail 0 1.9
+Vs0 s0 0 __S0__
+Vs1 s1 0 __S1__
+Vclr clr 0 0
+Xdut rail s0 s1 clr vdd33 0 live sticky detector_top
+Cl live 0 5f

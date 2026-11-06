@@ -36,3 +36,12 @@ evidence.
   comparator only: `sim/tb_comparator/run.sh`. Same PDK-pin fail-closed
   behaviour and `PDK_PIN` negative control as the benches above; records in
   `tb_comparator/records/`. Not wired into `package.json` checks.
+- `tb_threshold_mc/` — spec row 5 statistical bench: static trip point of
+  `design/detector_top.spice` at all four select codes, mismatch Monte Carlo
+  (N = 300 per process section, fixed recorded seed) over `tt/ss/ff/sf/fs_mm`
+  plus the `mc` process section, 27 C / 3.3 V, ideal slowly-swept rail. Twelve
+  `klt sim` requests run on the batch fleet via `--batch-set` (never a local
+  grid; a failed submit exits 4), graded by `klt yield` (3-sigma lower bound,
+  level +/-27 mV, ladder-mismatch negative control). `sim/tb_threshold_mc/run.sh`
+  (uses the pinned `klayout-tools[yield]==0.8.0` through `uvx`); records in
+  `tb_threshold_mc/records/`. Not wired into `package.json` checks.
