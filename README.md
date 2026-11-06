@@ -110,8 +110,21 @@ reproduce into a scratch path, never over a committed record.
 | `sim/smoke` | `RECORD=/tmp/smoke.txt sim/smoke/run.sh` | `sim/smoke/records/2026-10-17-smoke-tt.txt` |
 | `sim/tb_threshold_select` | `RECORD=/tmp/ts.txt sim/tb_threshold_select/run.sh` | `sim/tb_threshold_select/records/2026-10-23-tb_threshold_select-tt.txt` |
 | `sim/tb_ref_droop` | `RECORD=/tmp/rd.txt sim/tb_ref_droop/run.sh` | `sim/tb_ref_droop/records/2026-10-23-tb_ref_droop-tt.txt` |
-| `sim/tb_rail_model_check` | `RECORD=/tmp/rm.txt sim/tb_rail_model_check/run.sh` | `sim/tb_rail_model_check/records/2026-10-23-rail-model-tt.txt` |
+| `sim/tb_rail_model_check` (batch fleet) | `RECORD=/tmp/rm.txt sim/tb_rail_model_check/run.sh` | `sim/tb_rail_model_check/records/2026-10-23-rail-model-tt.txt` |
+| `sim/tb_comparator` | `RECORD=/tmp/tb_comparator.txt sim/tb_comparator/run.sh` | `sim/tb_comparator/records/2026-10-27-tb_comparator-tt.txt` |
+| `sim/tb_false_flag` | `RECORD=/tmp/tb_false_flag.txt sim/tb_false_flag/run.sh` | `sim/tb_false_flag/records/2026-11-05-tb_false_flag-tt.txt` |
+| `sim/tb_filter` | `RECORD=/tmp/tb_filter.txt sim/tb_filter/run.sh` | `sim/tb_filter/records/2026-11-05-tb_filter-tt.txt` |
+| `sim/tb_flag_logic` | `RECORD=/tmp/tb_flag_logic.txt sim/tb_flag_logic/run.sh` | `sim/tb_flag_logic/records/2026-11-05-tb_flag_logic-tt.txt` |
+| `sim/tb_iq` | `RECORD=/tmp/tb_iq.txt sim/tb_iq/run.sh` | `sim/tb_iq/records/2026-11-05-tb_iq-tt.txt` |
+| `sim/tb_latency` | `RECORD=/tmp/tb_latency.txt sim/tb_latency/run.sh` | `sim/tb_latency/records/2026-11-05-tb_latency-tt.txt` |
+| `sim/tb_min_width` | `RECORD=/tmp/tb_min_width.txt sim/tb_min_width/run.sh` | `sim/tb_min_width/records/2026-11-05-tb_min_width-tt.txt` |
+| `sim/tb_supply_headroom` | `RECORD=/tmp/tb_supply_headroom.txt sim/tb_supply_headroom/run.sh` | `sim/tb_supply_headroom/records/2026-11-05-tb_supply_headroom-tt.txt` |
+| `sim/tb_threshold_accuracy` | `RECORD=/tmp/tb_threshold_accuracy.txt sim/tb_threshold_accuracy/run.sh` | `sim/tb_threshold_accuracy/records/2026-11-05-tb_threshold_accuracy-tt.txt` |
+| `sim/tb_threshold_mc` (batch fleet) | `RECORD_DIR=/tmp/tmc sim/tb_threshold_mc/run.sh` | `sim/tb_threshold_mc/records/2026-11-06/record.txt` |
+| `verification/flag_logic` | `RECORD=/tmp/fl.txt verification/flag_logic/run.sh` | `verification/flag_logic/records/2026-11-05-flag_logic-tt.txt` |
 
+`sim/rail_envelope` is a Python module used by the benches, with no runner of its own.
+`sim/tb_threshold_mc/run.sh` likewise submits its 12 requests to the batch fleet.
 `sim/tb_rail_model_check/run.sh` is different in kind: its netlist-form grid
 is four `klt sim --batch-set` requests that run on the Spot batch fleet, never
 as local `ngspice` loops, so it needs batch-fleet access. Its behavioural

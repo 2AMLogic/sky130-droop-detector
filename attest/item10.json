@@ -2,7 +2,7 @@
   "schema_version": 1,
   "kind": "t1-attestation-inventory",
   "t1_item": 10,
-  "description": "Repo hygiene for sky130-droop-detector: top-level docs, license, CI workflow and spec exist; JSON pins parse; every bench runner is syntactically valid. PDK-free checks only.",
+  "description": "Repo hygiene for sky130-droop-detector: top-level docs, license, CI workflow and spec exist; JSON pins parse; every tracked bench runner (sim/*/run.sh, verification/*/run.sh) is syntactically valid and every tracked .py under sim/ and verification/ compiles. PDK-free checks only.",
   "hygiene": [
     "README.md",
     "LICENSE",
@@ -16,16 +16,212 @@
     "manifests/sky130-droop-detector.json"
   ],
   "checks": [
-    {"name": "manifest-json-valid", "argv": ["python3", "-m", "json.tool", "manifests/sky130-droop-detector.json"]},
-    {"name": "pdk-pin-json-valid", "argv": ["python3", "-m", "json.tool", "sim/pdk.json"]},
-    {"name": "toolchain-json-valid", "argv": ["python3", "-m", "json.tool", "sim/toolchain.json"]},
-    {"name": "smoke-run-syntax", "argv": ["bash", "-n", "sim/smoke/run.sh"]},
-    {"name": "rail-model-run-syntax", "argv": ["bash", "-n", "sim/tb_rail_model_check/run.sh"]},
-    {"name": "ref-droop-run-syntax", "argv": ["bash", "-n", "sim/tb_ref_droop/run.sh"]},
-    {"name": "threshold-select-run-syntax", "argv": ["bash", "-n", "sim/tb_threshold_select/run.sh"]},
-    {"name": "latency-run-syntax", "argv": ["bash", "-n", "sim/tb_latency/run.sh"]},
-    {"name": "min-width-run-syntax", "argv": ["bash", "-n", "sim/tb_min_width/run.sh"]},
-    {"name": "supply-headroom-run-syntax", "argv": ["bash", "-n", "sim/tb_supply_headroom/run.sh"]},
-    {"name": "envelope-generator-compiles", "argv": ["python3", "-I", "-c", "import ast,sys; ast.parse(open('sim/tb_rail_model_check/gen_envelope.py').read())"]}
+    {
+      "name": "manifest-json-valid",
+      "argv": [
+        "python3",
+        "-m",
+        "json.tool",
+        "manifests/sky130-droop-detector.json"
+      ]
+    },
+    {
+      "name": "pdk-pin-json-valid",
+      "argv": [
+        "python3",
+        "-m",
+        "json.tool",
+        "sim/pdk.json"
+      ]
+    },
+    {
+      "name": "toolchain-json-valid",
+      "argv": [
+        "python3",
+        "-m",
+        "json.tool",
+        "sim/toolchain.json"
+      ]
+    },
+    {
+      "name": "rail-envelope-rail-envelope-compiles",
+      "argv": [
+        "python3",
+        "-I",
+        "-m",
+        "py_compile",
+        "sim/rail_envelope/rail_envelope.py"
+      ]
+    },
+    {
+      "name": "smoke-run-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "sim/smoke/run.sh"
+      ]
+    },
+    {
+      "name": "comparator-run-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "sim/tb_comparator/run.sh"
+      ]
+    },
+    {
+      "name": "false-flag-gen-envelope-ff-compiles",
+      "argv": [
+        "python3",
+        "-I",
+        "-m",
+        "py_compile",
+        "sim/tb_false_flag/gen_envelope_ff.py"
+      ]
+    },
+    {
+      "name": "false-flag-run-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "sim/tb_false_flag/run.sh"
+      ]
+    },
+    {
+      "name": "filter-run-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "sim/tb_filter/run.sh"
+      ]
+    },
+    {
+      "name": "flag-logic-run-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "sim/tb_flag_logic/run.sh"
+      ]
+    },
+    {
+      "name": "iq-run-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "sim/tb_iq/run.sh"
+      ]
+    },
+    {
+      "name": "latency-run-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "sim/tb_latency/run.sh"
+      ]
+    },
+    {
+      "name": "min-width-run-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "sim/tb_min_width/run.sh"
+      ]
+    },
+    {
+      "name": "rail-model-check-gen-envelope-compiles",
+      "argv": [
+        "python3",
+        "-I",
+        "-m",
+        "py_compile",
+        "sim/tb_rail_model_check/gen_envelope.py"
+      ]
+    },
+    {
+      "name": "rail-model-check-run-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "sim/tb_rail_model_check/run.sh"
+      ]
+    },
+    {
+      "name": "ref-droop-run-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "sim/tb_ref_droop/run.sh"
+      ]
+    },
+    {
+      "name": "supply-headroom-run-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "sim/tb_supply_headroom/run.sh"
+      ]
+    },
+    {
+      "name": "threshold-accuracy-run-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "sim/tb_threshold_accuracy/run.sh"
+      ]
+    },
+    {
+      "name": "threshold-mc-build-yield-compiles",
+      "argv": [
+        "python3",
+        "-I",
+        "-m",
+        "py_compile",
+        "sim/tb_threshold_mc/build_yield.py"
+      ]
+    },
+    {
+      "name": "threshold-mc-gen-requests-compiles",
+      "argv": [
+        "python3",
+        "-I",
+        "-m",
+        "py_compile",
+        "sim/tb_threshold_mc/gen_requests.py"
+      ]
+    },
+    {
+      "name": "threshold-mc-run-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "sim/tb_threshold_mc/run.sh"
+      ]
+    },
+    {
+      "name": "threshold-select-run-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "sim/tb_threshold_select/run.sh"
+      ]
+    },
+    {
+      "name": "verification-flag-logic-check-compiles",
+      "argv": [
+        "python3",
+        "-I",
+        "-m",
+        "py_compile",
+        "verification/flag_logic/check.py"
+      ]
+    },
+    {
+      "name": "verification-flag-logic-run-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "verification/flag_logic/run.sh"
+      ]
+    }
   ]
 }
