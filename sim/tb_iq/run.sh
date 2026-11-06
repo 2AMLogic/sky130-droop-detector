@@ -12,24 +12,10 @@ set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 sim="$here/.."
 bench=tb_iq
-pin="${PDK_PIN:-$sim/pdk.json}"
-variant="$(jq -er .variant "$pin")"
-want="$(jq -er .sources_line "$pin")"
-KLT="${KLT:-klt}"
 PROC="${PROC:-tt}"; TEMP_C="${TEMP_C:-27}"; VSUP="${VSUP:-3.3}"
 export OMP_NUM_THREADS=1
-
-found="$($KLT pdk find --pdk "$variant" ${PDK_ROOT:+--pdk-root "$PDK_ROOT"} 2>&1)" || {
-  echo "FAIL: klt pdk find could not resolve $variant (PDK_ROOT=${PDK_ROOT:-unset}); pin is: $want" >&2
-  echo "$found" >&2; exit 2; }
-root="$(sed -n 's/^root: //p' <<<"$found")"
-src="$root/$variant/SOURCES"
-[ -n "$root" ] && [ -s "$src" ] || { echo "FAIL: SOURCES missing or empty at '$src'; pin is: $want" >&2; exit 2; }
-got="$(head -n1 "$src")"
-[ "$got" = "$want" ] || { echo "FAIL: PDK revision mismatch; pin is '$want', found '$got' in $src" >&2; exit 2; }
-
-lib="$root/$variant/libs.tech/combined/sky130.lib.spice"
-[ -r "$lib" ] || { echo "FAIL: model lib unreadable: $lib" >&2; exit 2; }
+. "$sim/lib/pdk_pin.sh"
+pdk_pin_resolve
 net="$sim/../design/detector_top.spice"
 [ -r "$net" ] || { echo "FAIL: netlist unreadable: $net" >&2; exit 2; }
 work="$(mktemp -d)"; trap 'rm -rf "$work"' EXIT
@@ -49,8 +35,7 @@ for i in 0 1 2 3; do
 done
 awk -v v="$(get sticky_max_l0)" 'BEGIN{exit !(v<0.36)}' || { echo "FAIL: sticky flag not cleared in the averaging window" >&2; exit 3; }
 
-cdir="$(dirname "$lib")"
-{ echo "$lib"; sed -n "/^\\.lib $PROC\$/,/^\\.endl $PROC\$/p" "$lib" | sed -n 's/^\.include *//p' | sed "s#^#$cdir/#"; } > "$work/files"
+pdk_model_files "$PROC" "$work/files"
 rec="${RECORD:-/dev/stdout}"
 {
   echo "label: SIMULATED (not measured); testbench sim/$bench/$bench.spice; corner $PROC, $TEMP_C C, detector supply $VSUP V; one corner"

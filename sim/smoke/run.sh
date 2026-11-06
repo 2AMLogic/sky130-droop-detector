@@ -5,21 +5,8 @@
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 sim="$here/.."
-variant="$(jq -er .variant "$sim/pdk.json")"
-want="$(jq -er .sources_line "$sim/pdk.json")"
-KLT="${KLT:-klt}"
-
-found="$($KLT pdk find --pdk "$variant" ${PDK_ROOT:+--pdk-root "$PDK_ROOT"} 2>&1)" || {
-  echo "FAIL: klt pdk find could not resolve $variant (PDK_ROOT=${PDK_ROOT:-unset}); pin is: $want" >&2
-  echo "$found" >&2; exit 2; }
-root="$(sed -n 's/^root: //p' <<<"$found")"
-src="$root/$variant/SOURCES"
-[ -n "$root" ] && [ -s "$src" ] || { echo "FAIL: SOURCES missing or empty at '$src'; pin is: $want" >&2; exit 2; }
-got="$(head -n1 "$src")"
-[ "$got" = "$want" ] || { echo "FAIL: PDK revision mismatch; pin is '$want', found '$got' in $src" >&2; exit 2; }
-
-lib="$root/$variant/libs.tech/combined/sky130.lib.spice"
-[ -r "$lib" ] || { echo "FAIL: model lib unreadable: $lib" >&2; exit 2; }
+. "$sim/lib/pdk_pin.sh"
+pdk_pin_resolve
 work="$(mktemp -d)"; trap 'rm -rf "$work"' EXIT
 sed "s#__PDK_LIB__#$lib#" "$here/smoke.spice" > "$work/smoke.spice"
 ngspice -b -o "$work/ngspice.log" "$work/smoke.spice" >/dev/null 2>&1 || {
@@ -30,8 +17,7 @@ for k in "RESULT id_nfet_ua" tphl tplh; do
 done
 
 # Model files the netlist pulls in: the lib itself plus the tt-section includes.
-cdir="$(dirname "$lib")"
-{ echo "$lib"; sed -n '/^\.lib tt$/,/^\.endl tt$/p' "$lib" | sed -n 's/^\.include *//p' | sed "s#^#$cdir/#"; } > "$work/files"
+pdk_model_files tt "$work/files"
 rec="${RECORD:-/dev/stdout}"
 {
   echo "label: SIMULATED (not measured); testbench sim/smoke/smoke.spice; corner tt, 27 C, 1.8 V"

@@ -7,22 +7,8 @@
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 sim="$here/.."
-pin="${PDK_PIN:-$sim/pdk.json}"
-variant="$(jq -er .variant "$pin")"
-want="$(jq -er .sources_line "$pin")"
-KLT="${KLT:-klt}"
-
-found="$($KLT pdk find --pdk "$variant" ${PDK_ROOT:+--pdk-root "$PDK_ROOT"} 2>&1)" || {
-  echo "FAIL: klt pdk find could not resolve $variant (PDK_ROOT=${PDK_ROOT:-unset}); pin is: $want" >&2
-  echo "$found" >&2; exit 2; }
-root="$(sed -n 's/^root: //p' <<<"$found")"
-src="$root/$variant/SOURCES"
-[ -n "$root" ] && [ -s "$src" ] || { echo "FAIL: SOURCES missing or empty at '$src'; pin is: $want" >&2; exit 2; }
-got="$(head -n1 "$src")"
-[ "$got" = "$want" ] || { echo "FAIL: PDK revision mismatch; pin is '$want', found '$got' in $src" >&2; exit 2; }
-
-lib="$root/$variant/libs.tech/combined/sky130.lib.spice"
-[ -r "$lib" ] || { echo "FAIL: model lib unreadable: $lib" >&2; exit 2; }
+. "$sim/lib/pdk_pin.sh"
+pdk_pin_resolve
 net="$sim/../design/threshold_ref.spice"
 [ -r "$net" ] || { echo "FAIL: netlist unreadable: $net" >&2; exit 2; }
 work="$(mktemp -d)"; trap 'rm -rf "$work"' EXIT
@@ -38,8 +24,7 @@ awk -v a="$(get vtrip_l0)" -v b="$(get vtrip_l1)" -v c="$(get vtrip_l2)" -v d="$
   'BEGIN{exit !(a>b && b>c && c>d)}' || { echo "FAIL: levels not strictly decreasing with select code" >&2; exit 3; }
 
 # Model files the netlist pulls in: the lib itself plus the tt-section includes.
-cdir="$(dirname "$lib")"
-{ echo "$lib"; sed -n '/^\.lib tt$/,/^\.endl tt$/p' "$lib" | sed -n 's/^\.include *//p' | sed "s#^#$cdir/#"; } > "$work/files"
+pdk_model_files tt "$work/files"
 rec="${RECORD:-/dev/stdout}"
 nom=(1.728 1.692 1.638 1.584)
 {
