@@ -14,22 +14,13 @@
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 sim="$here/.."
-variant="$(jq -er .variant "$sim/pdk.json")"
-want="$(jq -er .sources_line "$sim/pdk.json")"
 KLT="${KLT:-klt}"
 NEGCTL="${ENVELOPE_NEGCTL_MV:-0}"
 fail() { echo "FAIL: $1" >&2; exit "${2:-2}"; }
 
-# --- PDK pin (same check as sim/smoke/run.sh) ---------------------------------
-found="$($KLT pdk find --pdk "$variant" ${PDK_ROOT:+--pdk-root "$PDK_ROOT"} 2>&1)" || {
-  echo "$found" >&2; fail "klt pdk find could not resolve $variant (PDK_ROOT=${PDK_ROOT:-unset}); pin is: $want"; }
-root="$(sed -n 's/^root: //p' <<<"$found")"
-src="$root/$variant/SOURCES"
-[ -n "$root" ] && [ -s "$src" ] || fail "SOURCES missing or empty at '$src'; pin is: $want"
-got="$(head -n1 "$src")"
-[ "$got" = "$want" ] || fail "PDK revision mismatch; pin is '$want', found '$got' in $src"
-lib="$root/$variant/libs.tech/combined/sky130.lib.spice"
-[ -r "$lib" ] || fail "model lib unreadable: $lib"
+# --- PDK pin (shared gate, sim/lib/pdk_pin.sh; exits 2 on any pin/PDK failure) ---
+. "$sim/lib/pdk_pin.sh"
+pdk_pin_resolve
 export PDK_ROOT="$root" PDK="$variant"
 
 # --- LDO source pin and netlist drift ----------------------------------------------

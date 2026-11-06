@@ -13,21 +13,12 @@
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 sim="$here/.."
-pin="${PDK_PIN:-$sim/pdk.json}"
-variant="$(jq -er .variant "$pin")"
-want="$(jq -er .sources_line "$pin")"
 KLT="${KLT:-klt}"   # klt sim client: must match the fleet runner (0.9.x); the 0.8.0 pin is refused with exit 87 (version skew)
 KLT_YIELD="${KLT_YIELD:-uvx --from klayout-tools[yield]==0.8.0 klt}"   # pinned release incl. the klt-yield-native wheel; the host klt lacks it
 fail() { echo "FAIL: $1" >&2; exit "${2:-1}"; }
 
-found="$($KLT pdk find --pdk "$variant" ${PDK_ROOT:+--pdk-root "$PDK_ROOT"} 2>&1)" || {
-  echo "$found" >&2; fail "klt pdk find could not resolve $variant (PDK_ROOT=${PDK_ROOT:-unset}); pin is: $want" 2; }
-root="$(sed -n 's/^root: //p' <<<"$found")"
-src="$root/$variant/SOURCES"
-[ -n "$root" ] && [ -s "$src" ] || fail "SOURCES missing or empty at '$src'; pin is: $want" 2
-got="$(head -n1 "$src")"
-[ "$got" = "$want" ] || fail "PDK revision mismatch; pin is '$want', found '$got' in $src" 2
-[ -r "$root/$variant/libs.tech/combined/sky130.lib.spice" ] || fail "model lib unreadable under $root" 2
+. "$sim/lib/pdk_pin.sh"
+pdk_pin_resolve
 [ -r "$sim/../design/detector_top.spice" ] || fail "design/detector_top.spice unreadable" 2
 
 work="${KEEP:-$(mktemp -d)}"; mkdir -p "$work"; [ -n "${KEEP:-}" ] || trap 'rm -rf "$work"' EXIT
