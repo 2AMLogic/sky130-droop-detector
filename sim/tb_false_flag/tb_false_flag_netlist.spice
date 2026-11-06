@@ -1,0 +1,75 @@
+* tb_false_flag, NETLIST-DERIVED rail (EVIDENCE; spec "Rail model" form 1): the sky130-ldo
+* LDO netlisted at its pinned commit (sim/tb_rail_model_check/ldo_3v3in_1v8out.spice),
+* C_out = 0.33 uF with no ESR (the ratified window's corner with the largest droop), loaded
+* by a 1 mA <-> 50 mA load step with 1 us edges, drives the monitored rail `vout` that the
+* four detector copies (one per select code) watch. Grades W1 (the settled regulated level)
+* and W4 (the load-transient excursion): no `live` and no `sticky` assertion at any level.
+* The .ic card is the LDO repo's regulating-branch seed, as in sim/tb_rail_model_check/
+* netlist_form.spice. Corner, temperature and supply are substituted by run.sh.
+.lib "__PDK_LIB__" __PROC__
+.include "__LDO__"
+.include "__NETLIST__"
+.temp __TEMP__
+.param vsup=__VSUP__
+.option method=gear
+
+VVIN vin 0 {vsup}
+VEN en 0 {vsup}
+VVREF vref 0 1.2
+XLDO vout vref en vin ldo_3v3in_1v8out
+CDIR vout 0 0.33u
+ILOAD vout 0 PULSE(1m 50m 100u 1u 1u 100u 400u)
+.ic v(vout)=1.8 v(xldo.fb)=1.2 v(xldo.n_fbb)=0.6 v(xldo.ea_out)={vsup-0.909} v(xldo.ea_cz)={vsup-0.909} v(xldo.ss)={vsup-0.027} v(xldo.biasp)={vsup-1.064} v(xldo.nb)=0.864 v(xldo.ea_tail)={vsup-0.768} v(xldo.ea_d1)=0.887 v(xldo.ea_d2)=0.888
+
+Vlo lo 0 0
+Vhi hi 0 {vsup}
+Vclr clr 0 PWL(0 0 1u 0 1.1u {vsup} 5u {vsup} 5.1u 0)
+Vd0 vd0 0 {vsup}
+Vd1 vd1 0 {vsup}
+Vd2 vd2 0 {vsup}
+Vd3 vd3 0 {vsup}
+X0 vout lo lo clr vd0 0 l0 st0 detector_top
+X1 vout hi lo clr vd1 0 l1 st1 detector_top
+X2 vout lo hi clr vd2 0 l2 st2 detector_top
+X3 vout hi hi clr vd3 0 l3 st3 detector_top
+
+.control
+set num_threads=1
+tran 20n 320u
+* W1 (graded): settled regulated rail at 1 mA load, inside the window, before the load step at 100 us
+meas tran net_w1_vmin min v(vout) from=10u to=95u
+echo "RESULT net_w1_vmin = $&net_w1_vmin"
+meas tran net_w1_vmax max v(vout) from=10u to=95u
+echo "RESULT net_w1_vmax = $&net_w1_vmax"
+meas tran net_w1_live_l0 max v(l0) from=10u to=95u
+echo "RESULT net_w1_live_l0 = $&net_w1_live_l0"
+meas tran net_w1_live_l1 max v(l1) from=10u to=95u
+echo "RESULT net_w1_live_l1 = $&net_w1_live_l1"
+meas tran net_w1_live_l2 max v(l2) from=10u to=95u
+echo "RESULT net_w1_live_l2 = $&net_w1_live_l2"
+meas tran net_w1_live_l3 max v(l3) from=10u to=95u
+echo "RESULT net_w1_live_l3 = $&net_w1_live_l3"
+meas tran net_w1_sticky_l0 max v(st0) from=10u to=95u
+echo "RESULT net_w1_sticky_l0 = $&net_w1_sticky_l0"
+meas tran net_w1_sticky_l1 max v(st1) from=10u to=95u
+echo "RESULT net_w1_sticky_l1 = $&net_w1_sticky_l1"
+meas tran net_w1_sticky_l2 max v(st2) from=10u to=95u
+echo "RESULT net_w1_sticky_l2 = $&net_w1_sticky_l2"
+meas tran net_w1_sticky_l3 max v(st3) from=10u to=95u
+echo "RESULT net_w1_sticky_l3 = $&net_w1_sticky_l3"
+* load-step excursion (REPORTED, not graded as false-flag: the LDO model itself leaves the +-2 % window here)
+meas tran net_w4_vmin min v(vout) from=95u to=320u
+echo "RESULT net_w4_vmin = $&net_w4_vmin"
+meas tran net_w4_vmax max v(vout) from=95u to=320u
+echo "RESULT net_w4_vmax = $&net_w4_vmax"
+meas tran net_w4_live_l0 max v(l0) from=95u to=320u
+echo "RESULT net_w4_live_l0 = $&net_w4_live_l0"
+meas tran net_w4_live_l1 max v(l1) from=95u to=320u
+echo "RESULT net_w4_live_l1 = $&net_w4_live_l1"
+meas tran net_w4_live_l2 max v(l2) from=95u to=320u
+echo "RESULT net_w4_live_l2 = $&net_w4_live_l2"
+meas tran net_w4_live_l3 max v(l3) from=95u to=320u
+echo "RESULT net_w4_live_l3 = $&net_w4_live_l3"
+quit
+.endc
+.end

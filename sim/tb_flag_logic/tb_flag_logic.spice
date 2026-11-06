@@ -1,0 +1,31 @@
+* tb_flag_logic (part A): design/flag_logic.spice alone, tt / 27 C, detector supply 3.3 V.
+* live_in stands in for the filtered comparator flag (0 / 3.3 V, 0.2 ns edges); clr is
+* active high. Both outputs carry the 100 fF consumer-load ASSUMPTION of spec row 10.
+* The spec's rail is not an input of this block; the rail-driven sequence is part B
+* (tb_flag_logic_top.spice). Stimulus times and the trace dump come from run.sh.
+.lib "__PDK_LIB__" tt
+.include "__NETLIST__"
+.temp 27
+Vdd vdd33 0 3.3
+Vli live_in 0 pwl(__LIVE_PWL__)
+Vclr clr 0 pwl(__CLR_PWL__)
+Xdut live_in clr vdd33 0 live sticky flag_logic
+Cl1 live 0 100f
+Cl2 sticky 0 100f
+
+.control
+tran 0.02n __TSTOP__
+set wr_vecnames
+set wr_singlescale
+wrdata __TRACE__ v(live_in) v(clr) v(live) v(sticky)
+meas tran voh_live max v(live) from=0 to=__TSTOP__
+meas tran voh_sticky max v(sticky) from=0 to=__TSTOP__
+meas tran vol_live min v(live) from=0 to=__TSTOP__
+meas tran vol_sticky min v(sticky) from=0 to=__TSTOP__
+echo "RESULT vmax_live = $&voh_live"
+echo "RESULT vmax_sticky = $&voh_sticky"
+echo "RESULT vmin_live = $&vol_live"
+echo "RESULT vmin_sticky = $&vol_sticky"
+quit
+.endc
+.end

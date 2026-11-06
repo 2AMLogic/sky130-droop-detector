@@ -23,6 +23,9 @@
     {"name": "rail-model-run-syntax", "argv": ["bash", "-n", "sim/tb_rail_model_check/run.sh"]},
     {"name": "ref-droop-run-syntax", "argv": ["bash", "-n", "sim/tb_ref_droop/run.sh"]},
     {"name": "threshold-select-run-syntax", "argv": ["bash", "-n", "sim/tb_threshold_select/run.sh"]},
+    {"name": "latency-run-syntax", "argv": ["bash", "-n", "sim/tb_latency/run.sh"]},
+    {"name": "min-width-run-syntax", "argv": ["bash", "-n", "sim/tb_min_width/run.sh"]},
+    {"name": "supply-headroom-run-syntax", "argv": ["bash", "-n", "sim/tb_supply_headroom/run.sh"]},
     {"name": "envelope-generator-compiles", "argv": ["python3", "-I", "-c", "import ast,sys; ast.parse(open('sim/tb_rail_model_check/gen_envelope.py').read())"]}
   ]
 }
