@@ -44,6 +44,7 @@ pdk_record_header() {
   echo "klt: $($KLT --version)"
   echo "pdk_sources: $got"
   while [ "$#" -ge 3 ]; do
+    [ -r "$2" ] || { echo "FAIL: unreadable $3" >&2; exit 2; }
     echo "$1: $(sha256sum "$2" | cut -d' ' -f1)  $3"
     shift 3
   done
