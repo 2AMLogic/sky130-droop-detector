@@ -6,11 +6,11 @@ set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 sim="$here/.."
 . "$sim/lib/pdk_pin.sh"
+. "$sim/lib/ngspice_run.sh"
 pdk_pin_resolve
-work="$(mktemp -d)"; trap 'rm -rf "$work"' EXIT
+sim_workdir
 sed "s#__PDK_LIB__#$lib#" "$here/smoke.spice" > "$work/smoke.spice"
-ngspice -b -o "$work/ngspice.log" "$work/smoke.spice" >/dev/null 2>&1 || {
-  echo "FAIL: ngspice exited non-zero; log:" >&2; cat "$work/ngspice.log" >&2; exit 3; }
+ngspice_run "$work/smoke.spice" "$work/ngspice.log"
 
 for k in "RESULT id_nfet_ua" tphl tplh; do
   grep -Eq "^$k *= *[0-9.eE+-]+" "$work/ngspice.log" || { echo "FAIL: no '$k' result in ngspice log" >&2; cat "$work/ngspice.log" >&2; exit 3; }

@@ -7,6 +7,7 @@ evidence.
 - `toolchain.json` — ngspice / xschem / klayout-tools versions.
 - `lib/pdk_pin.sh` — shared PDK-pin gate (`pdk_pin_resolve`, `pdk_model_files`)
   sourced by the bench drivers; exits 2 on any pin or PDK failure.
+- `lib/ngspice_run.sh` — shared ngspice run / result-check helpers (`sim_workdir`, `ngspice_run`, `require_results`, `result_of`, `get`)
 - `smoke/` — one-command check that the pinned PDK and toolchain run:
   `sim/smoke/run.sh`. It fails closed on a missing or mismatched PDK
   revision. Smoke is tt / 27 C / 1.8 V by design; PVT corners belong to the

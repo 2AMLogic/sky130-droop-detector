@@ -8,19 +8,16 @@ set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 sim="$here/.."
 . "$sim/lib/pdk_pin.sh"
+. "$sim/lib/ngspice_run.sh"
 pdk_pin_resolve
 net="$sim/../design/threshold_ref.spice"
 [ -r "$net" ] || { echo "FAIL: netlist unreadable: $net" >&2; exit 2; }
-work="$(mktemp -d)"; trap 'rm -rf "$work"' EXIT
+sim_workdir
 sed "s#__PDK_LIB__#$lib#;s#__NETLIST__#$net#" "$here/tb_ref_droop.spice" > "$work/tb.spice"
-ngspice -b -o "$work/ngspice.log" "$work/tb.spice" >/dev/null 2>&1 || {
-  echo "FAIL: ngspice exited non-zero; log:" >&2; cat "$work/ngspice.log" >&2; exit 3; }
+ngspice_run "$work/tb.spice" "$work/ngspice.log"
 
-for k in vref_nom_v vref_shift_rail_mv vref_tran_dev_max_mv vref_tran_dev_min_mv vref_shift_supply_mv \
-         vtrip_l0_nom vtrip_l1_nom vtrip_l2_nom vtrip_l3_nom vtrip_l0_rail vtrip_l3_rail vtrip_l0_supply vtrip_l3_supply; do
-  grep -Eq "^RESULT $k = [0-9.eE+-]+" "$work/ngspice.log" || { echo "FAIL: no '$k' result in ngspice log" >&2; cat "$work/ngspice.log" >&2; exit 3; }
-done
-get() { sed -n "s/^RESULT $1 = //p" "$work/ngspice.log" | head -n1; }
+require_results "$work/ngspice.log" vref_nom_v vref_shift_rail_mv vref_tran_dev_max_mv vref_tran_dev_min_mv vref_shift_supply_mv \
+  vtrip_l0_nom vtrip_l1_nom vtrip_l2_nom vtrip_l3_nom vtrip_l0_rail vtrip_l3_rail vtrip_l0_supply vtrip_l3_supply
 
 pdk_model_files tt "$work/files"
 rec="${RECORD:-/dev/stdout}"

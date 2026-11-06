@@ -21,12 +21,13 @@ PROC="${PROC:-tt}"; TEMP_C="${TEMP_C:-27}"; VSUP="${VSUP:-3.3}"
 NEGCTL_MV="${NEGCTL_MV:-0}"
 export OMP_NUM_THREADS=1
 . "$sim/lib/pdk_pin.sh"
+. "$sim/lib/ngspice_run.sh"
 pdk_pin_resolve
 net="$sim/../design/detector_top.spice"
 [ -r "$net" ] || { echo "FAIL: netlist unreadable: $net" >&2; exit 2; }
 ldo="$sim/tb_rail_model_check/ldo_3v3in_1v8out.spice"
 [ -r "$ldo" ] || { echo "FAIL: LDO netlist unreadable: $ldo" >&2; exit 2; }
-work="$(mktemp -d)"; trap 'rm -rf "$work"' EXIT
+sim_workdir
 
 subst() { sed "s#__PDK_LIB__#$lib#;s#__NETLIST__#$net#;s#__LDO__#$ldo#;s#__PROC__#$PROC#;s#__TEMP__#$TEMP_C#;s#__VSUP__#$VSUP#" "$1"; }
 cases="$(python3 -I "$here/gen_envelope_ff.py" "$work/env.raw" "$NEGCTL_MV")"
@@ -34,12 +35,11 @@ subst "$work/env.raw" > "$work/env.spice"
 subst "$here/tb_false_flag_netlist.spice" > "$work/net.spice"
 if [ -n "${NEGCTL_DROP:-}" ]; then sed -i "/RESULT $NEGCTL_DROP =/d" "$work/env.spice" "$work/net.spice"; fi
 for leg in env net; do
-  ngspice -b -o "$work/$leg.log" "$work/$leg.spice" >/dev/null 2>&1 || {
-    echo "FAIL: ngspice ($leg leg) exited non-zero; log:" >&2; tail -40 "$work/$leg.log" >&2; exit 3; }
+  NGSPICE_CTX="($leg leg)" ngspice_run "$work/$leg.spice" "$work/$leg.log"
 done
 
-need() { grep -Eq "^RESULT $2 = [0-9.eE+-]+" "$work/$1.log" || { echo "FAIL: no '$2' result in the $1 leg" >&2; tail -40 "$work/$1.log" >&2; exit 3; }; }
-get() { sed -n "s/^RESULT $2 = //p" "$work/$1.log" | head -n1; }
+need() { NGSPICE_CTX="($1 leg)" require_results "$work/$1.log" "$2"; }   # need <leg> <key>
+get() { result_of "$work/$1.log" "$2"; }   # get <leg> <key>
 for c in $cases; do
   need env "${c}_vmin"; need env "${c}_vmax"
   for i in 0 1 2 3; do need env "${c}_live_l$i"; done

@@ -11,10 +11,11 @@ set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 sim="$here/.."
 . "$sim/lib/pdk_pin.sh"
+. "$sim/lib/ngspice_run.sh"
 pdk_pin_resolve
 net="$sim/../design/detector_top.spice"
 [ -r "$net" ] || { echo "FAIL: netlist unreadable: $net" >&2; exit 2; }
-work="$(mktemp -d)"; trap 'rm -rf "$work"' EXIT
+sim_workdir
 export OMP_NUM_THREADS="${OMP_NUM_THREADS:-2}"   # shared host: keep ngspice modest
 
 # Levels: name nominal-trip select-s0 select-s1 (row 4); starts: row 6 start points.
@@ -50,15 +51,11 @@ for lv in "${LEVELS[@]}"; do read -r ln lnom s0 s1 <<<"$lv"
 done
 
 sed -e "s#__PDK_LIB__#$lib#;s#__NETLIST__#$net#" -e "/^__CASES__\$/{r $work/cases.ctl" -e "d}" "$here/tb_latency.spice" > "$work/tb.spice"
-ngspice -b -o "$work/ngspice.log" "$work/tb.spice" >/dev/null 2>&1 || {
-  echo "FAIL: ngspice exited non-zero; log:" >&2; cat "$work/ngspice.log" >&2; exit 3; }
+ngspice_run "$work/tb.spice" "$work/ngspice.log"
 if [ -n "${NEGCTL_DROP_KEY:-}" ]; then sed -i "/^RESULT ${NEGCTL_DROP_KEY} = /d" "$work/ngspice.log"; fi
 if grep -Eqi '(^| )(tl|voh|vol) +.*failed|measure.*failed' "$work/ngspice.log"; then
   echo "FAIL: a .meas failed (no crossing found); log:" >&2; cat "$work/ngspice.log" >&2; exit 3; fi
-for k in "${keys[@]}"; do
-  grep -Eq "^RESULT $k = [0-9.eE+-]+" "$work/ngspice.log" || { echo "FAIL: no '$k' result in ngspice log" >&2; exit 3; }
-done
-get() { sed -n "s/^RESULT $1 = //p" "$work/ngspice.log" | head -n1; }
+require_results "$work/ngspice.log" "${keys[@]}"
 
 pdk_model_files tt "$work/files"
 rec="${RECORD:-/dev/stdout}"

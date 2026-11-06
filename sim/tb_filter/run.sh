@@ -15,16 +15,14 @@ set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 sim="$here/.."
 . "$sim/lib/pdk_pin.sh"
+. "$sim/lib/ngspice_run.sh"
 pdk_pin_resolve
 fnet="$sim/../design/glitch_filter.spice"; tnet="$sim/../design/detector_top.spice"
 for n in "$fnet" "$tnet"; do [ -r "$n" ] || { echo "FAIL: netlist unreadable: $n" >&2; exit 2; }; done
-work="$(mktemp -d)"; trap 'rm -rf "$work"' EXIT
+sim_workdir
 
 fail3() { echo "FAIL: $1" >&2; [ -n "${2:-}" ] && cat "$2" >&2; exit 3; }
-runsim() { # deck log
-  ngspice -b -o "$2" "$1" >/dev/null 2>&1 || fail3 "ngspice exited non-zero ($1)" "$2"; }
-res() { sed -n "s/^RESULT $2 = //p" "$1" | head -n1; }
-need() { grep -Eq "^RESULT $2 = [0-9.eE+-]+" "$1" || fail3 "no '$2' result in ngspice log" "$1"; }
+runsim() { NGSPICE_CTX="($1)" ngspice_run "$1" "$2"; }   # deck log
 
 # ---- A. pulse-width sweep on the filter alone ------------------------------------
 # widths in ns, one per line
@@ -54,7 +52,7 @@ bracket() { # widths log n
       if(p[i]<1.65){lo=i} else if(hi<0){hi=i} }
     print w[lo], p[lo], w[hi], p[hi] }' "$1" /dev/null
 }
-for i in $(seq 0 $((n1-1))); do need "$work/a1.log" "pk$i"; done
+for i in $(seq 0 $((n1-1))); do require_results "$work/a1.log" "pk$i"; done
 read -r wrej pkrej wpas pkpas <<<"$(bracket "$work/w1" "$work/a1.log" "$n1")"
 [ "${wrej:-}" != "MISSING" ] && [ -n "$wrej" ] && [ "$wrej" != "-1" ] || fail3 "no rejected pulse in the sweep (filter passes everything)" "$work/a1.log"
 awk -v r="$wrej" -v p="$wpas" 'BEGIN{exit !(p>r)}' || fail3 "no passed pulse above the rejected width in the sweep"
@@ -62,14 +60,14 @@ awk -v r="$wrej" -v p="$wpas" 'BEGIN{exit !(p>r)}' || fail3 "no passed pulse abo
 awk -v a="$wrej" -v b="$wpas" 'BEGIN{for(w=a;w<=b+1e-9;w+=0.01)printf "%.3f\n",w}' > "$work/w2"
 n2="$(pulse_deck "$work/w2" a2)"
 runsim "$work/a2.sp" "$work/a2.log"
-for i in $(seq 0 $((n2-1))); do need "$work/a2.log" "pk$i"; done
+for i in $(seq 0 $((n2-1))); do require_results "$work/a2.log" "pk$i"; done
 read -r wrej pkrej wpas pkpas <<<"$(bracket "$work/w2" "$work/a2.log" "$n2")"
 [ "$wrej" != "MISSING" ] && [ -n "$wrej" ] && [ -n "$wpas" ] || fail3 "refined sweep has no bracket" "$work/a2.log"
 # the refined bracket's two ends (and the first coarse width above the reject width
 # that passes) are the "just below" / "just above" points; "at" is the bracket itself.
 # pulses of 5, 10, 50 ns (tail of w1) must pass
 for k in $((n1-3)) $((n1-2)) $((n1-1)); do
-  v="$(res "$work/a1.log" "pk$k")"
+  v="$(result_of "$work/a1.log" "pk$k")"
   awk -v v="$v" 'BEGIN{exit !(v>=1.65)}' || fail3 "pulse #$k of the wide set (index $k) did not pass the filter: pk=$v V" "$work/a1.log"
 done
 
@@ -100,7 +98,7 @@ echo \"RESULT l${lvl}_$nm = \$&$nm\""
   sed "s#__PDK_LIB__#$lib#;s#__NETLIST__#$tnet#;s#__S0__#$s0#;s#__S1__#$s1#;s#__PWL__#$pwl#;s#__TSTOP__#${t0}n#" "$here/tb_filter_droop.spice" |
     awk -v m="$meas" '{ if ($0=="__MEAS__") print m; else print }' > "$work/b$lvl.sp"
   runsim "$work/b$lvl.sp" "$work/b$lvl.log"
-  for j in 0 1 2; do for q in pre pk end; do need "$work/b$lvl.log" "l${lvl}_$q$j"; done; done
+  for j in 0 1 2; do for q in pre pk end; do require_results "$work/b$lvl.log" "l${lvl}_$q$j"; done; done
 done
 
 # ---- grade -----------------------------------------------------------------------
@@ -113,11 +111,11 @@ done
 awk -v r="$wrej" 'BEGIN{exit !(r+0<10)}' || fail3 "reject width $wrej ns is not below the row 7 target width (10 ns)"
 for lvl in 0 1 2 3; do
   for j in 0 1; do
-    pk="$(res "$work/b$lvl.log" "l${lvl}_pk$j")"
+    pk="$(result_of "$work/b$lvl.log" "l${lvl}_pk$j")"
     awk -v v="$pk" 'BEGIN{exit !(v>=1.44)}' || fail3 "level $lvl droop #$j: live flag peak $pk V < 1.44 V (droop hidden)" "$work/b$lvl.log"
   done
   for j in 0 1 2; do for q in pre end; do
-    v="$(res "$work/b$lvl.log" "l${lvl}_$q$j")"
+    v="$(result_of "$work/b$lvl.log" "l${lvl}_$q$j")"
     awk -v v="$v" 'BEGIN{exit !(v<=0.36)}' || fail3 "level $lvl droop #$j: live flag $q = $v V > 0.36 V (false flag / stuck)" "$work/b$lvl.log"
   done; done
 done
@@ -133,14 +131,14 @@ rec="${RECORD:-/dev/stdout}"
   echo "  widest rejected pulse = $wrej ns (output peak $pkrej V)"
   echo "  narrowest passed pulse = $wpas ns (output peak $pkpas V); sweep resolution 0.01 ns, so reject width is in ($wrej, $wpas] ns"
   echo "  just below / at / just above the reject width: $wrej / bracket / $wpas ns"
-  echo "  5, 10, 50 ns pulses: output peaks $(res "$work/a1.log" "pk$((n1-3))") / $(res "$work/a1.log" "pk$((n1-2))") / $(res "$work/a1.log" "pk$((n1-1))") V (all pass)"
+  echo "  5, 10, 50 ns pulses: output peaks $(result_of "$work/a1.log" "pk$((n1-3))") / $(result_of "$work/a1.log" "pk$((n1-2))") / $(result_of "$work/a1.log" "pk$((n1-1))") V (all pass)"
   echo "  graded: reject width < 10 ns (row 7 target): $wrej ns -> ok"
   echo "results B (detector_top; live flag peak in V over each droop; 50 / 10 / 2 ns widths; VOH bound 1.44 V, VOL bound 0.36 V):"
   for lvl in 0 1 2 3; do
-    echo "  level $lvl (threshold ${thr[$lvl]} V): peak $(res "$work/b$lvl.log" "l${lvl}_pk0") / $(res "$work/b$lvl.log" "l${lvl}_pk1") / $(res "$work/b$lvl.log" "l${lvl}_pk2") V; pre-droop max $(res "$work/b$lvl.log" "l${lvl}_pre0") V; post-droop max $(res "$work/b$lvl.log" "l${lvl}_end0") V"
+    echo "  level $lvl (threshold ${thr[$lvl]} V): peak $(result_of "$work/b$lvl.log" "l${lvl}_pk0") / $(result_of "$work/b$lvl.log" "l${lvl}_pk1") / $(result_of "$work/b$lvl.log" "l${lvl}_pk2") V; pre-droop max $(result_of "$work/b$lvl.log" "l${lvl}_pre0") V; post-droop max $(result_of "$work/b$lvl.log" "l${lvl}_end0") V"
   done
   for lvl in 0 1 2 3; do
-    awk -v v="$(res "$work/b$lvl.log" "l${lvl}_pk2")" -v l="$lvl" 'BEGIN{printf "  2 ns droop (row 7 stretch), level %d: %s\n", l, (v>=1.44 ? "flagged" : "NOT flagged (stretch width not met at this corner)")}'
+    awk -v v="$(result_of "$work/b$lvl.log" "l${lvl}_pk2")" -v l="$lvl" 'BEGIN{printf "  2 ns droop (row 7 stretch), level %d: %s\n", l, (v>=1.44 ? "flagged" : "NOT flagged (stretch width not met at this corner)")}'
   done
   echo "  graded: 50 ns and 10 ns droops flag at all four levels; no flag before/after. 2 ns (row 7 stretch) is reported only."
   echo "  no verdict for spec row 9 over PVT is made here"
