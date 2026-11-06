@@ -128,14 +128,7 @@ rec="${RECORD:-/dev/stdout}"
 {
   echo "label: SIMULATED (not measured); testbench sim/tb_filter/tb_filter_pulse.spice and tb_filter_droop.spice; corner tt, 27 C, detector supply 3.3 V (single corner; PVT is #34/#35)"
   echo "stimulus A: ideal 0->3.3 V pulses, 0.05 ns edges, width at 50 % (stands in for comparator output); stimulus B: rail = BEHAVIOURAL ENVELOPE (assumption, spec 'Rail model' form 2): PWL droop to threshold - 100 mV, 1 ns linear edges, width at the threshold crossings, +10 mV 20 MHz ripple in series; 100 fF on live"
-  echo "ngspice: $(ngspice --version | grep -m1 -o 'ngspice-[0-9.]*')"
-  echo "klt: $($KLT --version)"
-  echo "pdk_sources: $got"
-  echo "netlist_sha256: $(sha256sum "$fnet" | cut -d' ' -f1)  design/glitch_filter.spice"
-  echo "netlist_sha256: $(sha256sum "$tnet" | cut -d' ' -f1)  design/detector_top.spice"
-  echo "model_files_sha256:"
-  while read -r f; do [ -r "$f" ] || { echo "FAIL: unreadable model file $f" >&2; exit 2; }
-    printf '  %s  %s\n' "$(sha256sum "$f" | cut -d' ' -f1)" "${f#"$root"/}"; done < "$work/files"
+  pdk_record_header netlist_sha256 "$fnet" design/glitch_filter.spice netlist_sha256 "$tnet" design/detector_top.spice
   echo "results A (filter alone, pass = output peak >= 1.65 V):"
   echo "  widest rejected pulse = $wrej ns (output peak $pkrej V)"
   echo "  narrowest passed pulse = $wpas ns (output peak $pkpas V); sweep resolution 0.01 ns, so reject width is in ($wrej, $wpas] ns"

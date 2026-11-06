@@ -30,13 +30,7 @@ nom=(1.728 1.692 1.638 1.584)
 {
   echo "label: SIMULATED (not measured); testbench sim/tb_threshold_select/tb_threshold_select.spice; corner tt, 27 C, detector supply 3.3 V"
   echo "stimulus: monitored rail = IDEAL SOURCE (DC sweep); comparator = ideal behavioural source (no offset), so vtrip is the selected tap voltage"
-  echo "ngspice: $(ngspice --version | grep -m1 -o 'ngspice-[0-9.]*')"
-  echo "klt: $($KLT --version)"
-  echo "pdk_sources: $got"
-  echo "netlist_sha256: $(sha256sum "$net" | cut -d' ' -f1)  design/threshold_ref.spice"
-  echo "model_files_sha256:"
-  while read -r f; do [ -r "$f" ] || { echo "FAIL: unreadable model file $f" >&2; exit 2; }
-    printf '  %s  %s\n' "$(sha256sum "$f" | cut -d' ' -f1)" "${f#"$root"/}"; done < "$work/files"
+  pdk_record_header netlist_sha256 "$net" design/threshold_ref.spice
   echo "results:"
   echo "  vref_v = $(get vref_v)"
   echo "  iq_ua (whole threshold_ref, code 00, 3.3 V, op) = $(get iq_ua)"

@@ -32,13 +32,7 @@ rec="${RECORD:-/dev/stdout}"
   echo "label: SIMULATED (not measured); testbench sim/tb_comparator/tb_comparator.spice; corner tt, 27 C, detector supply 3.3 V"
   echo "stimulus: monitored rail = IDEAL SOURCE; comparator only (no glitch filter), 5 fF load on flag; NOT the row 6 grading (that is tb_latency with the rail model and filter)"
   echo "latency stimulus: rail falls from 1.8 V to tap - 100 mV with a 1 ns linear edge; t = 0 is the instant it reaches tap - 100 mV; latency = t = 0 to flag at 50% of its swing (1.65 V)"
-  echo "ngspice: $(ngspice --version | grep -m1 -o 'ngspice-[0-9.]*')"
-  echo "klt: $($KLT --version)"
-  echo "pdk_sources: $got"
-  echo "netlist_sha256: $(sha256sum "$net" | cut -d' ' -f1)  design/comparator.spice"
-  echo "model_files_sha256:"
-  while read -r f; do [ -r "$f" ] || { echo "FAIL: unreadable model file $f" >&2; exit 2; }
-    printf '  %s  %s\n' "$(sha256sum "$f" | cut -d' ' -f1)" "${f#"$root"/}"; done < "$work/files"
+  pdk_record_header netlist_sha256 "$net" design/comparator.spice
   echo "results (compared with spec rows 6 and 11 only as figures; row 11 is detector total, this is the comparator part):"
   for vth in "${taps[@]}"; do
     awk -v t="$vth" -v iq="$(get "$vth" iq_ua)" -v vt="$(get "$vth" vtrip)" \

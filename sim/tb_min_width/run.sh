@@ -69,13 +69,7 @@ asserts() { awk -v m="$1" -v v="$2" 'BEGIN{exit !(m>=1.44 && v<=0.36)}'; }
   echo "label: SIMULATED (not measured); testbench sim/tb_min_width/tb_min_width.spice; corner tt, 27 C, detector supply 3.3 V (single corner; no PVT sweep)"
   echo "stimulus: monitored rail = BEHAVIOURAL ENVELOPE (assumption, spec 'Rail model' form 2): 1.8 V -> threshold - 100 mV -> 1.8 V, 1 ns linear edges, width measured at the threshold crossings (stimulus width checked within 2 % of the case width), 1 kohm load"
   echo "measure: 'asserts' = detector_top.live (comparator + glitch filter + flag logic, 100 fF load, assumption) reaches the spec VOH floor of 1.44 V at any time from 95 ns to 300 ns (it may assert after the rail has recovered); live before the droop must be <= 0.36 V (VOL ceiling)"
-  echo "ngspice: $(ngspice --version | grep -m1 -o 'ngspice-[0-9.]*')"
-  echo "klt: $($KLT --version)"
-  echo "pdk_sources: $got"
-  echo "netlist_sha256: $(sha256sum "$net" | cut -d' ' -f1)  design/detector_top.spice"
-  echo "model_files_sha256:"
-  while read -r f; do [ -r "$f" ] || { echo "FAIL: unreadable model file $f" >&2; exit 2; }
-    printf '  %s  %s\n' "$(sha256sum "$f" | cut -d' ' -f1)" "${f#"$root"/}"; done < "$work/files"
+  pdk_record_header netlist_sha256 "$net" design/detector_top.spice
   echo "results:"
   for lv in "${LEVELS[@]}"; do read -r ln lnom _ <<<"$lv"
     for w in "${WIDTHS[@]}"; do

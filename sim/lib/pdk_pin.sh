@@ -32,3 +32,23 @@ pdk_model_files() {
   local cdir; cdir="$(dirname "$lib")"
   { echo "$lib"; sed -n "/^\\.lib $1\$/,/^\\.endl $1\$/p" "$lib" | sed -n 's/^\.include *//p' | sed "s#^#$cdir/#"; } > "$2"
 }
+
+# pdk_record_header [<key> <path> <display>]...: print the provenance block of a record:
+# the ngspice / klt / pdk_sources lines, one "<key>: <sha256 of path>  <display>" line per
+# triple (netlists, checkers; in the given order), then model_files_sha256 with the hash of
+# every model file listed in $work/files. Fail-closed: an unreadable model file or an
+# unreadable triple path exits 2, so a record never carries an incomplete hash list.
+# Needs $KLT, $got, $root and $work/files (pdk_pin_resolve + pdk_model_files).
+pdk_record_header() {
+  echo "ngspice: $(ngspice --version | grep -m1 -o 'ngspice-[0-9.]*')"
+  echo "klt: $($KLT --version)"
+  echo "pdk_sources: $got"
+  while [ "$#" -ge 3 ]; do
+    echo "$1: $(sha256sum "$2" | cut -d' ' -f1)  $3"
+    shift 3
+  done
+  echo "model_files_sha256:"
+  local f
+  while read -r f; do [ -r "$f" ] || { echo "FAIL: unreadable model file $f" >&2; exit 2; }
+    printf '  %s  %s\n' "$(sha256sum "$f" | cut -d' ' -f1)" "${f#"$root"/}"; done < "$work/files"
+}

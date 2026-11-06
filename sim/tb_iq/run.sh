@@ -40,13 +40,7 @@ rec="${RECORD:-/dev/stdout}"
 {
   echo "label: SIMULATED (not measured); testbench sim/$bench/$bench.spice; corner $PROC, $TEMP_C C, detector supply $VSUP V; one corner"
   echo "stimulus: monitored rail = IDEAL DC SOURCE at 1.8 V (quiescent figure); CLR pulsed once at 1-5 us to clear power-up sticky state; current = mean of -i(Vdd) over 20-40 us, live and sticky idle (< 0.36 V)"
-  echo "ngspice: $(ngspice --version | grep -m1 -o 'ngspice-[0-9.]*')"
-  echo "klt: $($KLT --version)"
-  echo "pdk_sources: $got"
-  echo "netlist_sha256: $(sha256sum "$net" | cut -d' ' -f1)  design/detector_top.spice"
-  echo "model_files_sha256:"
-  while read -r f; do [ -r "$f" ] || { echo "FAIL: unreadable model file $f" >&2; exit 2; }
-    printf '  %s  %s\n' "$(sha256sum "$f" | cut -d' ' -f1)" "${f#"$root"/}"; done < "$work/files"
+  pdk_record_header netlist_sha256 "$net" design/detector_top.spice
   echo "results:"
   echo "  spec row 11 bands: fallback < 100 uA; target < 50 uA; stretch < 20 uA. Row needs every corner; this record is one corner and makes no row verdict"
   for i in 0 1 2 3; do
