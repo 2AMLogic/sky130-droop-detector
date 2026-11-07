@@ -62,7 +62,7 @@ first="$(ls "$work"/out/l0_mm.request/report.json)"
     d="$(dirname "$r")"
     echo "  $(basename "$d" .request): $(jq -rs '[.[].job_id]|sort|join(" ")' "$d"/batch-receipt-*.json 2>/dev/null || echo none)"; done
   echo "grading: klt yield target_sigma 3 (lower confidence bound), min_converged_samples 300, limits level +/-27 mV (spec row 5 target), untrimmed"
-  echo "negative control: ladder segment XR2 L=94.073 -> 88 in design/detector_top.spice copy, tt_mm mismatch MC, same seed and N"
+  echo "negative control: ladder segment XR2 L=94.073 -> 88 in design/detector_top.spice copy, all five *_mm sections (each group graded against the control in its own section; mc group against tt_mm), same seed and N"
   echo "klt yield status: $(jq -r .status "$work/yield.json")"
   jq -r '.measurements[]|"  \(.name): n=\(.n) mean=\(.distribution.mean) sd=\(.distribution.stddev) status=\(.status) sigma_to_spec=\(.capability.sigma_to_spec) sigma_target_met=\(.sigma_target.met) sample_size=\(.sample_size.verdict) neg_control=\(.negative_control.verdict)"' "$work/yield.json" 2>/dev/null || true
 } > "$work/record.txt"
