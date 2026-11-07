@@ -3,7 +3,8 @@
 
 12 requests: for each of the 4 select codes, a mismatch request (5 *_mm process
 sections, vary=mismatch), a process-MC request (`mc` section, vary=both), and a
-negative-control request (ladder segment XR2 lengthened-shortened, tt_mm, vary=mismatch).
+negative-control request (ladder segment XR2 lengthened-shortened, all 5 *_mm sections so each
+process group is graded against a control run in its own section, vary=mismatch).
 Seed, N and the corner box are constants here and are the recorded values."""
 import json, pathlib, re, sys
 
@@ -38,7 +39,7 @@ def request(name, tb, procs, vary, nominal):
 for k, v0, v1, nom in LEVELS:
     for tag, net, procs, vary in (("mm", "detector_top.spice", MM, "mismatch"),
                                   ("mc", "detector_top.spice", ["mc"], "both"),
-                                  ("ctl", "detector_top_ctl.spice", ["tt_mm"], "mismatch")):
+                                  ("ctl", "detector_top_ctl.spice", MM, "mismatch")):
         tb = f"tb_l{k}_{tag}.spice"
         (work / tb).write_text(body.replace("__NETLIST__", net).replace("__S0__", str(v0)).replace("__S1__", str(v1)))
         (work / f"l{k}_{tag}.request.json").write_text(json.dumps(request(f"l{k}_{tag}", tb, procs, vary, nom), indent=1))

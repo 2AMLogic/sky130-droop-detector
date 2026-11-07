@@ -24,13 +24,13 @@ def samples(rep, proc):
 meas, limits = [], {}
 for k, nom in enumerate(LEVELS):
     mm, mc, ctl = load(f"l{k}_mm"), load(f"l{k}_mc"), load(f"l{k}_ctl")
-    ctl_s = samples(ctl, "tt_mm")
+    ctl_s = {p: samples(ctl, p) for p in ("tt_mm", "ss_mm", "ff_mm", "sf_mm", "fs_mm")}
     groups = {p: samples(mm, p) for p in ("tt_mm", "ss_mm", "ff_mm", "sf_mm", "fs_mm")}
     groups["mc"] = samples(mc, "mc")
     for g, s in groups.items():
         name = f"vtrip_l{k}_{g}"
         meas.append({"name": name, "samples": s,
-                     "negative_control": {"samples": ctl_s, "description": "ladder segment XR2 L=88 (was 94.073), tt_mm mismatch MC, same seed/N"}})
+                     "negative_control": {"samples": ctl_s.get(g, ctl_s["tt_mm"]), "description": "ladder segment XR2 L=88 (was 94.073), " + (g if g in ctl_s else "tt_mm (process-MC group graded against the tt_mm control)") + " mismatch MC, same seed/N"}})
         limits[name] = {"min": round(nom - BAND, 6), "max": round(nom + BAND, 6), "target_sigma": 3,
                         "min_converged_samples": N, "spec_row": "5"}
 pathlib.Path(sys.argv[2]).write_text(json.dumps({"measurements": meas}))
