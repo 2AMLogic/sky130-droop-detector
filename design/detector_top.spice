@@ -1,4 +1,5 @@
-** sch_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-27/design/detector_top.sch
+** klt-netlist-inputs: {"pdk_variant": "sky130A", "rcfile": "xschemrc", "xschem_version": "3.4.7"}
+** sch_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-77/design/detector_top.sch
 .subckt detector_top vmon s0 s1 clr vdd33 gnd live sticky
 *.ipin vmon
 *.ipin s0
@@ -15,8 +16,8 @@ Xlogic flag_f clr vdd33 gnd live sticky flag_logic
 .ends
 
 * expanding   symbol:  threshold_ref.sym # of pins=6
-** sym_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-27/design/threshold_ref.sym
-** sch_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-27/design/threshold_ref.sch
+** sym_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-77/design/threshold_ref.sym
+** sch_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-77/design/threshold_ref.sch
 .subckt threshold_ref s0 s1 vdd33 gnd vref vth
 *.ipin s0
 *.ipin s1
@@ -70,8 +71,8 @@ XM18 mb s1b vth vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.5
 
 
 * expanding   symbol:  comparator.sym # of pins=5
-** sym_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-27/design/comparator.sym
-** sch_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-27/design/comparator.sch
+** sym_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-77/design/comparator.sym
+** sch_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-77/design/comparator.sch
 .subckt comparator vmon vth vdd33 gnd flag
 *.ipin vmon
 *.ipin vth
@@ -82,29 +83,29 @@ XR1 nb vdd33 gnd sky130_fd_pr__res_xhigh_po_1p41 L=600 mult=1 m=1
 XM1 nb nb gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=1 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0 sd=0
 + mult=1 m=1
 XM2 tl nb gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=1 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0 sd=0
-+ mult=4 m=4
++ mult=6 m=6
 XM3 d1 vth tl gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0 sb=0 sd=0
 + mult=1 m=1
 XM4 o1 vmon tl gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0 sb=0
 + sd=0 mult=1 m=1
-XM5 d1 d1 vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0 sb=0
+XM5 d1 d1 vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0
 + sd=0 mult=1 m=1
-XM6 o1 d1 vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0 sb=0
+XM6 o1 d1 vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0
 + sd=0 mult=1 m=1
-XM7 n2 o1 vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=8 nf=1 ad=2.32 as=2.32 pd=16.58 ps=16.58 nrd=0.03625 nrs=0.03625 sa=0
-+ sb=0 sd=0 mult=1 m=1
-XM8 n2 o1 gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=1 nf=1 ad=0.29 as=0.29 pd=2.58 ps=2.58 nrd=0.29 nrs=0.29 sa=0 sb=0 sd=0
+XM7 n2 o1 vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0 sb=0
++ sd=0 mult=1 m=1
+XM8 n2 o1 gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=0.5 nf=1 ad=0.145 as=0.145 pd=1.58 ps=1.58 nrd=0.58 nrs=0.58 sa=0 sb=0 sd=0
 + mult=1 m=1
-XM9 flag n2 vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=8 nf=1 ad=2.32 as=2.32 pd=16.58 ps=16.58 nrd=0.03625 nrs=0.03625 sa=0
+XM9 flag n2 vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0
 + sb=0 sd=0 mult=1 m=1
-XM10 flag n2 gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0 sb=0
+XM10 flag n2 gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0
 + sd=0 mult=1 m=1
 .ends
 
 
 * expanding   symbol:  glitch_filter.sym # of pins=4
-** sym_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-27/design/glitch_filter.sym
-** sch_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-27/design/glitch_filter.sch
+** sym_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-77/design/glitch_filter.sym
+** sch_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-77/design/glitch_filter.sch
 .subckt glitch_filter flag_in vdd33 gnd flag_f
 *.ipin flag_in
 *.iopin vdd33
@@ -124,8 +125,8 @@ XM4 flag_f rcb gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=1 nf=1 ad=0.29 as=0.
 
 
 * expanding   symbol:  flag_logic.sym # of pins=6
-** sym_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-27/design/flag_logic.sym
-** sch_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-27/design/flag_logic.sch
+** sym_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-77/design/flag_logic.sym
+** sch_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-77/design/flag_logic.sch
 .subckt flag_logic live_in clr vdd33 gnd live sticky
 *.ipin live_in
 *.ipin clr
@@ -143,10 +144,10 @@ XM3 c2 c2 gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd
 XM4 vdd33 vcl vlim gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0 sb=0
 + sd=0 mult=1 m=1
 XR2 gnd vlim gnd sky130_fd_pr__res_xhigh_po_1p41 L=1200 mult=1 m=1
-XC1 vlim gnd sky130_fd_pr__cap_mim_m3_1 W=10 L=10 MF=1 m=1
-XM5 sb live_in vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0
-+ sb=0 sd=0 mult=1 m=1
-XM6 sb live_in gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0
+XC1 vlim gnd sky130_fd_pr__cap_mim_m3_1 W=14 L=14 MF=1 m=1
+XM5 sb live_in vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=8 nf=1 ad=2.32 as=2.32 pd=16.58 ps=16.58 nrd=0.03625 nrs=0.03625
++ sa=0 sb=0 sd=0 mult=1 m=1
+XM6 sb live_in gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0 sb=0
 + sd=0 mult=1 m=1
 XM7 rb clr vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0
 + sd=0 mult=1 m=1
@@ -172,13 +173,13 @@ XM17 qn q vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.5
 + sd=0 mult=1 m=1
 XM18 qn q gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=1 nf=1 ad=0.29 as=0.29 pd=2.58 ps=2.58 nrd=0.29 nrs=0.29 sa=0 sb=0 sd=0
 + mult=1 m=1
-XM19 live sb vlim vlim sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=12 nf=1 ad=3.48 as=3.48 pd=24.58 ps=24.58 nrd=0.0241666666666667
-+ nrs=0.0241666666666667 sa=0 sb=0 sd=0 mult=1 m=1
-XM20 live sb gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0
+XM19 live sb vlim vlim sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=24 nf=1 ad=6.96 as=6.96 pd=48.58 ps=48.58 nrd=0.0120833333333333
++ nrs=0.0120833333333333 sa=0 sb=0 sd=0 mult=1 m=1
+XM20 live sb gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0 sb=0
 + sd=0 mult=1 m=1
-XM21 sticky qn vlim vlim sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=12 nf=1 ad=3.48 as=3.48 pd=24.58 ps=24.58 nrd=0.0241666666666667
-+ nrs=0.0241666666666667 sa=0 sb=0 sd=0 mult=1 m=1
-XM22 sticky qn gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0
+XM21 sticky qn vlim vlim sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=24 nf=1 ad=6.96 as=6.96 pd=48.58 ps=48.58 nrd=0.0120833333333333
++ nrs=0.0120833333333333 sa=0 sb=0 sd=0 mult=1 m=1
+XM22 sticky qn gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0 sb=0
 + sd=0 mult=1 m=1
 .ends
 
