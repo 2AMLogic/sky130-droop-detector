@@ -1,0 +1,3 @@
+$ NEGCTL_DROP_KEY=r6_l0_nom_lat_ns sim/tb_latency/run.sh
+FAIL: no 'r6_l0_nom_lat_ns' result in ngspice log
+exit=3

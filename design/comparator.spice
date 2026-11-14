@@ -1,0 +1,29 @@
+** sch_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-26/design/comparator.sch
+.subckt comparator vmon vth vdd33 gnd flag
+*.ipin vmon
+*.ipin vth
+*.iopin vdd33
+*.iopin gnd
+*.opin flag
+XR1 nb vdd33 gnd sky130_fd_pr__res_xhigh_po_1p41 L=600 mult=1 m=1
+XM1 nb nb gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=1 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0 sd=0
++ mult=1 m=1
+XM2 tl nb gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=1 W=2 nf=1 ad=0.58 as=0.58 pd=4.58 ps=4.58 nrd=0.145 nrs=0.145 sa=0 sb=0 sd=0
++ mult=4 m=4
+XM3 d1 vth tl gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0 sb=0 sd=0
++ mult=1 m=1
+XM4 o1 vmon tl gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0 sb=0
++ sd=0 mult=1 m=1
+XM5 d1 d1 vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0 sb=0
++ sd=0 mult=1 m=1
+XM6 o1 d1 vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0 sb=0
++ sd=0 mult=1 m=1
+XM7 n2 o1 vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=8 nf=1 ad=2.32 as=2.32 pd=16.58 ps=16.58 nrd=0.03625 nrs=0.03625 sa=0
++ sb=0 sd=0 mult=1 m=1
+XM8 n2 o1 gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=1 nf=1 ad=0.29 as=0.29 pd=2.58 ps=2.58 nrd=0.29 nrs=0.29 sa=0 sb=0 sd=0
++ mult=1 m=1
+XM9 flag n2 vdd33 vdd33 sky130_fd_pr__pfet_g5v0d10v5 L=0.5 W=8 nf=1 ad=2.32 as=2.32 pd=16.58 ps=16.58 nrd=0.03625 nrs=0.03625 sa=0
++ sb=0 sd=0 mult=1 m=1
+XM10 flag n2 gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=0.5 W=4 nf=1 ad=1.16 as=1.16 pd=8.58 ps=8.58 nrd=0.0725 nrs=0.0725 sa=0 sb=0
++ sd=0 mult=1 m=1
+.ends

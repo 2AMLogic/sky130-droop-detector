@@ -1,0 +1,48 @@
+* tb_threshold_accuracy: static trip point per select code of design/detector_top.spice
+* (reference + REAL comparator + filter + flag logic), slow downward ramp of the monitored
+* rail. Corner, temperature and detector supply are substituted by run.sh (default tt /
+* 27 C / 3.3 V) so sim/ corner campaigns (#34) can drive this bench unchanged.
+* The monitored rail is an IDEAL SOURCE here: row 5 is a static trip point, graded on a
+* slow ramp (1 mV/us), not on a fast-edge stimulus. Trip = vmon when v(live) crosses 0.9 V
+* (midpoint of the 1.44 V VOH / 0.36 V VOL output levels of the spec) on the way down.
+.lib "__PDK_LIB__" __PROC__
+.include "__NETLIST__"
+.temp __TEMP__
+.param vsup=__VSUP__
+.option method=gear
+
+Vrail rail 0 PWL(0 1.8 1n 1.8 250u 1.55)
+Vlo lo 0 0
+Vhi hi 0 {vsup}
+Vclr clr 0 0
+Vd0 vd0 0 {vsup}
+Vd1 vd1 0 {vsup}
+Vd2 vd2 0 {vsup}
+Vd3 vd3 0 {vsup}
+X0 rail lo lo clr vd0 0 l0 st0 detector_top
+X1 rail hi lo clr vd1 0 l1 st1 detector_top
+X2 rail lo hi clr vd2 0 l2 st2 detector_top
+X3 rail hi hi clr vd3 0 l3 st3 detector_top
+
+.control
+set num_threads=1
+tran 50n 250u
+meas tran vtrip_l0 find v(rail) when v(l0)=0.9 rise=1
+echo "RESULT vtrip_l0 = $&vtrip_l0"
+meas tran vtrip_l1 find v(rail) when v(l1)=0.9 rise=1
+echo "RESULT vtrip_l1 = $&vtrip_l1"
+meas tran vtrip_l2 find v(rail) when v(l2)=0.9 rise=1
+echo "RESULT vtrip_l2 = $&vtrip_l2"
+meas tran vtrip_l3 find v(rail) when v(l3)=0.9 rise=1
+echo "RESULT vtrip_l3 = $&vtrip_l3"
+meas tran idle_max_l0 max v(l0) from=2u to=20u
+echo "RESULT idle_max_l0 = $&idle_max_l0"
+meas tran idle_max_l1 max v(l1) from=2u to=20u
+echo "RESULT idle_max_l1 = $&idle_max_l1"
+meas tran idle_max_l2 max v(l2) from=2u to=20u
+echo "RESULT idle_max_l2 = $&idle_max_l2"
+meas tran idle_max_l3 max v(l3) from=2u to=20u
+echo "RESULT idle_max_l3 = $&idle_max_l3"
+quit
+.endc
+.end

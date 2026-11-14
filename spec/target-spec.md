@@ -1,10 +1,10 @@
-# Target specification — PROPOSED (ratifies via the PR that lands it)
+# Target specification — RATIFIED 2026-10-20
 
-**Status: proposed.** Ratified by the operator's approval of the PR that lands
+**Status: ratified 2026-10-20** by the operator's merge of [PR #8](https://github.com/2AMLogic/sky130-droop-detector/pull/8), which landed
 [`DR-001`](decision-records/DR-001-target-spec-ratification.md) (the
-ratification-via-PR path `sky130-ldo` used for its DR-006). Until that PR
-merges, nothing here is binding. Ratification fixes what the **targets**
-are; it is not a claim any design meets them — no design exists yet.
+ratification-via-PR path `sky130-ldo` used for its DR-006). Ratification
+fixes what the **targets** are; it is not a claim any design meets them — no
+design exists yet.
 
 Every figure below is a **target, fallback or stretch**, not a result. No
 simulated figure appears in this file. Whenever a result is later recorded
@@ -61,9 +61,9 @@ Derived from these rows (arithmetic, mine, not the LDO's):
 |---|---|---|---|---|---|---|
 | 1 | Monitored rail | 1.8 V (`sky130-ldo` output) | 1.8 V | any rail 1.6–1.95 V | Interface rows above; rail model = both models in *Rail model* | `sim/tb_rail_model_check` (rail model reproduces the LDO interface rows before any detector row relies on it) |
 | 2 | Detector supply | same as target; a different supply architecture needs a superseding DR, not a quiet fallback | 3.3 V LDO input rail (2.97–3.63 V), independent of the monitored rail; 5 V-class devices only where the 3.3 V domain needs them | — | Supply corners 2.97 / 3.3 / 3.63 V; an input-rail sag case is part of the set (below) | `sim/tb_supply_headroom` (flag decision with monitored rail collapsing and the 3.3 V rail at its minimum, and at a sagging minimum) |
-| 3 | Threshold reference | generated in-tree | generated in-tree, derived from the detector supply; no sibling `consumes` edge | external pin (needs an operator decision) | Must not move with the monitored rail; PVT per corner box | `sim/tb_ref_droop` (reference vs a rail collapsing to 0.9 V, vs the 3.3 V rail at 2.97 V) |
+| 3 | Threshold reference | generated in-tree | generated in-tree from the detector supply rail (not ratioed to it: its residual supply sensitivity is charged to the row 5 error budget); no sibling `consumes` edge | external pin (needs an operator decision) | Must not move with the monitored rail; PVT per corner box | `sim/tb_ref_droop` (reference vs a rail collapsing to 0.9 V, vs the 3.3 V rail at 2.97 V) |
 | 4 | Threshold settings | 1 fixed level, ≥ 5% below nominal (see 5) | 4 levels at **4 / 6 / 9 / 12%** below nominal (1.728 / 1.692 / 1.638 / 1.584 V) | 8 levels, programmable | Select by 2-bit digital input; nominal 1.8 V | `sim/tb_threshold_select` |
-| 5 | Threshold accuracy over PVT | ±3% of nominal (±54 mV) | ±1.5% of nominal (±27 mV) | ±0.75% (±13.5 mV) | Full corner box; static trip point, slow rail ramp; MC mismatch on this row. Immunity floor: lowest level ≥ 2% + accuracy below nominal, so 3.5% at target, 5% at fallback | `sim/tb_threshold_accuracy` (corner grid) and `sim/tb_threshold_mc` (device mismatch, `klt yield`) |
+| 5 | Threshold accuracy over PVT | ±3% of nominal (±54 mV) | ±1.5% of nominal (±27 mV) | ±0.75% (±13.5 mV) | Full corner box; static trip point, slow rail ramp; **untrimmed** (no trim at fallback or target; a trimmed design needs a superseding DR). Bound is **3σ** of the combined process-corner and mismatch Monte Carlo, **N ≥ 300** draws per corner, fixed recorded seed, plus a committed negative control that must fail the grade ([DR-002](decision-records/DR-002-threshold-accuracy-statistical-form.md)). Immunity floor: lowest level ≥ 2% + accuracy below nominal, so 3.5% at target, 5% at fallback | `sim/tb_threshold_accuracy` (corner grid) and `sim/tb_threshold_mc` (device mismatch, `klt yield`) |
 | 6 | Detection latency at 100 mV overdrive | < 20 ns | < 5 ns | < 1 ns | Stimulus: the behavioural-envelope rail falls from its starting point (1.764 / 1.8 / 1.836 V) to the selected threshold − 100 mV with a linear edge of 1 ns (slew ≥ 100 mV/ns), then holds there for at least the row 7 width; t = 0 is the instant the stimulus reaches threshold − 100 mV (full overdrive), not the threshold crossing; latency = t = 0 to flag at 50% of its swing; glitch-filter delay included; ideal step run alongside as the additional case | `sim/tb_latency` |
 | 7 | Minimum detected droop width | 50 ns | 10 ns | 2 ns | Behavioural-envelope droop to the selected threshold − 100 mV with 1 ns linear edges (slew ≥ 100 mV/ns) down and back; width measured at the threshold crossings; the live flag must assert; every level, every corner | `sim/tb_min_width` |
 | 8 | False-flag immunity | no flag for excursions inside the LDO ±2% window (1.764–1.836 V) | same, across PVT and noise | — | Waveform set W1–W5 below; zero flags | `sim/tb_false_flag` |
@@ -159,9 +159,10 @@ step and ΔV = I·t/C ≈ 1.5 mV in 10 ns. So:
   at the pin has sha256 `48de7c67…133c84`
   (`sim/smoke/records/2026-10-17-smoke-tt.txt`), byte-identical to the copy
   `sky130-ldo`'s DR-004 read at its own pin, where those sections are listed
-  at lines 730–838 and 1378. Which of the two mechanisms grades row 5, and
-  the pass criterion (N draws, sigma), is set by the row's testbench record,
-  not here.
+  at lines 730–838 and 1378. Both mechanisms grade row 5, and the pass criterion
+  (3σ, N ≥ 300 per corner, fixed seed, negative control, untrimmed) is fixed
+  here by [DR-002](decision-records/DR-002-threshold-accuracy-statistical-form.md),
+  not by the testbench record.
 - **PDK/ngspice pin: landed, #4.** `sim/pdk.json` pins open_pdks
   `f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7` (`sky130A`, installed with
   `ciel`); `sim/toolchain.json` pins ngspice 46, xschem 3.4.7 and

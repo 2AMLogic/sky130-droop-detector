@@ -1,0 +1,9 @@
+label: SIMULATED traces (tt, 27 C, 3.3 V) checked against the spec reference model; see sim/tb_flag_logic
+  A sequence check: check.py: ok (675 samples checked; set, clear, CLR-while-persisting, hold all exercised)
+  B sequence check: check.py: ok (630 samples checked; set, clear, CLR-while-persisting, hold all exercised)
+negative control part a, broken sequence 'clr-ignored': caught: check.py: FAIL (113 violation(s), 675 samples checked)
+negative control part a, broken sequence 'sticky-follows-live': caught: check.py: FAIL (200 violation(s), 675 samples checked)
+negative control part a, broken sequence 'clr-dominant': caught: check.py: FAIL (44 violation(s), 675 samples checked)
+negative control part b, broken sequence 'clr-ignored': caught: check.py: FAIL (166 violation(s), 630 samples checked)
+negative control part b, broken sequence 'sticky-follows-live': caught: check.py: FAIL (74 violation(s), 630 samples checked)
+negative control part b, broken sequence 'clr-dominant': caught: check.py: FAIL (9 violation(s), 630 samples checked)

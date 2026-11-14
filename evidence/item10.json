@@ -3,14 +3,14 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 10,
-  "summary": "T1 item 10 (Repo hygiene): 18/18 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 10 (Repo hygiene): 34/34 attestation checks passed (klt signoff --attest)",
   "source": "attest/item10.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 18,
-    "passed_count": 18,
+    "check_count": 34,
+    "passed_count": 34,
     "checks": [
       {
         "check": "present",
@@ -31,7 +31,7 @@
         "role": "hygiene",
         "path": "CLAUDE.md",
         "passed": true,
-        "content_hash": "sha256:8d228a89067f595b384aba92b7a1d1309c464396a5394d9f39fc33d6b5960f92"
+        "content_hash": "sha256:22edd3cd59a6171250498e046f55713e0bbc973c8ba9dd59e59d565eda2ebe6e"
       },
       {
         "check": "present",
@@ -45,21 +45,21 @@
         "role": "hygiene",
         "path": "README.md",
         "passed": true,
-        "content_hash": "sha256:1a9499844ac07ccc850fec73f6ccf67cf238721e9fc053310b25da2189ebef11"
+        "content_hash": "sha256:d2d92a8208ab2c0b5478deb10bbc940f2c7f1cac9b5f60dbd7b8933e54cb654b"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "manifests/sky130-droop-detector.json",
         "passed": true,
-        "content_hash": "sha256:e9c0c3d36f984a694fc63e4f67b0e7f76687931f617a8e4cf5d5b55d83842d48"
+        "content_hash": "sha256:87ed7b299395a49cc1db9ed3665479e0a9a3f135f863964213bc4ae00318153d"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "sim/README.md",
         "passed": true,
-        "content_hash": "sha256:96e35a92d05ecb71db8806e8997cb2a221f25f96552ab140597abff23fce5fb2"
+        "content_hash": "sha256:9463eac7ccb46067a3c4932d60bcba56fcb89aa867ae1fcc50736ccc76f0943f"
       },
       {
         "check": "present",
@@ -80,7 +80,7 @@
         "role": "hygiene",
         "path": "spec/target-spec.md",
         "passed": true,
-        "content_hash": "sha256:f19d4209d75a72ed005aa08b1f6cf2df0f65f679c14f5a63c20f3a178aecc9f9"
+        "content_hash": "sha256:24995150f62bc69ab4ea120ebc26bd91d1c0c3f4d81f53f3f0c6b1e8dc7b1238"
       },
       {
         "check": "command",
@@ -127,6 +127,21 @@
       {
         "check": "command",
         "role": "audit",
+        "name": "rail-envelope-rail-envelope-compiles",
+        "argv": [
+          "python3",
+          "-I",
+          "-m",
+          "py_compile",
+          "sim/rail_envelope/rail_envelope.py"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
         "name": "smoke-run-syntax",
         "argv": [
           "bash",
@@ -140,7 +155,128 @@
       {
         "check": "command",
         "role": "audit",
-        "name": "rail-model-run-syntax",
+        "name": "comparator-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/tb_comparator/run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "false-flag-gen-envelope-ff-compiles",
+        "argv": [
+          "python3",
+          "-I",
+          "-m",
+          "py_compile",
+          "sim/tb_false_flag/gen_envelope_ff.py"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "false-flag-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/tb_false_flag/run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "filter-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/tb_filter/run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "flag-logic-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/tb_flag_logic/run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "iq-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/tb_iq/run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "latency-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/tb_latency/run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "min-width-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/tb_min_width/run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "rail-model-check-gen-envelope-compiles",
+        "argv": [
+          "python3",
+          "-I",
+          "-m",
+          "py_compile",
+          "sim/tb_rail_model_check/gen_envelope.py"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "rail-model-check-run-syntax",
         "argv": [
           "bash",
           "-n",
@@ -166,6 +302,75 @@
       {
         "check": "command",
         "role": "audit",
+        "name": "supply-headroom-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/tb_supply_headroom/run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "threshold-accuracy-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/tb_threshold_accuracy/run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "threshold-mc-build-yield-compiles",
+        "argv": [
+          "python3",
+          "-I",
+          "-m",
+          "py_compile",
+          "sim/tb_threshold_mc/build_yield.py"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "threshold-mc-gen-requests-compiles",
+        "argv": [
+          "python3",
+          "-I",
+          "-m",
+          "py_compile",
+          "sim/tb_threshold_mc/gen_requests.py"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "threshold-mc-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/tb_threshold_mc/run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
         "name": "threshold-select-run-syntax",
         "argv": [
           "bash",
@@ -179,12 +384,26 @@
       {
         "check": "command",
         "role": "audit",
-        "name": "envelope-generator-compiles",
+        "name": "verification-flag-logic-check-compiles",
         "argv": [
           "python3",
           "-I",
-          "-c",
-          "import ast,sys; ast.parse(open('sim/tb_rail_model_check/gen_envelope.py').read())"
+          "-m",
+          "py_compile",
+          "verification/flag_logic/check.py"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "verification-flag-logic-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "verification/flag_logic/run.sh"
         ],
         "cwd": ".",
         "exit_status": 0,
@@ -202,7 +421,7 @@
         "path": "attest/item10.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:d1d39be3fe1d307dd69c086e8dca3ef630946be1115d18179a319f4df67a4ea5"
+      "content_hash": "sha256:e3b8b8efc01e6618262cb2eb3af46a28af7aa1e09be3ad1e55b42fc64f735f8d"
     }
   }
 }

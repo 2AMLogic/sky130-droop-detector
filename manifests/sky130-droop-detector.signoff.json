@@ -5,7 +5,7 @@
   "tier": null,
   "t1_item_count": 11,
   "build_t1_item_count": 11,
-  "t1_met_count": 1,
+  "t1_met_count": 2,
   "source_doc": "docs/design-evidence-tiers.md",
   "source_doc_content_hash": "sha256:a26b90262320d0fbd32b3f549a02b6300832706041797a559d8bf6bdb62efdc7",
   "build": {
@@ -25,10 +25,162 @@
       "partition": null,
       "text": "committed schematic sources (or generator) plus the netlist derived from them, regenerated on design change.",
       "notes": [],
-      "status": "unmet",
-      "reason": "no_evidence",
+      "status": "met",
+      "reason": null,
       "graded_by_build": true,
-      "citation": null
+      "citation": {
+        "file": "evidence/item1.json",
+        "command": null,
+        "kind": "generic",
+        "check_status": "pass",
+        "content_hash": "sha256:34c632ca37b5c6ba90169097eb81dc0cb01172e07ed0feb6c8af27e310045580",
+        "input_verified": true,
+        "exit_status": 0,
+        "artifact_binding": {
+          "t1_item": 1,
+          "path": null,
+          "content_hash": "sha256:34c632ca37b5c6ba90169097eb81dc0cb01172e07ed0feb6c8af27e310045580",
+          "input_verified": true,
+          "members": [
+            {
+              "path": {
+                "path": "attest/item1.json",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:39b30be0a45b97721ca9d70f5cd60d59a84c5b51433a9c25ba780b2fa5330ae7",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/comparator.sch",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:beeb6c0737b31c238cd4b63ba3e8a0a1a9715959e423ce740ccd6fa510bcbf43",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/comparator.spice",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:b5d2044ae2a7553ebf0ba12d6d663dc20f04524cfa638ea61ab7284ecdd3b052",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/comparator.sym",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:c8dd8d1f52a376e923633f9571f0ac4d84c2c9a158e592b31e77b9d54facba1a",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/detector_top.sch",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:053efd4ba26d15f11a6b158598e1c48636ccdc6888624401dddba4f2dc389960",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/detector_top.spice",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:0fca89f6b4b0a9d83a0bd641c2db4a681412f746af856f71a932d59d7fd7d95f",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/flag_logic.sch",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:dafb90c78d65c32244f1acdfc0c418820fdf6a372c84a5887262b88e72f9633c",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/flag_logic.spice",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:a375b2323e232dd291b0bad91db7fe2adbab2c64826b4cd285733c8d79501779",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/flag_logic.sym",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:018536f461bd524bf0fdb5ea46a17c2418909025d5eb3a77f81b4eacc7db601e",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/glitch_filter.sch",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:ea3ae26eaadab85f444b098f3ed2e708e3fdb58dd95972fe69a5a34a79ed162a",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/glitch_filter.spice",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:7cf6b4274526ac44ab221ecdc331bcbfcb010c13957845da423590bb0586b6ce",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/glitch_filter.sym",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:89ec8be759a8558f6c8a6fd73e3afb4334d0f6d2c6ba25686d0c8a71138dfd47",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/threshold_ref.sch",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:858d634a0b49cef08e63440041c32c6a8ccc0e35fd16d3e09cfb7f4a3afb97a1",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/threshold_ref.spice",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:e3c2fa0619ae99cb55ecad978884a74530eddc845eff9d81e994a3463a0205ae",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/threshold_ref.sym",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:b2ca8c0f3244c00fe7446c02830d10db1e7d9c4eeee077643f193ad9eb5cc4cc",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/xschemrc",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:d0beb3ee305bd60f77a1c06c435de69ccc51a1de35c7c26bfef63a6a9a07a289",
+              "status": "verified"
+            }
+          ],
+          "summary": "T1 item 1 (Design sources): 20/20 attestation checks passed (klt signoff --attest)",
+          "source": "attest/item1.json",
+          "attestation": {
+            "producer": "klt signoff --attest",
+            "inventory_schema_version": 1,
+            "check_count": 20,
+            "passed_count": 20
+          }
+        }
+      }
     },
     {
       "tier": "T1",
@@ -145,7 +297,7 @@
         "command": null,
         "kind": "generic",
         "check_status": "pass",
-        "content_hash": "sha256:d1d39be3fe1d307dd69c086e8dca3ef630946be1115d18179a319f4df67a4ea5",
+        "content_hash": "sha256:e3b8b8efc01e6618262cb2eb3af46a28af7aa1e09be3ad1e55b42fc64f735f8d",
         "input_verified": true,
         "exit_status": 0,
         "artifact_binding": {
@@ -154,15 +306,15 @@
             "path": "attest/item10.json",
             "scope": "repo"
           },
-          "content_hash": "sha256:d1d39be3fe1d307dd69c086e8dca3ef630946be1115d18179a319f4df67a4ea5",
+          "content_hash": "sha256:e3b8b8efc01e6618262cb2eb3af46a28af7aa1e09be3ad1e55b42fc64f735f8d",
           "input_verified": true,
-          "summary": "T1 item 10 (Repo hygiene): 18/18 attestation checks passed (klt signoff --attest)",
+          "summary": "T1 item 10 (Repo hygiene): 34/34 attestation checks passed (klt signoff --attest)",
           "source": "attest/item10.json",
           "attestation": {
             "producer": "klt signoff --attest",
             "inventory_schema_version": 1,
-            "check_count": 18,
-            "passed_count": 18
+            "check_count": 34,
+            "passed_count": 34
           }
         }
       }
