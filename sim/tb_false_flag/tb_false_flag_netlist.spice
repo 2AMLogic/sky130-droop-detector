@@ -34,7 +34,6 @@ X2 vout lo hi clr vd2 0 l2 st2 detector_top
 X3 vout hi hi clr vd3 0 l3 st3 detector_top
 
 .control
-set num_threads=1
 tran 20n 320u
 * W1 (graded): settled regulated rail at 1 mA load, inside the window, before the load step at 100 us
 meas tran net_w1_vmin min v(vout) from=10u to=95u

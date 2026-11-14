@@ -19,7 +19,6 @@ sim="$here/.."
 bench=tb_false_flag
 PROC="${PROC:-tt}"; TEMP_C="${TEMP_C:-27}"; VSUP="${VSUP:-3.3}"
 NEGCTL_MV="${NEGCTL_MV:-0}"
-export OMP_NUM_THREADS=1
 . "$sim/lib/pdk_pin.sh"
 . "$sim/lib/ngspice_run.sh"
 pdk_pin_resolve
