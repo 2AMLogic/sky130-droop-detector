@@ -14,13 +14,14 @@ _None._
 
 `loom:very-important` (one counts per workspace); every stage takes these first.
 
-_None._
+- **#30**: T1 item 2 (layout): generated detector layout with area recorded
 
 ## Important
 
 `loom:important`; taken before unlabelled work.
 
-- **#27**: T1 item 1 (design sources): glitch filter, sticky/live flags and detector top netlist + attest 1
+- **#29**: T1 item 9 (testbenches shipped): the eight planned row benches, inventory and --attest 9
+- **#35**: T1 item 6 (Monte Carlo): tb_threshold_mc klt yield campaign on threshold accuracy (row 5)
 
 ## Ready
 
@@ -32,14 +33,13 @@ _None._
 
 Issues currently being built (`loom:building`).
 
-- **#26**: T1 item 1 (design sources): comparator schematic and netlist on the 3.3 V detector supply
-- **#45**: T1 status: correct spec/target-spec.md and DR-001 headers — ratified 2026-10-20 by the merge of PR #8, still read "proposed"
+_None._
 
 ## PRs Awaiting Review
 
 PRs waiting on Judge (`loom:review-requested`).
 
-- **#42**: feat: add continuous-time comparator schematic, netlist and nominal-corner bench
+- **#48**: docs: Guide document maintenance update
 
 ## Approved (Awaiting Merge)
 
@@ -51,11 +51,13 @@ _None._
 
 Issues carrying `loom:curated`.
 
-- **#26**: T1 item 1 (design sources): comparator schematic and netlist on the 3.3 V detector supply *(curated)*
+- **#29**: T1 item 9 (testbenches shipped): the eight planned row benches, inventory and --attest 9 *(curated)*
+- **#30**: T1 item 2 (layout): generated detector layout with area recorded *(curated)*
+- **#35**: T1 item 6 (Monte Carlo): tb_threshold_mc klt yield campaign on threshold accuracy (row 5) *(curated)*
 
 ## Proposed (Architect / Hermit)
 
-- **#21**: Consolidate duplicated PDK-pin/ngspice boilerplate across sim bench run.sh drivers *(hermit)*
+_None._
 
 ## Epics
 
@@ -66,13 +68,13 @@ _None._
 | Bucket | Count |
 |------|-------|
 | Operator merge-risk holds | 0 |
-| Very important | 0 |
-| Important | 1 |
+| Very important | 1 |
+| Important | 2 |
 | Ready (`loom:issue`) | 0 |
-| In Progress (`loom:building`) | 2 |
+| In Progress (`loom:building`) | 0 |
 | PRs awaiting review | 1 |
 | Approved PRs awaiting merge | 0 |
-| Curated | 1 |
-| Architect / Hermit proposals | 1 |
+| Curated | 3 |
+| Architect / Hermit proposals | 0 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
