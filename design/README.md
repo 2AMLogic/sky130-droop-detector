@@ -8,7 +8,10 @@
   `g5v0d10v5` transmission-gate muxes. No device is connected to the monitored
   1.8 V rail. The tap values are scaled at tt / 27 C / 3.3 V only; the
   reference is not compensated for supply or temperature (see the records in
-  `sim/tb_ref_droop/records/`).
+  `sim/tb_ref_droop/records/`). How much of the row 5 trip-point error each
+  mechanism contributes — supply sensitivity, process corner, mismatch and the
+  systematic offset at tt, read out of the committed records — is split out in
+  [`row5-error-budget.md`](row5-error-budget.md).
 - `threshold_ref.spice` — committed `klt netlist --block` output. Staleness
   check: `klt netlist design/threshold_ref.sch -o design/threshold_ref.spice
   --block --check --pdk sky130A --rcfile <PDK>/libs.tech/xschem/xschemrc`
