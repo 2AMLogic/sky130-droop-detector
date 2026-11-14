@@ -1,4 +1,5 @@
-** sch_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-27/design/glitch_filter.sch
+** klt-netlist-inputs: {"pdk_variant": "sky130A", "rcfile": "xschemrc", "xschem_version": "3.4.7"}
+** sch_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-77/design/glitch_filter.sch
 .subckt glitch_filter flag_in vdd33 gnd flag_f
 *.ipin flag_in
 *.iopin vdd33

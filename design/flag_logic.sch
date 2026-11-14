@@ -39,15 +39,15 @@ C {sky130_fd_pr/res_xhigh_po_1p41.sym} 600 0 0 0 {name=R2 L=1200 model=res_xhigh
 C {devices/lab_pin.sym} 600 -30 0 0 {name=p26 sig_type=std_logic lab=vlim}
 C {devices/lab_pin.sym} 600 30 0 0 {name=p27 sig_type=std_logic lab=gnd}
 C {devices/lab_pin.sym} 580 0 0 0 {name=p28 sig_type=std_logic lab=gnd}
-C {sky130_fd_pr/cap_mim_m3_1.sym} 720 0 0 0 {name=C1 model=cap_mim_m3_1 W=10 L=10 MF=1 spiceprefix=X}
+C {sky130_fd_pr/cap_mim_m3_1.sym} 720 0 0 0 {name=C1 model=cap_mim_m3_1 W=14 L=14 MF=1 spiceprefix=X}
 C {devices/lab_pin.sym} 720 -30 0 0 {name=p29 sig_type=std_logic lab=vlim}
 C {devices/lab_pin.sym} 720 30 0 0 {name=p30 sig_type=std_logic lab=gnd}
-C {sky130_fd_pr/pfet_g5v0d10v5.sym} 840 420 0 0 {name=M5 L=0.5 W=4 nf=1 mult=1 model=pfet_g5v0d10v5 spiceprefix=X}
+C {sky130_fd_pr/pfet_g5v0d10v5.sym} 840 420 0 0 {name=M5 L=0.5 W=8 nf=1 mult=1 model=pfet_g5v0d10v5 spiceprefix=X}
 C {devices/lab_pin.sym} 860 390 0 0 {name=p31 sig_type=std_logic lab=vdd33}
 C {devices/lab_pin.sym} 820 420 0 0 {name=p32 sig_type=std_logic lab=live_in}
 C {devices/lab_pin.sym} 860 450 0 0 {name=p33 sig_type=std_logic lab=sb}
 C {devices/lab_pin.sym} 860 420 0 0 {name=p34 sig_type=std_logic lab=vdd33}
-C {sky130_fd_pr/nfet_g5v0d10v5.sym} 840 560 0 0 {name=M6 L=0.5 W=2 nf=1 mult=1 model=nfet_g5v0d10v5 spiceprefix=X}
+C {sky130_fd_pr/nfet_g5v0d10v5.sym} 840 560 0 0 {name=M6 L=0.5 W=4 nf=1 mult=1 model=nfet_g5v0d10v5 spiceprefix=X}
 C {devices/lab_pin.sym} 860 530 0 0 {name=p35 sig_type=std_logic lab=sb}
 C {devices/lab_pin.sym} 820 560 0 0 {name=p36 sig_type=std_logic lab=live_in}
 C {devices/lab_pin.sym} 860 590 0 0 {name=p37 sig_type=std_logic lab=gnd}
@@ -112,22 +112,22 @@ C {devices/lab_pin.sym} 1580 530 0 0 {name=p83 sig_type=std_logic lab=qn}
 C {devices/lab_pin.sym} 1540 560 0 0 {name=p84 sig_type=std_logic lab=q}
 C {devices/lab_pin.sym} 1580 590 0 0 {name=p85 sig_type=std_logic lab=gnd}
 C {devices/lab_pin.sym} 1580 560 0 0 {name=p86 sig_type=std_logic lab=gnd}
-C {sky130_fd_pr/pfet_g5v0d10v5.sym} 1680 840 0 0 {name=M19 L=0.5 W=12 nf=1 mult=1 model=pfet_g5v0d10v5 spiceprefix=X}
+C {sky130_fd_pr/pfet_g5v0d10v5.sym} 1680 840 0 0 {name=M19 L=0.5 W=24 nf=1 mult=1 model=pfet_g5v0d10v5 spiceprefix=X}
 C {devices/lab_pin.sym} 1700 810 0 0 {name=p87 sig_type=std_logic lab=vlim}
 C {devices/lab_pin.sym} 1660 840 0 0 {name=p88 sig_type=std_logic lab=sb}
 C {devices/lab_pin.sym} 1700 870 0 0 {name=p89 sig_type=std_logic lab=live}
 C {devices/lab_pin.sym} 1700 840 0 0 {name=p90 sig_type=std_logic lab=vlim}
-C {sky130_fd_pr/nfet_g5v0d10v5.sym} 1680 980 0 0 {name=M20 L=0.5 W=2 nf=1 mult=1 model=nfet_g5v0d10v5 spiceprefix=X}
+C {sky130_fd_pr/nfet_g5v0d10v5.sym} 1680 980 0 0 {name=M20 L=0.5 W=4 nf=1 mult=1 model=nfet_g5v0d10v5 spiceprefix=X}
 C {devices/lab_pin.sym} 1700 950 0 0 {name=p91 sig_type=std_logic lab=live}
 C {devices/lab_pin.sym} 1660 980 0 0 {name=p92 sig_type=std_logic lab=sb}
 C {devices/lab_pin.sym} 1700 1010 0 0 {name=p93 sig_type=std_logic lab=gnd}
 C {devices/lab_pin.sym} 1700 980 0 0 {name=p94 sig_type=std_logic lab=gnd}
-C {sky130_fd_pr/pfet_g5v0d10v5.sym} 1800 840 0 0 {name=M21 L=0.5 W=12 nf=1 mult=1 model=pfet_g5v0d10v5 spiceprefix=X}
+C {sky130_fd_pr/pfet_g5v0d10v5.sym} 1800 840 0 0 {name=M21 L=0.5 W=24 nf=1 mult=1 model=pfet_g5v0d10v5 spiceprefix=X}
 C {devices/lab_pin.sym} 1820 810 0 0 {name=p95 sig_type=std_logic lab=vlim}
 C {devices/lab_pin.sym} 1780 840 0 0 {name=p96 sig_type=std_logic lab=qn}
 C {devices/lab_pin.sym} 1820 870 0 0 {name=p97 sig_type=std_logic lab=sticky}
 C {devices/lab_pin.sym} 1820 840 0 0 {name=p98 sig_type=std_logic lab=vlim}
-C {sky130_fd_pr/nfet_g5v0d10v5.sym} 1800 980 0 0 {name=M22 L=0.5 W=2 nf=1 mult=1 model=nfet_g5v0d10v5 spiceprefix=X}
+C {sky130_fd_pr/nfet_g5v0d10v5.sym} 1800 980 0 0 {name=M22 L=0.5 W=4 nf=1 mult=1 model=nfet_g5v0d10v5 spiceprefix=X}
 C {devices/lab_pin.sym} 1820 950 0 0 {name=p99 sig_type=std_logic lab=sticky}
 C {devices/lab_pin.sym} 1780 980 0 0 {name=p100 sig_type=std_logic lab=qn}
 C {devices/lab_pin.sym} 1820 1010 0 0 {name=p101 sig_type=std_logic lab=gnd}
