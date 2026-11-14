@@ -5,6 +5,8 @@ triage role. Newest first.
 
 ### 2026-11-14
 
+- **PR #84**: fix: resize comparator and flag_logic output path to meet row 6 at 2.97 V
+- **Issue #77** (closed): Comparator path misses the row 6 latency target at a 2.97 V detector supply
 - **PR #75**: docs: roadmap as of 2026-11-13
 
 ### 2026-11-13
