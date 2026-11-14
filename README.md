@@ -7,14 +7,10 @@ nanoseconds when the rail falls below a programmed threshold — designed by
 AI agents driving [klayout-tools](https://github.com/2AMLogic/klayout-tools)
 and the open-source xschem + ngspice flow.
 
-**Status: specification ratified (PR #8); schematic-level design committed,
-layout not started.** The threshold reference and its tap network, the
-comparator, the glitch filter, the flag logic and the detector top are
-designed and netlisted, and row benches are committed under `sim/`.
-`klt signoff` grades 2 of 11 T1 items `met` — item 1 (design sources) and
-item 10 (repo hygiene). Layout (item 2) and every item downstream of it are
-open. Every figure is simulated, with its corner and testbench named in its
-record.
+**Status: specification ratified (PR #8); schematic-level work in progress.**
+A threshold reference and its tap network are designed and simulated at a
+single corner; the comparator, glitch filter, flag and layout are not started.
+Every figure is simulated, with its corner and testbench named in its record.
 
 **Built agent-native.** Every specification, decision record, testbench, and
 line of documentation here is produced by AI agents working from a ratified
@@ -166,10 +162,10 @@ The block manifest is
 [`manifests/sky130-droop-detector.json`](manifests/sky130-droop-detector.json)
 and the committed verdict of record is
 [`manifests/sky130-droop-detector.signoff.json`](manifests/sky130-droop-detector.signoff.json).
-Items without cited evidence are honestly `unmet` (`tier: null`). Item 1
-(design sources) and item 10 (repo hygiene) are attested by `klt signoff
---attest 1` / `--attest 10` from [`attest/`](attest/) into
-[`evidence/`](evidence/); CI re-runs them with `--check`.
+Items without cited evidence are honestly `unmet` (`tier: null`). Item 10
+(repo hygiene) is attested by `klt signoff --attest 10` from
+[`attest/item10.json`](attest/item10.json) into
+[`evidence/item10.json`](evidence/item10.json); CI re-runs it with `--check`.
 The `klayout-tools` version is pinned in
 [`.github/klt-version`](.github/klt-version); CI fails if the record drifts
 from a fresh render. To regenerate it:
