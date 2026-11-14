@@ -7,7 +7,13 @@
 # result key. Writes a SIMULATED record; misses are reported, not hidden.
 # Env: PDK_ROOT (optional, passed to klt), KLT (default: klt), RECORD (output path),
 #      PDK_PIN (pin file, default sim/pdk.json; overridden for negative controls),
-#      NEGCTL_DROP_KEY (negative control: delete this result key from the log before the check).
+#      NEGCTL_DROP_KEY (negative control: delete this result key from the log before the check),
+#      SUPPLIES_OVERRIDE / LEVELS_OVERRIDE (one "name ..." triple/quadruple per line; replace the
+#        default supply / level set to probe an extra operating point, e.g. the 3.63 V supply
+#        corner of spec row 2 that the default set does not cover). Unset -- the graded default --
+#        is the 4 supplies x 4 levels x 2 modes = 32 cases; the case total in the record is
+#        computed from the sets actually run, so an override is self-describing and cannot be
+#        mistaken for the graded run.
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 sim="$here/.."
@@ -23,6 +29,10 @@ export OMP_NUM_THREADS="${OMP_NUM_THREADS:-2}"   # shared host: keep ngspice mod
 LEVELS=("l0 1.728 0 0" "l1 1.692 3.3 0" "l2 1.638 0 3.3" "l3 1.584 3.3 3.3")
 # Supply conditions: name start-volts sag-depth-volts (sag is an ASSUMED stimulus, see the .spice).
 SUPPLIES=("v3p30 3.3 0" "v2p97 2.97 0" "v2p97_sag100m 2.97 0.1" "v2p97_sag300m 2.97 0.3")
+# Optional overrides for probing an operating point outside the graded default set (see Env above).
+if [ -n "${LEVELS_OVERRIDE:-}" ]; then mapfile -t LEVELS <<<"$LEVELS_OVERRIDE"; fi
+if [ -n "${SUPPLIES_OVERRIDE:-}" ]; then mapfile -t SUPPLIES <<<"$SUPPLIES_OVERRIDE"; fi
+ncases=$(( ${#SUPPLIES[@]} * ${#LEVELS[@]} * 2 ))
 keys=()
 : > "$work/cases.ctl"
 for sp in "${SUPPLIES[@]}"; do read -r sn sv sag <<<"$sp"
@@ -83,6 +93,6 @@ rec="${RECORD:-/dev/stdout}"
         "$sv" "$sag" "$ln" "$lnom" "$da" "$(get ${n}_lmax)" "$lat" "$(get ${n}_voh)" "$qa" "$(get ${q}_lmax)"
     done
   done
-  echo "cases not behaving as required: $bad of 32 (reported, not graded against the PVT box; single corner)"
+  echo "cases not behaving as required: $bad of $ncases (reported, not graded against the PVT box; single corner)"
 } > "$work/record"
 cat "$work/record" > "$rec"

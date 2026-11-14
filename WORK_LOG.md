@@ -3,6 +3,10 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage role. Newest first.
 
+### 2026-11-14
+
+- **PR #75**: docs: roadmap as of 2026-11-13
+
 ### 2026-11-13
 
 - **PR #73**: Bump Repo Skills 0.25.10 -> 0.26.1
