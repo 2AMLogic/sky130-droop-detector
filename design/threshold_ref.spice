@@ -1,4 +1,5 @@
-** sch_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-18/design/threshold_ref.sch
+** klt-netlist-inputs: {"pdk_variant": "sky130A", "rcfile": "xschemrc", "xschem_version": "3.4.7"}
+** sch_path: /home/ubuntu/GitHub/sky130-droop-detector/.loom/worktrees/issue-77/design/threshold_ref.sch
 .subckt threshold_ref s0 s1 vdd33 gnd vref vth
 *.ipin s0
 *.ipin s1

@@ -59,9 +59,15 @@ evidence.
   2.97 V sagging by an assumed 0.1 / 0.3 V, droop must flag, sag alone must not).
   Same PDK-pin fail-closed behaviour and `PDK_PIN` negative control as the
   benches above, plus `NEGCTL_DROP_KEY=<result key>` for the missing-result
-  control. A row the design misses is reported in the record, not relaxed;
-  corner campaigns are #34/#35. Records and negative controls in each
-  `records/`. Not wired into `package.json` checks.
+  control. `tb_supply_headroom` also takes `SUPPLIES_OVERRIDE` and
+  `LEVELS_OVERRIDE` (one `"name ..."` entry per line) to probe an operating
+  point the default set does not cover -- the 3.63 V supply corner of row 2,
+  say. Unset, the graded default is the 4 supplies x 4 levels x 2 modes = 32
+  cases; the record's case total is computed from the sets actually run, so an
+  override run is self-describing and cannot be read as the graded one. A row
+  the design misses is reported in the record, not relaxed; corner campaigns
+  are #34/#35. Records and negative controls in each `records/`. Not wired
+  into `package.json` checks.
 - `tb_threshold_accuracy/` — static trip point per select code of
   `design/detector_top.spice` (real reference, comparator, filter, flag logic) on
   a slow ideal-source ramp, spec row 5 corner-grid half:
