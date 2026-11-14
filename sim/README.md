@@ -26,9 +26,13 @@ evidence.
   `design/threshold_ref.spice` against an ideal comparator and an ideal
   monitored-rail source: `sim/tb_threshold_select/run.sh`.
 - `tb_ref_droop/` — reference/level shift with the monitored rail collapsing
-  1.8 → 0.9 V and the detector supply at 2.97 V, ideal sources (coupling check
-  only; the rail-model re-run waits on `tb_rail_model_check`):
-  `sim/tb_ref_droop/run.sh`. Both benches are tt / 27 C, fail closed on the PDK
+  1.8 → 0.9 V and the detector supply moved off its 3.3 V nominal to a corner
+  taken as a parameter (`VSUP`, default 2.97; pass `VSUP=3.63` for the upper end
+  of spec row 2's box), ideal sources (coupling check only; the rail-model re-run
+  waits on `tb_rail_model_check`): `sim/tb_ref_droop/run.sh`. Select highs are
+  driven at whichever supply is in force for each case, matching
+  `tb_threshold_accuracy`; the `stimulus:` line of the record names the corner it
+  ran at. Both benches are tt / 27 C, fail closed on the PDK
   pin (`PDK_PIN` points a negative control at a different pin file), write the
   record to `$RECORD` (stdout by default) and are not wired into
   `package.json` checks because they write records. Records, including the
@@ -67,8 +71,17 @@ evidence.
   a slow ideal-source ramp, spec row 5 corner-grid half:
   `sim/tb_threshold_accuracy/run.sh`. One corner per run (default tt / 27 C /
   3.3 V; `PROC`, `TEMP_C`, `VSUP` select another so the #34 campaign can drive it).
-  No Monte Carlo (that is `tb_threshold_mc`, #35). Records and negative controls in
-  `tb_threshold_accuracy/records/`.
+  The ramp window is `RAMP_START` → `RAMP_END` (default 1.9 → 1.45 V) and always
+  holds the declared 1 mV/us slew, so its duration is derived rather than set. The
+  window must **span the levels at the corner being run** — row 2's supply box moves
+  every level, and the former fixed 1.8 → 1.55 V window could measure neither code 11
+  at `VSUP=2.97` nor code 00 at `VSUP=3.63`; it fails closed (exit 3) on the missing
+  `meas` result when it does not. No Monte Carlo (that is `tb_threshold_mc`, #35).
+  Records and negative controls in `tb_threshold_accuracy/records/`, including the
+  2026-11-14 supply-corner set and the fail-closed transcript showing the code-00
+  live flag asserted with the rail at a nominal 1.8 V at `VSUP=3.63`
+  ([DR-003](../spec/decision-records/DR-003-threshold-reference-supply-sensitivity.md),
+  issue #83).
 - `tb_false_flag/` — spec row 8: W1–W5 applied to the detector at all four levels,
   zero live/sticky flags required: `sim/tb_false_flag/run.sh`. W1–W5 come from the
   behavioural-envelope rail (W5 also as an ideal step, additional case); the

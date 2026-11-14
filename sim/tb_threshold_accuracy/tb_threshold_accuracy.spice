@@ -5,13 +5,32 @@
 * The monitored rail is an IDEAL SOURCE here: row 5 is a static trip point, graded on a
 * slow ramp (1 mV/us), not on a fast-edge stimulus. Trip = vmon when v(live) crosses 0.9 V
 * (midpoint of the 1.44 V VOH / 0.36 V VOL output levels of the spec) on the way down.
+* The ramp window is substituted by run.sh (RAMP_START / RAMP_END, default 1.9 -> 1.45 V)
+* and always holds the 1 mV/us slew, so the stimulus RATE is identical whatever the window;
+* only its extent moves. The window must SPAN the levels at the corner being run -- start
+* above the highest trip point with the flag idle, end below the lowest -- or `meas` finds
+* no crossing and the bench fails closed on the missing result (exit 3). Both ends are
+* spec-derived, and both are needed because row 2's supply box moves every level:
+*   start 1.9 V: clears the top of the LDO +/-2% window (1.836 V, row 8) by 64 mV and stays
+*     inside row 1's 1.6-1.95 V rail range. The original 1.8 V start could not measure
+*     code 00 at VSUP=3.63, where the level rises ABOVE 1.8 V: the live flag is already
+*     asserted at t=0, there is no rising edge, and the bench exits 3 (that stuck-high
+*     condition is the row 8 defect of #83, recorded in this bench's records/ as the
+*     fail-closed transcript 2026-11-14-tb_threshold_accuracy-tt-vsup3p63-flag-stuck-high).
+*   end 1.45 V: lowest level 1.584 V (row 4, 12% below nominal), minus row 5's +/-54 mV
+*     fallback band, minus the ~73 mV the reference loses at row 2's 2.97 V corner = 1.457 V.
+*     The original 1.55 V floor could not measure code 11 at VSUP=2.97 (level ~1.53 V).
+* This bench grades a STATIC trip point on a slow sweep, so the window is free to span the
+* levels; the droop-response benches (rows 6/7) are the ones that start from nominal.
+* A corner campaign (#34) reaching past either end passes its own RAMP_START / RAMP_END
+* rather than editing this deck.
 .lib "__PDK_LIB__" __PROC__
 .include "__NETLIST__"
 .temp __TEMP__
 .param vsup=__VSUP__
 .option method=gear
 
-Vrail rail 0 PWL(0 1.8 1n 1.8 250u 1.55)
+Vrail rail 0 PWL(0 __RAMP_START__ 1n __RAMP_START__ __RAMP_US__u __RAMP_END__)
 Vlo lo 0 0
 Vhi hi 0 {vsup}
 Vclr clr 0 0
@@ -26,7 +45,7 @@ X3 rail hi hi clr vd3 0 l3 st3 detector_top
 
 .control
 set num_threads=1
-tran 50n 250u
+tran 50n __RAMP_US__u
 meas tran vtrip_l0 find v(rail) when v(l0)=0.9 rise=1
 echo "RESULT vtrip_l0 = $&vtrip_l0"
 meas tran vtrip_l1 find v(rail) when v(l1)=0.9 rise=1
