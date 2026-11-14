@@ -62,4 +62,12 @@ design/<name>.sch -o design/<name>.spice --block --check --pdk sky130A
 --rcfile design/xschemrc` must report `match`. The T1 item 1 inventory is
 `attest/item1.json` (evidence `evidence/item1.json`).
 
-Filter and flag-logic benches: `sim/tb_filter`, `sim/tb_flag_logic`, `verification/flag_logic` (see `sim/README.md`); no bench yet for the top at other rows. See the repo README for scope.
+Filter and flag-logic benches: `sim/tb_filter`, `sim/tb_flag_logic`,
+`verification/flag_logic` (see `sim/README.md`). Benches that instantiate
+`detector_top.spice` are committed for spec rows 2, 5, 6, 7, 8, 9, 10 and 11:
+`sim/tb_supply_headroom`, `sim/tb_threshold_accuracy`, `sim/tb_threshold_mc`,
+`sim/tb_latency`, `sim/tb_min_width`, `sim/tb_false_flag`, `sim/tb_filter`,
+`sim/tb_flag_logic`, `sim/tb_iq` and `verification/flag_logic`. Each has at
+least one committed record, simulated at corner tt, 27 C, except
+`sim/tb_threshold_mc`, whose mismatch Monte Carlo record spans process
+{tt, ss, ff, sf, fs}_mm + mc at 27 C. See the repo README for scope.

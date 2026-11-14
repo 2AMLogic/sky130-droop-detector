@@ -7,10 +7,21 @@ nanoseconds when the rail falls below a programmed threshold — designed by
 AI agents driving [klayout-tools](https://github.com/2AMLogic/klayout-tools)
 and the open-source xschem + ngspice flow.
 
-**Status: specification ratified (PR #8); schematic-level work in progress.**
-A threshold reference and its tap network are designed and simulated at a
-single corner; the comparator, glitch filter, flag and layout are not started.
-Every figure is simulated, with its corner and testbench named in its record.
+**Status: specification ratified (PR #8); all five schematic blocks netlisted
+and simulated at a single corner; layout not started.** `design/` carries the
+xschem schematic and the committed `klt netlist --block` output for
+`threshold_ref`, `comparator`, `glitch_filter`, `flag_logic` and the
+`detector_top` that instantiates them. Each of spec rows 1-11 has a committed
+testbench with at least one record, every one **simulated** at corner tt,
+27 C — the [Reproduce](#reproduce) table below names each runner and its
+record path. Spec row 5 (threshold accuracy) also has a committed mismatch
+Monte Carlo campaign, **simulated** over process {tt, ss, ff, sf, fs}_mm + mc
+at 27 C with N = 300 draws per section, and it does **not** meet its ±27 mV
+target there: `sim/tb_threshold_mc/records/2026-11-06/record.txt` reads
+`klt yield status: fail` with `sigma_target_met=false` on every one of its 24
+keys. `layout/` holds only a README. [`ROADMAP.md`](ROADMAP.md) tracks what
+comes next. Every figure here is simulated, never measured, with its corner
+and testbench named in its record.
 
 **Built agent-native.** Every specification, decision record, testbench, and
 line of documentation here is produced by AI agents working from a ratified
@@ -71,14 +82,23 @@ nominal, ±2% regulation window, 0–50 mA, per that repo's ratified spec at
 | Minimum detected droop width | 50 ns | 10 ns | 2 ns |
 | False-flag immunity | no flag for excursions inside the LDO's ±2% window | same, across PVT and noise | — |
 | Glitch filter | rejects comparator pulses shorter than a designed width | same; must pass the minimum-width droop, delay counted in latency | — |
-| Quiescent current | < 100 µA | < 50 µA | < 20 µA |
 | Output | sticky digital flag + clear | same, plus a live (non-sticky) flag | — |
+| Quiescent current | < 100 µA | < 50 µA | < 20 µA |
 | Area | deferred (no floorplan yet) | deferred | — |
 | Signoff | DRC + LVS clean | DRC + LVS clean, post-layout re-verified | — |
 
 Maturity ladder: spec ratified → schematic simulated across PVT against
 the rail model → layout DRC/LVS-clean → post-layout re-verification →
-shuttle seat → measured silicon. **Current position: spec ratified; schematic simulation under way (single corner so far, PVT sweep pending).**
+shuttle seat → measured silicon. **Current position: spec ratified; each of
+spec rows 1-11 simulated at corner tt, 27 C with a committed record, and the
+full PVT corner sweep still pending.** Rows 1, 2, 6, 7, 8 and 9 are driven by
+the behavioural rail envelope; rows 3, 4, 5, 10 and 11 use an ideal source by
+design — a static trip point, a quiescent-current bias, or a logic-only
+check — and every record names its own stimulus. The one multi-section
+campaign committed so far is row 5's mismatch Monte Carlo
+(`sim/tb_threshold_mc/records/2026-11-06/record.txt`, simulated, process
+{tt, ss, ff, sf, fs}_mm + mc at 27 C), in which row 5 does not meet its
+±27 mV target — so "schematic simulated across PVT" is not yet reached.
 
 ## Tool flow
 
@@ -162,10 +182,16 @@ The block manifest is
 [`manifests/sky130-droop-detector.json`](manifests/sky130-droop-detector.json)
 and the committed verdict of record is
 [`manifests/sky130-droop-detector.signoff.json`](manifests/sky130-droop-detector.signoff.json).
-Items without cited evidence are honestly `unmet` (`tier: null`). Item 10
-(repo hygiene) is attested by `klt signoff --attest 10` from
+Items without cited evidence are honestly `unmet` (`tier: null`); the
+committed record grades **2 of 11 T1 items `met`** — items 1 and 10. Item 1
+(design sources) is attested by `klt signoff --attest 1` from
+[`attest/item1.json`](attest/item1.json) into
+[`evidence/item1.json`](evidence/item1.json). Item 10 (repo hygiene) is
+attested the same way by `klt signoff --attest 10` from
 [`attest/item10.json`](attest/item10.json) into
-[`evidence/item10.json`](evidence/item10.json); CI re-runs it with `--check`.
+[`evidence/item10.json`](evidence/item10.json), and item 10 is the one CI
+re-runs with `--check`; item 1's evidence is committed but not re-attested in
+CI.
 The `klayout-tools` version is pinned in
 [`.github/klt-version`](.github/klt-version); CI fails if the record drifts
 from a fresh render. To regenerate it:
