@@ -134,7 +134,9 @@ small current imbalance a 27 mV overdrive produces. Shrinking the second-stage
 inverter **at a fixed W_p/W_n ratio** cuts that node's capacitance without
 moving its trip point (and so without moving the comparator's offset), and also
 removes the crowbar current it drew with `o1` sitting mid-rail. Raising the
-tail buys the rest. The glitch filter is row 9's and was not touched.
+tail buys the rest — measured, with a negative control, in *How the tail
+multiplier reaches ngspice* below. The glitch filter is row 9's and was not
+touched.
 
 ### Sizings tried (spec row 6 target < 5 ns; spec row 11 target < 50 uA)
 
@@ -161,6 +163,70 @@ code 00, which is the only code that was over the row 11 target: all four codes
 are now inside `< 50 uA`, where before code 00 sat at 51.592 uA. The `mult`=4
 row is the alternative that holds every code at or below the 2026-11-05 figures
 and misses row 6 at 2.97 V by 0.34 to 0.46 ns.
+
+### How the tail multiplier reaches ngspice (and the control that proves it)
+
+`M2`'s `mult` is the one attribute in this design whose path from schematic to
+simulated device is not obvious by eye, so it is recorded here. Reviewing this
+by grepping an instance's **first** line will show the multiplier missing and
+the tail looking 1:1 with the bias leg — it is not.
+
+`klt netlist` emits a device instance's parameters wrapped onto a `+`
+continuation line, and the multiplier lands there, as **both** forms:
+
+```
+XM2 tl nb gnd gnd sky130_fd_pr__nfet_g5v0d10v5 L=1 W=2 nf=1 ad=0.58 ... sd=0
++ mult=6 m=6
+```
+
+Of the two, **`m=` is the one that acts**: it is ngspice's own subcircuit
+multiplier on the `X` instance. The vendor `mult=` is inert for these devices —
+`sky130_fd_pr__{n,p}fet_g5v0d10v5` declares `.param ... mult = 1` but never
+passes it to the inner MOSFET (no `m = {mult}` on the `m...` line), so a
+netlist carrying only `mult=N` would simulate a 1x device. Both forms are
+present in every netlist here, so the schematic, the netlist and the simulated
+circuit agree; `klt netlist --check` reports `match`, which for this attribute
+is correct. Consequences to keep in mind: grep an instance's first line only,
+or diff with a `^XM` anchor, and a multiplier change is invisible (the header
+line is byte-identical before and after); and the inert `mult=` must not be
+read as the acting one. Filed upstream as a generic tool-surface gap
+(2AMLogic/klayout-tools#5687).
+
+**Negative control** (SIMULATED, tt / 27 C, ngspice-47, `klt 0.9.2.dev1024`,
+open_pdks `f6eeac7`; exploration harness — the chosen sizing with only
+`XM2`'s `m=` forced to 1, **not** a committed bench record, and its
+`netlist_sha256` therefore does not match `design/detector_top.spice`):
+
+| `XM2` multiplier | 2.97 V latency l0..l3 (ns) | Iq code 00/01/10/11 (uA) |
+|---|---|---|
+| `mult=6 m=1` (multiplier defeated) | 10.564 / 10.685 / 10.821 / 10.927 | 44.321 / 32.258 / 30.622 / 30.156 |
+| `mult=6 m=6` (committed) | 4.668 / 4.696 / 4.725 / 4.742 | 47.576 / 43.767 / 43.023 / 42.757 |
+
+Defeating the multiplier alone costs **5.9 to 6.2 ns** of latency and removes
+**11.5 uA** at code 01, so the 6x tail is load-bearing for row 6 and is the
+source of the row 11 rise at the three non-binding codes. The converse
+control confirms which form acts: `mult=1 m=6` reproduces the committed Iq at
+all four codes exactly (47.576 / 43.767 / 43.023 / 42.757 uA), so the vendor
+attribute contributes nothing and `m=` does the work.
+
+This also separates the two halves of the Iq change, at a fixed 2.97 V /
+3.3 V stimulus:
+
+| step | code 00 | code 01 | code 10 | code 11 |
+|---|---|---|---|---|
+| 2026-11-05 sizing, tail `m=4` | 51.592 | 39.364 | 38.066 | 37.713 |
+| + mirror / stage-2 / output resize (tail still `m=4`) | 43.599 | 38.761 | 37.938 | 37.665 |
+| + tail `m=4` -> `m=6` (chosen) | 47.576 | 43.767 | 43.023 | 42.757 |
+
+The resizing takes **-7.99 uA** at code 00 and almost nothing (-0.6 to -0.05 uA)
+at the others — the second-stage crowbar it removes is largest at the highest
+tap. The tail step then adds **+3.98 to +5.09 uA** at every code. That is the
+trade the chosen row makes, and why code 00 falls while 01/10/11 rise.
+
+The `mult`=4 harness row above was re-derived independently on 2026-11-14 at
+this sizing: **5.342 / 5.382 / 5.426 / 5.455 ns** and Iq **43.599 / 38.761 /
+37.938 / 37.665 uA** — the Iq figures reproduce exactly and the latencies to
+within 4 ps of the row as tabulated.
 
 ### The 3.63 V supply corner
 
