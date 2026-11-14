@@ -3,14 +3,14 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 10,
-  "summary": "T1 item 10 (Repo hygiene): 34/34 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 10 (Repo hygiene): 35/35 attestation checks passed (klt signoff --attest)",
   "source": "attest/item10.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 34,
-    "passed_count": 34,
+    "check_count": 35,
+    "passed_count": 35,
     "checks": [
       {
         "check": "present",
@@ -52,14 +52,14 @@
         "role": "hygiene",
         "path": "manifests/sky130-droop-detector.json",
         "passed": true,
-        "content_hash": "sha256:87ed7b299395a49cc1db9ed3665479e0a9a3f135f863964213bc4ae00318153d"
+        "content_hash": "sha256:feffd544ec049b5b6096c97b57913dd0e191f616b045d04dd32c864bd94159b7"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "sim/README.md",
         "passed": true,
-        "content_hash": "sha256:9463eac7ccb46067a3c4932d60bcba56fcb89aa867ae1fcc50736ccc76f0943f"
+        "content_hash": "sha256:8ce880aeec42dd2575771a0b0d44766258c087c0f4f082b1cb65699cd752e0b6"
       },
       {
         "check": "present",
@@ -408,6 +408,19 @@
         "cwd": ".",
         "exit_status": 0,
         "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "ngspice-thread-policy-single-source",
+        "argv": [
+          "python3",
+          "-I",
+          "tests/test_thread_policy.py"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
       }
     ]
   },
@@ -421,7 +434,7 @@
         "path": "attest/item10.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:e3b8b8efc01e6618262cb2eb3af46a28af7aa1e09be3ad1e55b42fc64f735f8d"
+      "content_hash": "sha256:47ba13841c9173c79f35bf0ac69aa5e6de6868a4c4f37ca6d5ad8aa25e43b1ea"
     }
   }
 }

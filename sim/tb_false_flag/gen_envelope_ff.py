@@ -98,7 +98,7 @@ def main(out, negctl_mv):
     for i, (a, b) in enumerate(codes):
         s.append(f"Vd{i} vd{i} 0 {{vsup}}")
         s.append(f"X{i} rail {a} {b} clr vd{i} 0 l{i} st{i} detector_top")
-    s += [".control", "set num_threads=1", f"tran 5n {fmt(tstop)} 0 20n"]
+    s += [".control", f"tran 5n {fmt(tstop)} 0 20n"]
     s.append(f'meas tran start_live_max max v(l0) from=7u to=11u')
     for name, a, b in cases:
         s.append(f"meas tran {name}_vmin min v(rail) from={fmt(a)} to={fmt(b)}")
