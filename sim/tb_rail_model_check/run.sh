@@ -38,7 +38,6 @@ tail -n +4 "$here/ldo_3v3in_1v8out.spice" > "$work/ldo_headerless.spice"   # dro
 $KLT netlist --pdk "$variant" --pdk-root "$root" --rcfile "$here/xschemrc" --block --check \
   -o "$work/ldo_headerless.spice" "$here/src/ldo_3v3in_1v8out.sch" >"$work/netlist-check.log" 2>&1 \
   || { cat "$work/netlist-check.log" >&2; fail "committed LDO netlist drifted from the pinned schematic (klt netlist --check)" 3; }
-netlist_sha="$(sha256sum "$here/ldo_3v3in_1v8out.spice" | cut -d' ' -f1)"
 
 # --- 1. behavioural envelope --------------------------------------------------------
 mkdir -p "$work/env"
@@ -120,7 +119,8 @@ EOF
 EOF
 done
 nf_rc=0
-(cd "$work/nf" && $KLT sim --batch-set netlist_form_*.request.json -o "$work/nf/out" --format json \
+(cd "$work/nf" && $KLT sim --batch-set netlist_form_*.request.json --wait-for-capacity 600 \
+  -o "$work/nf/out" --format json \
   >"$work/nf/set.json" 2>"$work/nf/stderr.log") || nf_rc=$?
 for pt in "${POINTS[@]}"; do
   p="${pt%%:*}"
@@ -133,16 +133,13 @@ for pt in "${POINTS[@]}"; do
 done
 
 rec="${RECORD:-/dev/stdout}"
+pdk_model_files tt "$work/files"
 {
   echo "label: SIMULATED (not measured); testbench sim/tb_rail_model_check; corner tt, 27 C, VIN 3.3 V, VREF 1.2 V, EN 3.3 V (no PVT sweep)"
-  echo "ngspice: $(ngspice --version | grep -m1 -o 'ngspice-[0-9.]*')"
-  echo "klt: $($KLT --version)"
-  echo "pdk_sources: $got"
-  echo "model_lib_sha256: $(sha256sum "$lib" | cut -d' ' -f1)"
   echo "ldo_source: $(jq -r .repo "$ldo")@$ldo_commit $(jq -r .schematic "$ldo")"
   echo "ldo_schematic_sha256: $(jq -r .schematic_sha256 "$ldo")"
-  echo "ldo_netlist_sha256: $netlist_sha  (sim/tb_rail_model_check/ldo_3v3in_1v8out.spice, klt netlist --check: match)"
   echo "ldo_pdk_note: the LDO repo pins a different open_pdks; this is that netlist simulated under THIS repo's pin"
+  pdk_record_header ldo_netlist_sha256 "$here/ldo_3v3in_1v8out.spice" "(sim/tb_rail_model_check/ldo_3v3in_1v8out.spice, klt netlist --check: match)"
   echo
   echo "== behavioural envelope (ASSUMPTION, not a measurement; asserted) =="
   echo "stimulus: W1-W5, LDO-compliant transient (-150 mV, 1 us edges), row 6/7 droops to threshold-100 mV (1 ns edges), ideal step (additional)"
