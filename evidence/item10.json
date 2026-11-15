@@ -3,14 +3,14 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 10,
-  "summary": "T1 item 10 (Repo hygiene): 42/42 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 10 (Repo hygiene): 43/43 attestation checks passed (klt signoff --attest)",
   "source": "attest/item10.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 42,
-    "passed_count": 42,
+    "check_count": 43,
+    "passed_count": 43,
     "checks": [
       {
         "check": "present",
@@ -52,7 +52,7 @@
         "role": "hygiene",
         "path": "manifests/sky130-droop-detector.json",
         "passed": true,
-        "content_hash": "sha256:d4e6c69cf4f18ee86d7fe2812877e00a0ce940912c26b0bc0659451644e9bfc7"
+        "content_hash": "sha256:b63dd76189b9f7c16091c3893db7fb7160f96f700a6c5d79d7ed5d93ff7b3ea4"
       },
       {
         "check": "present",
@@ -498,6 +498,19 @@
       {
         "check": "command",
         "role": "audit",
+        "name": "record-header-ngspice-threads",
+        "argv": [
+          "python3",
+          "-I",
+          "tests/test_record_header_threads.py"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
         "name": "item10-inventory-coverage-guard",
         "argv": [
           "python3",
@@ -520,7 +533,7 @@
         "path": "attest/item10.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:4042ef94fb003be93a3e3c3cddb2aaf7ab5e37cb66238cddf3fd952422e422c0"
+      "content_hash": "sha256:4fac8246858bb2db32ff5f9fecad4b88721616df502453220b69cd6b7c006259"
     }
   }
 }
