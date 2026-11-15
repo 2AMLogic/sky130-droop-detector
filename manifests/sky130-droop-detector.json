@@ -4,7 +4,7 @@
   "evidence": {
     "1": {
       "file": "evidence/item1.json",
-      "content_hash": "sha256:34c632ca37b5c6ba90169097eb81dc0cb01172e07ed0feb6c8af27e310045580"
+      "content_hash": "sha256:3e2914d9849a3c33b5bb2fea021457b72ada307283b3c9965a6f088538e8b59f"
     },
     "10": {
       "file": "evidence/item10.json",

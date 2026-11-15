@@ -1,0 +1,42 @@
+label: SIMULATED (not measured); testbench sim/tb_latency/tb_latency.spice; corner tt, 27 C, detector supply 3.3 V (single corner; no PVT sweep)
+stimulus: monitored rail = BEHAVIOURAL ENVELOPE (assumption, spec 'Rail model' form 2), 1 ns linear fall to threshold - 100 mV, 60 ns hold, 1 kohm load; ideal step (1 ps edge) from 1.8 V shown as the additional case only
+measure: t=0 is the instant the stimulus reaches threshold - 100 mV (full overdrive), not the threshold crossing; latency = t=0 to detector_top.live at 50% of its swing (swing = live at 90 ns to live at 160 ns, end of hold); comparator + glitch filter + flag logic included; 100 fF load (assumption); a negative latency means live asserted before full overdrive (rail crossed the threshold earlier on the edge)
+ngspice: ngspice-47
+klt: klt 0.9.2.dev1022+g2a9c52b27ce7
+pdk_sources: open_pdks f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7
+netlist_sha256: c6307eb13bb46c8c3d150dbf57605ec9716e35da9f6c8b69191695a79740ee93  design/detector_top.spice
+model_files_sha256:
+  48de7c677e2c6e7d09b2559279de9f818be71010a4aa933d728eb4db3b133c84  sky130A/libs.tech/combined/sky130.lib.spice
+  1079c5af023f59628e61e4749be70e94d165c9dde71b93b8da63cbf7a857f35f  sky130A/libs.tech/combined/continuous/parameters_fet_tt.spice
+  bc2401ac75547b56a48cf11c1ab5dedb37c72d518a8ef3d5abf5d2cdea083be6  sky130A/libs.tech/combined/continuous/parameters_res_nom.spice
+  74a1f0933e3220061816ba11b15a2192760a1c95e250e67ffd1bde6b8a5e5ae9  sky130A/libs.tech/combined/continuous/parameters_cap_nom.spice
+  ac9df6f40a23e46d0aa65268e3006915e6da4e398017b562afbd17ce1d9e171f  sky130A/libs.tech/combined/continuous/models_global.spice
+  1adf908f0c00903a8056215e59fec1e548ccfeef02ac539e08dcde0e73a54361  sky130A/libs.tech/combined/continuous/models_fet.spice
+  dddf98199f127049c8f4386ee3e2e173a9098d0a4916be93055eb394d2a4555d  sky130A/libs.tech/combined/continuous/models_bjt.spice
+  afdcf7595bee58671b42d06647dc525da132e03d0891589d86af296f93bdaebf  sky130A/libs.tech/combined/continuous/models_diodes.spice
+  d406fec360a7a35e473b7ce260c5b5f0ad75c95faa26d1d24fb2aa32d2f1ae6f  sky130A/libs.tech/combined/continuous/models_resistors.spice
+  c31dc25abbb8948f2cbc0173e2dcd6eeaabb621d8d3aa7f017c15a89486293df  sky130A/libs.tech/combined/continuous/models_capacitors.spice
+  a1855dbd79d8a8aa1335aa4b99086c14a629bca1cf77250313bf6aa9719a72b9  sky130A/libs.tech/combined/corners/tt.spice
+  658f71e2e534f48984ca055aa3c73982dedc3e52abdaf16b324576dc0fdb62ac  sky130A/libs.tech/combined/corners/tt/specialized_cells.spice
+  27fc61d71d8b34bfc54421c9a7b251dedb7e9eb18d2949c998363b7582be7f4a  sky130A/libs.tech/combined/rescap/res_typical__cap_typical.spice
+  8857d79fd6ff76382e41703fa80608c3ec580ed93bf5dc21a82b4438cb0891f7  sky130A/libs.tech/combined/rescap/res_typical__cap_typical__lin.spice
+results (latency in ns; voh/vol = live high/low level in V):
+  r6 l0 (1.728 V) start lo (1.764 V): latency = 2.554 ns; voh 1.628 V; vol 0.0000 V
+  r6 l0 (1.728 V) start nom (1.800 V): latency = 2.769 ns; voh 1.628 V; vol 0.0000 V
+  r6 l0 (1.728 V) start hi (1.836 V): latency = 2.907 ns; voh 1.628 V; vol 0.0000 V
+  ideal step l0 (1.728 V) start nom (1.800 V): latency = 3.302 ns [additional case only]
+  r6 l1 (1.692 V) start lo (1.764 V): latency = 2.792 ns; voh 1.628 V; vol 0.0000 V
+  r6 l1 (1.692 V) start nom (1.800 V): latency = 2.931 ns; voh 1.628 V; vol 0.0000 V
+  r6 l1 (1.692 V) start hi (1.836 V): latency = 2.999 ns; voh 1.628 V; vol 0.0000 V
+  ideal step l1 (1.692 V) start nom (1.800 V): latency = 3.421 ns [additional case only]
+  r6 l2 (1.638 V) start lo (1.764 V): latency = 3.003 ns; voh 1.628 V; vol 0.0000 V
+  r6 l2 (1.638 V) start nom (1.800 V): latency = 3.059 ns; voh 1.628 V; vol 0.0000 V
+  r6 l2 (1.638 V) start hi (1.836 V): latency = 3.102 ns; voh 1.628 V; vol 0.0000 V
+  ideal step l2 (1.638 V) start nom (1.800 V): latency = 3.490 ns [additional case only]
+  r6 l3 (1.584 V) start lo (1.764 V): latency = 3.119 ns; voh 1.628 V; vol 0.0000 V
+  r6 l3 (1.584 V) start nom (1.800 V): latency = 3.159 ns; voh 1.628 V; vol 0.0000 V
+  r6 l3 (1.584 V) start hi (1.836 V): latency = 3.191 ns; voh 1.628 V; vol 0.0000 V
+  ideal step l3 (1.584 V) start nom (1.800 V): latency = 3.542 ns [additional case only]
+worst envelope-rail latency over 4 levels x 3 starts = 3.1906 ns
+tier at this single corner: target (< 5 ns) met; stretch (< 1 ns) not met
+no verdict for the row over the PVT box is made here (single corner); #34/#35 own the corner campaigns

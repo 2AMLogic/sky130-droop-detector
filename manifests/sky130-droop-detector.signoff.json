@@ -33,13 +33,13 @@
         "command": null,
         "kind": "generic",
         "check_status": "pass",
-        "content_hash": "sha256:34c632ca37b5c6ba90169097eb81dc0cb01172e07ed0feb6c8af27e310045580",
+        "content_hash": "sha256:3e2914d9849a3c33b5bb2fea021457b72ada307283b3c9965a6f088538e8b59f",
         "input_verified": true,
         "exit_status": 0,
         "artifact_binding": {
           "t1_item": 1,
           "path": null,
-          "content_hash": "sha256:34c632ca37b5c6ba90169097eb81dc0cb01172e07ed0feb6c8af27e310045580",
+          "content_hash": "sha256:3e2914d9849a3c33b5bb2fea021457b72ada307283b3c9965a6f088538e8b59f",
           "input_verified": true,
           "members": [
             {
@@ -55,7 +55,7 @@
                 "path": "design/comparator.sch",
                 "scope": "repo"
               },
-              "content_hash": "sha256:beeb6c0737b31c238cd4b63ba3e8a0a1a9715959e423ce740ccd6fa510bcbf43",
+              "content_hash": "sha256:8439f545fc0a5edd4a338eb683c1793ce90a18956626a57908264dc8a3e10377",
               "status": "verified"
             },
             {
@@ -63,7 +63,7 @@
                 "path": "design/comparator.spice",
                 "scope": "repo"
               },
-              "content_hash": "sha256:b5d2044ae2a7553ebf0ba12d6d663dc20f04524cfa638ea61ab7284ecdd3b052",
+              "content_hash": "sha256:b3931a77967b6464319174863ba45b3e977b99c92cef2e8af551a9e00c4c01d0",
               "status": "verified"
             },
             {
@@ -87,7 +87,7 @@
                 "path": "design/detector_top.spice",
                 "scope": "repo"
               },
-              "content_hash": "sha256:0fca89f6b4b0a9d83a0bd641c2db4a681412f746af856f71a932d59d7fd7d95f",
+              "content_hash": "sha256:c6307eb13bb46c8c3d150dbf57605ec9716e35da9f6c8b69191695a79740ee93",
               "status": "verified"
             },
             {
@@ -95,7 +95,7 @@
                 "path": "design/flag_logic.sch",
                 "scope": "repo"
               },
-              "content_hash": "sha256:dafb90c78d65c32244f1acdfc0c418820fdf6a372c84a5887262b88e72f9633c",
+              "content_hash": "sha256:43075e938e1d7ea6bedabbeb14c98970f5fad117e0817e7a9ecdc747b75337a7",
               "status": "verified"
             },
             {
@@ -103,7 +103,7 @@
                 "path": "design/flag_logic.spice",
                 "scope": "repo"
               },
-              "content_hash": "sha256:a375b2323e232dd291b0bad91db7fe2adbab2c64826b4cd285733c8d79501779",
+              "content_hash": "sha256:a60ec817721baf6310383ce8991b2ce1641ae8b75f5797b59d5c54fbb7f9cb26",
               "status": "verified"
             },
             {
@@ -127,7 +127,7 @@
                 "path": "design/glitch_filter.spice",
                 "scope": "repo"
               },
-              "content_hash": "sha256:7cf6b4274526ac44ab221ecdc331bcbfcb010c13957845da423590bb0586b6ce",
+              "content_hash": "sha256:e806a4af52b93bb775dff4b515df8a8a46f0e85bf17e65821f3afb94c7401c48",
               "status": "verified"
             },
             {
@@ -151,7 +151,7 @@
                 "path": "design/threshold_ref.spice",
                 "scope": "repo"
               },
-              "content_hash": "sha256:e3c2fa0619ae99cb55ecad978884a74530eddc845eff9d81e994a3463a0205ae",
+              "content_hash": "sha256:3bbe5a2a57c66dbb302962cb5b3333e9763e82909de62def545ed515ac6217ab",
               "status": "verified"
             },
             {
