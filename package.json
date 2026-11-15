@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "worktree:return": "./.loom/scripts/worktree-return.sh",
-    "check:ci": "python3 -I tests/test_item10_coverage.py",
-    "check:all": "python3 -I tests/test_item10_coverage.py && RECORD=/dev/null ./sim/smoke/run.sh",
-    "test": "python3 -I tests/test_item10_coverage.py && RECORD=/dev/null ./sim/smoke/run.sh"
+    "check:ci": "python3 -I tests/test_item10_coverage.py && python3 -I tests/check_row5_budget.py",
+    "check:all": "python3 -I tests/test_item10_coverage.py && python3 -I tests/check_row5_budget.py && RECORD=/dev/null ./sim/smoke/run.sh",
+    "test": "python3 -I tests/test_item10_coverage.py && python3 -I tests/check_row5_budget.py && RECORD=/dev/null ./sim/smoke/run.sh"
   }
 }

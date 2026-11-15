@@ -2,7 +2,7 @@
   "schema_version": 1,
   "kind": "t1-attestation-inventory",
   "t1_item": 10,
-  "description": "Repo hygiene for sky130-droop-detector: top-level docs, license, CI workflow and spec exist; JSON pins parse; every tracked shell script (.sh) under sim/ and verification/ is syntactically valid and every tracked .py under sim/ and verification/ compiles; the local-ngspice thread policy has a single source (tests/test_thread_policy.py). PDK-free checks only.",
+  "description": "Repo hygiene for sky130-droop-detector: top-level docs, license, CI workflow and spec exist; JSON pins parse; every tracked shell script (.sh) under sim/ and verification/ is syntactically valid and every tracked .py under sim/ and verification/ compiles; the local-ngspice thread policy has a single source (tests/test_thread_policy.py). PDK-free checks only; the row-5 error-budget note's tables re-derive from the committed records they cite (tests/check_row5_budget.py).",
   "hygiene": [
     "README.md",
     "LICENSE",
@@ -279,6 +279,14 @@
         "python3",
         "-I",
         "tests/test_item10_coverage.py"
+      ]
+    },
+    {
+      "name": "row5-budget-rederivation-guard",
+      "argv": [
+        "python3",
+        "-I",
+        "tests/check_row5_budget.py"
       ]
     }
   ]
