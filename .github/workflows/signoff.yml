@@ -79,3 +79,10 @@ jobs:
         run: |
           klt signoff --attest 10 --inventory attest/item10.json \
                       --check evidence/item10.json
+
+      # Inventory-completeness guard: every tracked bench runner / .py under
+      # sim/ and verification/ must be declared in attest/item10.json. A new
+      # bench added without an inventory entry turns CI red here, not silently.
+      # PDK-free; needs only git and python3.
+      - name: Check attest/item10.json covers every tracked bench runner and script
+        run: python3 -I tests/test_item10_coverage.py
