@@ -86,3 +86,10 @@ jobs:
       # PDK-free; needs only git and python3.
       - name: Check attest/item10.json covers every tracked bench runner and script
         run: python3 -I tests/test_item10_coverage.py
+
+      # Row-5 budget re-derivation guard: every numeric table cell of
+      # design/row5-error-budget.md §3–§8 must re-derive from the committed
+      # records its §1 provenance table names. A stale figure anywhere in the
+      # note turns CI red here, not silently. PDK-free; needs only python3.
+      - name: Re-derive design/row5-error-budget.md from the committed records
+        run: python3 -I tests/check_row5_budget.py
