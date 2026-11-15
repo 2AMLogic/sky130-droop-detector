@@ -3,8 +3,23 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage role. Newest first.
 
+### 2026-11-15
+
+- **PR #103**: fix: swap tb_rail_model_check's hand-rolled record header for pdk_record_header
+- **PR #102**: docs: quote row5 budget contributor (a) as the pure 3.3 to 2.97 V supply delta, not the record's vs-nominal field
+- **PR #101**: refactor: one committed table for the ratified row 4 threshold levels
+- **PR #96**: ci: run the item-10 inventory-coverage guard in the signoff workflow
+- **PR #88**: sim: move the ngspice thread count into sim/lib/ngspice_run.sh and force it per run
+- **Issue #94** (closed): row5-error-budget.md: contributor (a) is quoted against nominal, not against the 3.3 V trip point, double-counting the ladder's tt offset by up to 0.52 mV
+- **Issue #86** (closed): Finish the record-header consolidation: tb_rail_model_check hand-rolls pdk_record_header and records one wrapper hash instead of 14 model-file hashes
+- **Issue #85** (closed): Dedupe the ngspice thread-count knob: one host-concurrency policy in sim/lib, not 13 scattered settings
+- **Issue #80** (closed): Wire tests/test_item10_coverage.py into CI: the attest-inventory completeness guard never runs
+- **Issue #79** (closed): Dedupe the ratified four-level threshold table copied into 12 sites across the sim benches
+
 ### 2026-11-14
 
+- **PR #92**: docs: apportion the row 5 trip-point error by contributor from committed records
+- **Issue #76** (closed): Row 5 error budget: split the threshold trip-point error by contributor from the committed records
 - **PR #84**: fix: resize comparator and flag_logic output path to meet row 6 at 2.97 V
 - **Issue #77** (closed): Comparator path misses the row 6 latency target at a 2.97 V detector supply
 - **PR #75**: docs: roadmap as of 2026-11-13

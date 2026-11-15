@@ -7,7 +7,14 @@ evidence.
 - `toolchain.json` — ngspice / xschem / klayout-tools versions.
 - `lib/pdk_pin.sh` — shared PDK-pin gate (`pdk_pin_resolve`, `pdk_model_files`)
   sourced by the bench drivers; exits 2 on any pin or PDK failure.
-- `lib/ngspice_run.sh` — shared ngspice run / result-check helpers (`sim_workdir`, `ngspice_run`, `require_results`, `result_of`, `get`)
+- `lib/ngspice_run.sh` — shared ngspice run / result-check helpers (`sim_workdir`,
+  `ngspice_run`, `sim_thread_cap`, `require_results`, `result_of`, `get`). It is also
+  the single source of the local-ngspice thread policy: `SIM_NGSPICE_THREADS` (one
+  thread), which `ngspice_run` forces into every deck it runs. No bench sets a thread
+  count of its own — `tests/test_thread_policy.py` fails if one does, and that check
+  runs as part of the T1 item 10 attestation. The header of the file records which
+  ngspice knob is actually honoured (the in-deck one; `OMP_NUM_THREADS` has no effect).
+  The `klt sim` benches are not covered: the batch fleet owns their concurrency.
 - `lib/levels.json` + `lib/levels.sh` — the ratified four-level threshold table
   (spec/target-spec.md row 4: 4/6/9/12 % below nominal) as the single committed
   source of truth; `levels.sh` (`levels_load`) hands the bench drivers the

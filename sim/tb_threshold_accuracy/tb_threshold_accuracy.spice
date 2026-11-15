@@ -25,7 +25,6 @@ X2 rail lo hi clr vd2 0 l2 st2 detector_top
 X3 rail hi hi clr vd3 0 l3 st3 detector_top
 
 .control
-set num_threads=1
 tran 50n 250u
 meas tran vtrip_l0 find v(rail) when v(l0)=0.9 rise=1
 echo "RESULT vtrip_l0 = $&vtrip_l0"

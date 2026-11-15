@@ -3,14 +3,14 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 10,
-  "summary": "T1 item 10 (Repo hygiene): 38/38 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 10 (Repo hygiene): 39/39 attestation checks passed (klt signoff --attest)",
   "source": "attest/item10.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 38,
-    "passed_count": 38,
+    "check_count": 39,
+    "passed_count": 39,
     "checks": [
       {
         "check": "present",
@@ -45,21 +45,21 @@
         "role": "hygiene",
         "path": "README.md",
         "passed": true,
-        "content_hash": "sha256:27910015c259d950fc875072301437b80dc368c97cc5816f4eb0d78391a647ee"
+        "content_hash": "sha256:dcf0b5cd43d44510fa9bdbe6d64b2659961cdda324d76f39b84b1054412fc26c"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "manifests/sky130-droop-detector.json",
         "passed": true,
-        "content_hash": "sha256:282e59f9c52b8cb73ca64e25710c4b96e666c6912c37cb252c16579e05fee587"
+        "content_hash": "sha256:524134cb3e926b86126801adfc1efa075350e3e4395d5b2569078e0fd77d6904"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "sim/README.md",
         "passed": true,
-        "content_hash": "sha256:a62382a69a4b26089fed9416715e0bc041d131b12439e5e2a483f0ba881077f1"
+        "content_hash": "sha256:f03ca529533be3230e1990e813d62b7e150fc3992852cac79a20567046cfa738"
       },
       {
         "check": "present",
@@ -446,6 +446,19 @@
       {
         "check": "command",
         "role": "audit",
+        "name": "ngspice-thread-policy-single-source",
+        "argv": [
+          "python3",
+          "-I",
+          "tests/test_thread_policy.py"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
         "name": "item10-inventory-coverage-guard",
         "argv": [
           "python3",
@@ -468,7 +481,7 @@
         "path": "attest/item10.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:f288693c4a94f75e1b9c930c72d17a5b6806d78be1783445588795a6c2a28e5b"
+      "content_hash": "sha256:7100615d40aa93ca87943a9fbea4859e0110de174ba46dffa072fb6b8ed8938d"
     }
   }
 }
