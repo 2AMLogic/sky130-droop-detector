@@ -23,7 +23,9 @@ awk -v a="$(get vtrip_l0)" -v b="$(get vtrip_l1)" -v c="$(get vtrip_l2)" -v d="$
 # Model files the netlist pulls in: the lib itself plus the tt-section includes.
 pdk_model_files tt "$work/files"
 rec="${RECORD:-/dev/stdout}"
-nom=(1.728 1.692 1.638 1.584)
+. "$sim/lib/levels.sh"
+levels_load
+nom=("${lv_v[@]}")
 {
   echo "label: SIMULATED (not measured); testbench sim/tb_threshold_select/tb_threshold_select.spice; corner tt, 27 C, detector supply 3.3 V"
   echo "stimulus: monitored rail = IDEAL SOURCE (DC sweep); comparator = ideal behavioural source (no offset), so vtrip is the selected tap voltage"

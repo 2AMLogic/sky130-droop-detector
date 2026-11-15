@@ -72,11 +72,12 @@ for k in $((n1-3)) $((n1-2)) $((n1-1)); do
 done
 
 # ---- B. detector_top, rail-model droops at four levels ----------------------------
-thr=(1.728 1.692 1.638 1.584)
+. "$sim/lib/levels.sh"
+levels_load   # row 4 table: trip point and select voltages per level
+thr=("${lv_v[@]}")
 widths=(50 10 2)
 for lvl in 0 1 2 3; do
-  s0=$(( lvl & 1 ? 3 : 0 )); s1=$(( lvl & 2 ? 3 : 0 ))
-  [ "$s0" = 3 ] && s0=3.3; [ "$s1" = 3 ] && s1=3.3
+  read -r _ _ s0 s1 <<<"${lv_rows[lvl]}"
   pwl="0 1.8"; meas=""; i=0; t0=100
   for w in "${widths[@]}"; do
     read -r p m < <(awk -v thr="${thr[$lvl]}" -v w="$w" -v t0="$t0" -v i="$i" 'BEGIN{

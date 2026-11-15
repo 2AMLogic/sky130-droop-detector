@@ -8,6 +8,11 @@ evidence.
 - `lib/pdk_pin.sh` — shared PDK-pin gate (`pdk_pin_resolve`, `pdk_model_files`)
   sourced by the bench drivers; exits 2 on any pin or PDK failure.
 - `lib/ngspice_run.sh` — shared ngspice run / result-check helpers (`sim_workdir`, `ngspice_run`, `require_results`, `result_of`, `get`)
+- `lib/levels.json` + `lib/levels.sh` — the ratified four-level threshold table
+  (spec/target-spec.md row 4: 4/6/9/12 % below nominal) as the single committed
+  source of truth; `levels.sh` (`levels_load`) hands the bench drivers the
+  `LEVELS` / trip-point shapes they use, Python helpers `json.load` the table
+  by path. The trip points change only through a decision record.
 - `smoke/` — one-command check that the pinned PDK and toolchain run:
   `sim/smoke/run.sh`. It fails closed on a missing or mismatched PDK
   revision. Smoke is tt / 27 C / 1.8 V by design; PVT corners belong to the

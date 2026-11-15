@@ -1,0 +1,10 @@
+{
+  "comment": "Ratified four-level threshold table: spec/target-spec.md row 4 (ratified 2026-10-20, DR-001), 4 levels at 4 / 6 / 9 / 12 % below the 1.8 V nominal. Single source of truth for every bench driver and Python helper under sim/: bash drivers read it through lib/levels.sh (levels_load), helpers json.load it by path. The trip points are a ratified spec quantity: change them only through a decision record that supersedes the spec row, never to make a result pass.",
+  "nominal_v": 1.8,
+  "levels": [
+    { "code": 0, "s0": 0,   "s1": 0,   "pct_below": 4,  "label": "l4",  "v": 1.728 },
+    { "code": 1, "s0": 3.3, "s1": 0,   "pct_below": 6,  "label": "l6",  "v": 1.692 },
+    { "code": 2, "s0": 0,   "s1": 3.3, "pct_below": 9,  "label": "l9",  "v": 1.638 },
+    { "code": 3, "s0": 3.3, "s1": 3.3, "pct_below": 12, "label": "l12", "v": 1.584 }
+  ]
+}
