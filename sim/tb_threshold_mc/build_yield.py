@@ -4,7 +4,8 @@ usage: build_yield.py <outdir-with-reports> <samples.json> <limits.json>
 Fails closed (exit 3) if any sample lacks a numeric vtrip or a report is missing/short."""
 import json, pathlib, sys
 
-LEVELS = [1.728, 1.692, 1.638, 1.584]
+with (pathlib.Path(__file__).resolve().parent.parent / "lib" / "levels.json").open() as _levels_f:
+    LEVELS = [row["v"] for row in json.load(_levels_f)["levels"]]   # row 4 trips, select order
 BAND = 0.027  # +/-1.5 % of 1.8 V (target), spec row 5
 N = 300
 out = pathlib.Path(sys.argv[1])

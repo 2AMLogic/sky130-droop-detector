@@ -167,7 +167,10 @@ committed alongside the passing ones):
   (`sim/tb_rail_model_check/records/2026-10-23-negctl-envelope-out-of-bound.txt`);
   `records/2026-10-23-negctl-tampered-pin.txt` covers a tampered LDO source pin.
 
-`npm test` runs only the smoke bench with `RECORD=/dev/null`.
+`npm test` runs the item-10 inventory-coverage guard
+(`tests/test_item10_coverage.py`) and then the smoke bench with
+`RECORD=/dev/null`. `npm run check:ci` runs the guard alone — PDK-free, the
+same completeness check the CI signoff job runs.
 
 ## Repo layout
 
