@@ -32,35 +32,48 @@ architecture can meet row 5 untrimmed, or whether the bias core needs supply com
 All figures **SIMULATED** (not measured), corner **tt / 27 °C**, ngspice-47, open_pdks
 `f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7` (`--pdk-root` pinned explicitly, because two
 installs provide `sky130A` on the sweep host and resolution is otherwise first-match-wins),
-against the `origin/main` netlists at merge-base `2c5fdfc`. One corner, untrimmed, **no
+against the tree that contains #84's comparator/flag_logic resize (merge-base `dde826a`; #84
+landed on main at `3f52500`, carried into this branch at `1dadde4`; `design/detector_top.spice`
+sha256 `c6307eb1…`). The records first filed with this DR ran the **pre-#84** netlist
+(`0fca89f6…`) — they stay committed in `sim/` as the evidence of the tree they ran on, and
+the figures below cite the post-#84 re-measurement. One corner, untrimmed, **no
 Monte Carlo** — the statistical row 5 verdict is #35's under DR-002, not this record's.
 
 ### Trip point vs detector supply — `sim/tb_threshold_accuracy`
 
-Real reference + comparator + filter + flag logic, slow 1 mV/µs rail sweep. Three records,
-**one pass, one toolchain**, in `sim/tb_threshold_accuracy/records/`
-(`2026-11-14-tb_threshold_accuracy-tt-vsup{2p97,3p3,3p63}.txt`):
+Real reference + comparator + filter + flag logic, slow 1 mV/µs rail sweep. The figures
+below cite the **post-#84** records: `2026-11-15-tb_threshold_accuracy-tt-vsup{2p97,3p63}.txt`
+(run on this branch's merged tree) and main's own `2026-11-14-tb_threshold_accuracy-tt.txt`
+at 3.3 V, which already is the post-#84 3.3 V record (netlist `c6307eb1…`). The pre-#84
+three-record set (`2026-11-14-…-vsup{2p97,3p3,3p63}.txt`, netlist `0fca89f6…`) stays
+committed alongside — `sim/` is append-only — as the as-filed evidence; its code-00 trips
+sit ~6 mV higher at every corner.
 
 | `VSUP` | code-00 trip | vs nominal 1.728 V | row 5 band | code-00 vs the 1.764 V window edge |
 |---|---|---|---|---|
-| 2.97 V | 1.67112 V | −56.88 mV (−3.160 %) | **OUTSIDE fallback** | +92.88 mV below |
-| 3.30 V | 1.74737 V | +19.37 mV (+1.076 %) | inside target | +16.63 mV below |
-| 3.63 V | 1.81559 V | **+87.59 mV (+4.866 %)** | **OUTSIDE fallback** | **−51.59 mV: inside the window** |
+| 2.97 V | 1.66542 V | −62.58 mV (−3.477 %) | **OUTSIDE fallback** | +98.58 mV below |
+| 3.30 V | 1.74137 V | +13.37 mV (+0.743 %) | inside target | +22.63 mV below |
+| 3.63 V | 1.80935 V | **+81.35 mV (+4.519 %)** | **OUTSIDE fallback** | **−45.35 mV: inside the window** |
 
-- **Total code-00 swing across row 2's box: 144.47 mV, i.e. +0.2189 V/V.** That is
-  **2.68×** row 5's entire ±27 mV target band (54 mV peak-to-peak) and **1.34×** its
+- **Total code-00 swing across row 2's box: 143.93 mV, i.e. +0.2180 V/V.** That is
+  **2.67×** row 5's entire ±27 mV target band (54 mV peak-to-peak) and **1.33×** its
   ±54 mV fallback band (108 mV peak-to-peak) — from the supply term **alone**, at one
   corner, before any process, temperature or mismatch contribution.
-- The defect is **two-sided**, not a single bad corner. At 3.63 V all four levels sit
-  outside the fallback band (+87.59 / +85.86 / +83.40 / +80.94 mV); at 2.97 V codes 00 and
-  01 are outside it and codes 10 and 11 are inside the fallback band only
-  (−56.88 / −55.66 / −53.75 / −51.81 mV). **No level is inside the ±27 mV target band at
-  either end of the box.**
-- The 3.3 V column reproduces the committed `2026-11-05-tb_threshold_accuracy-tt.txt`
-  record **exactly** (all four trip points and the immunity line), which settles the 6.0 mV
-  discrepancy noted on #83: the as-filed 1.74137 V figure was taken on PR #84's branch, and
-  #84 is still open. `origin/main` gives 1.74737 V. The re-run also shows the ngspice
-  46 → 47 bump contributes **0.00 mV** to this bench, independently confirming #87's list
+- The defect is **two-sided**, not a single bad corner, and the low corner got **worse**
+  with #84's resize. At 3.63 V all four levels sit outside the fallback band
+  (+81.35 / +79.65 / +77.24 / +74.83 mV); at 2.97 V **all four** are outside it too
+  (−62.58 / −61.34 / −59.36 / −57.37 mV) — pre-#84, codes 10 and 11 still sat inside the
+  fallback band only. **No level is inside the ±27 mV target band at either end of the
+  box.**
+- The 6.0 mV discrepancy noted on #83 is settled, in the direction #83 could not see at
+  filing time: the as-filed 1.74137 V figure — read then as #84's branch value, with
+  `origin/main` still giving 1.74737 V — is what `origin/main` itself gives once #84
+  merged (`3f52500`). The comparator/flag_logic resize (tail `mult=4→6`, input pfets
+  `W=4→2`, output chain halved) moves the full-chain trip by −6.0 mV. The pre-#84 3.3 V
+  re-run filed with this PR (`2026-11-14-…-vsup3p3.txt`, 1.74737 V) reproduces the
+  committed `2026-11-05-tb_threshold_accuracy-tt.txt` record **exactly** (all four trip
+  points and the immunity line), and that comparison still shows the ngspice 46 → 47
+  bump contributes **0.00 mV** to this bench, independently confirming #87's list
   of the four benches whose numbers do move.
 
 ### Reference and tap vs detector supply — `sim/tb_ref_droop`
@@ -78,9 +91,10 @@ Ideal comparator, so this isolates the reference from the comparator. Two record
 - **The whole error is in the bias core, none in the tap ladder.** The divider ratio
   `vth`/`vref` is constant to 7e-6 across the box, so `XR2`–`XR6` and the select mux
   contribute under 0.02 mV. **Do not resize the ladder.**
-- **Decomposition of the 144.47 mV trip swing**: 138.73 mV (96.0 %) is the reference and
-  5.74 mV (4.0 %) is the comparator's own supply-dependent input offset, which grows
-  +15.76 → +18.85 → +21.50 mV across the box. The comparator term is real but secondary
+- **Decomposition of the 143.93 mV trip swing**: 138.73 mV (96.4 %) is the reference and
+  5.20 mV (3.6 %) is the comparator's own supply-dependent input offset, which grows
+  +10.06 → +12.85 → +15.26 mV across the box (trip minus tap at each corner). The
+  comparator term is real but secondary
   and belongs to #77's subsystem, not to this decision.
 - **Monitored-rail rejection is already excellent and is not the problem.** For a
   1.8 → 0.9 V rail collapse `vref` moves **−0.0035 mV** DC and at most −0.004 mV during a
@@ -89,32 +103,35 @@ Ideal comparator, so this isolates the reference from the comparator. Two record
 
 ### The row 8 violation, as committed evidence
 
-`sim/tb_threshold_accuracy/records/2026-11-14-tb_threshold_accuracy-tt-vsup3p63.txt` carries
+`sim/tb_threshold_accuracy/records/2026-11-15-tb_threshold_accuracy-tt-vsup3p63.txt` carries
 the bench's own line `NO MARGIN: would flag inside the LDO window`. At 3.63 V **two** of the
-four levels trip inside the LDO ±2 % window (1.764–1.836 V): code 00 at 1.81559 V and
-code 01 at 1.77786 V. Row 8 requires **zero** flags for any excursion inside that window,
+four levels trip inside the LDO ±2 % window (1.764–1.836 V): code 00 at 1.80935 V and
+code 01 at 1.77165 V. Row 8 requires **zero** flags for any excursion inside that window,
 and waveform W1 is exactly "static rail anywhere in 1.764–1.836 V".
 
 The direct consequence is committed alongside it as a fail-closed transcript,
-`…-tt-vsup3p63-flag-stuck-high.txt`: with the rail held at a nominal **1.8 V**, the code-00
+`2026-11-15-…-tt-vsup3p63-flag-stuck-high.txt`, re-taken on the post-#84 tree (the pre-#84
+`2026-11-14-…-flag-stuck-high.txt` stays committed beside it): with the rail held at a
+nominal **1.8 V**, the code-00
 live flag reads `idle_max_l0 = 1.69708 V` — a logic HIGH for the 1.8 V CMOS consumer of
-row 10 — i.e. **asserted continuously with the rail at nominal**. That reproduces #83's
+row 10 — i.e. **asserted continuously with the rail at nominal**, at the identical figure
+pre- and post-#84. That reproduces #83's
 headline figure independently. (The row 8 *verdict* is `sim/tb_false_flag`'s; these records
 report.)
 
 ### The cost at the low corner is missed detection, not false flagging
 
-At 2.97 V the shallowest level trips at 1.67112 V instead of 1.74737 V, so droops in the
-76.25 mV band between those two voltages — real droops, below the LDO window — are **not
+At 2.97 V the shallowest level trips at 1.66542 V instead of 1.74137 V, so droops in the
+75.95 mV band between those two voltages — real droops, below the LDO window — are **not
 flagged** at the 4 % level. The supply term costs false flags at one end of row 2's box and
 detection at the other.
 
 ## Decision
 
 1. **Row 3's architecture, as built, cannot meet row 5 over row 2's supply box, untrimmed.**
-   The supply term alone is 2.68× the target band and 1.34× the fallback band at a single
+   The supply term alone is 2.67× the target band and 1.33× the fallback band at a single
    nominal corner. There is no process, temperature or mismatch allocation that makes
-   144.47 mV fit inside 54 mV. This is a **design conclusion, not a spec problem**: row 3
+   143.93 mV fit inside 54 mV. This is a **design conclusion, not a spec problem**: row 3
    anticipated a *residual* sensitivity charged to row 5, and +0.22 V/V at the trip point
    is not residual.
 
@@ -169,10 +186,10 @@ detection at the other.
 4. **Row 5's immunity floor is restated to bind across row 2's supply box**, not at the
    3.3 V point alone (the wording change in `spec/target-spec.md`; **no number moves**).
    The floor requires the shallowest level to sit ≥ 2 % + accuracy below nominal. With the
-   measured one-sided supply term of **+4.87 %** at 3.63 V, that requires the shallowest
-   level placed **≥ 6.9 % below nominal** — deeper than row 4's ratified 4 % *and* 6 %
+   measured one-sided supply term of **+4.52 %** at 3.63 V, that requires the shallowest
+   level placed **≥ 6.52 % below nominal** — deeper than row 4's ratified 4 % *and* 6 %
    placements, and the measurement agrees: at 3.63 V the 4 % and 6 % levels both trip
-   inside the window while the 9 % and 12 % levels (1.72140 / 1.66494 V) clear it. So
+   inside the window while the 9 % and 12 % levels (1.71524 / 1.65883 V) clear it. So
    **the floor is not reachable by level placement within row 4's ratified set**; it has to
    be met by reducing the supply term, which is clause 2.
 
@@ -196,7 +213,7 @@ detection at the other.
   makes a trimmed design a superseding-DR matter, not a route to a pass.
 - **Move the levels deeper than row 4's 4 / 6 / 9 / 12 %** — rejected: it retunes ratified
   row 4 levels to mask a reference defect, and clause 4's arithmetic shows it would take
-  ≥ 6.9 % for the shallowest level — abandoning row 4's two shallowest settings, and still
+  ≥ 6.52 % for the shallowest level — abandoning row 4's two shallowest settings, and still
   only at tt / 27 °C with no mismatch allocation. If it is ever the answer it is a spec
   change via DR plus an operator decision, never a quiet retune.
 - **External reference pin** — rejected here: row 3's stretch, and the spec says it needs
@@ -222,8 +239,13 @@ measured figures are recorded as failing the rows they fail.
 - #90 has a ratified topology and a constraint set, and is no longer blocked on an
   undecided architecture.
 - #76 (row 5 error budget) gains the supply-sensitivity term as committed evidence at all
-  three corners. It should **read these records** rather than re-measure. This DR does not
-  assemble the budget.
+  three corners. It should **read the post-#84 records this DR cites** (the
+  `2026-11-15-tb_threshold_accuracy-tt-vsup{2p97,3p63}.txt` set plus main's
+  `2026-11-14-tb_threshold_accuracy-tt.txt` at 3.3 V) rather than re-measure; the pre-#84
+  `2026-11-14-…-vsup{2p97,3p3,3p63}.txt` set carries a ~6 mV stale supply term and stays
+  committed only as as-filed evidence. #92, which already merged, apportioned its budget
+  from those pre-#84 figures — whether it needs a correction pass is #76's call, not this
+  record's. This DR does not assemble the budget.
 - #35 keeps the statistical row 5 verdict (3σ, N ≥ 300 per corner, DR-002). Three static
   operating points cannot and do not produce one.
 - The `tb_threshold_accuracy` sweep window is now wide enough to span the levels across the

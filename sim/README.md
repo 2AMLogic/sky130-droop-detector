@@ -84,7 +84,9 @@ evidence.
   at `VSUP=2.97` nor code 00 at `VSUP=3.63`; it fails closed (exit 3) on the missing
   `meas` result when it does not. No Monte Carlo (that is `tb_threshold_mc`, #35).
   Records and negative controls in `tb_threshold_accuracy/records/`, including the
-  2026-11-14 supply-corner set and the fail-closed transcript showing the code-00
+  post-#84 2026-11-15 supply-corner set (`vsup{2p97,3p63}`, the figures DR-003 and
+  row 5 cite) beside the pre-#84 2026-11-14 set, and the fail-closed transcript showing
+  the code-00
   live flag asserted with the rail at a nominal 1.8 V at `VSUP=3.63`
   ([DR-003](../spec/decision-records/DR-003-threshold-reference-supply-sensitivity.md),
   issue #83).
