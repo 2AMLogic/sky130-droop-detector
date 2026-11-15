@@ -240,6 +240,14 @@
         "-n",
         "verification/flag_logic/run.sh"
       ]
+    },
+    {
+      "name": "item10-inventory-coverage-guard",
+      "argv": [
+        "python3",
+        "-I",
+        "tests/test_item10_coverage.py"
+      ]
     }
   ]
 }
