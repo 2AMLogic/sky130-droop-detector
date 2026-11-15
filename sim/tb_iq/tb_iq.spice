@@ -24,7 +24,6 @@ X2 rail lo hi clr vd2 0 l2 st2 detector_top
 X3 rail hi hi clr vd3 0 l3 st3 detector_top
 
 .control
-set num_threads=1
 tran 20n 40u
 meas tran iq_l0_ua avg i(Vd0) from=20u to=40u
 let a0 = -iq_l0_ua*1e6

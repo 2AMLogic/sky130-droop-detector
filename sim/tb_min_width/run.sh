@@ -17,7 +17,6 @@ pdk_pin_resolve
 net="$sim/../design/detector_top.spice"
 [ -r "$net" ] || { echo "FAIL: netlist unreadable: $net" >&2; exit 2; }
 sim_workdir
-export OMP_NUM_THREADS="${OMP_NUM_THREADS:-2}"   # shared host: keep ngspice modest
 
 # Levels: name nominal-trip select-s0 select-s1 (row 4, sim/lib/levels.json); widths in ns: row 7 stretch/target/fallback.
 . "$sim/lib/levels.sh"
