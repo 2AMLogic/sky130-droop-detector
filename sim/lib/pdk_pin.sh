@@ -34,13 +34,20 @@ pdk_model_files() {
 }
 
 # pdk_record_header [<key> <path> <display>]...: print the provenance block of a record:
-# the ngspice / klt / pdk_sources lines, one "<key>: <sha256 of path>  <display>" line per
+# the ngspice / ngspice_threads / klt / pdk_sources lines, one "<key>: <sha256 of path>  <display>" line per
 # triple (netlists, checkers; in the given order), then model_files_sha256 with the hash of
 # every model file listed in $work/files. Fail-closed: an unreadable model file or an
 # unreadable triple path exits 2, so a record never carries an incomplete hash list.
 # Needs $KLT, $got, $root and $work/files (pdk_pin_resolve + pdk_model_files).
 pdk_record_header() {
   echo "ngspice: $(ngspice --version | grep -m1 -o 'ngspice-[0-9.]*')"
+  # ngspice_threads: the thread policy ngspice_run actually applied to the deck, so a
+  # record states it instead of leaving the reader to resolve the commit and read
+  # ngspice_run.sh. Coupling: SIM_NGSPICE_THREADS_USED is set by sim/lib/ngspice_run.sh;
+  # every caller of this function sources that file first. It is unset exactly when no
+  # local ngspice ran (e.g. a klt sim --batch-set bench), so say so rather than imply a
+  # count that did no work — such a record's backend: line says where it ran.
+  echo "ngspice_threads: ${SIM_NGSPICE_THREADS_USED:-none (no local ngspice run; see backend:)}"
   echo "klt: $($KLT --version)"
   echo "pdk_sources: $got"
   while [ "$#" -ge 3 ]; do
