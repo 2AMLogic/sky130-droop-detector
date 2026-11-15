@@ -19,8 +19,9 @@ evidence.
   `sim/smoke/run.sh`. It fails closed on a missing or mismatched PDK
   revision. Smoke is tt / 27 C / 1.8 V by design; PVT corners belong to the
   spec benches, not here. Records and negative-control output are in
-  `smoke/records/`. `package.json`'s `check:ci`, `check:all` and `test` run it
-  with `RECORD=/dev/null`, so routine checks never touch `smoke/records/`.
+  `smoke/records/`. `package.json`'s `check:all` and `test` run it
+  with `RECORD=/dev/null`, so routine checks never touch `smoke/records/`;
+  `check:ci` runs only the PDK-free inventory-coverage guard.
 - `tb_rail_model_check/` — the rail model checked before any detector row
   relies on it (target-spec row 1): `sim/tb_rail_model_check/run.sh`. It
   asserts the behavioural envelope (W1–W5, the LDO-compliant transient, the

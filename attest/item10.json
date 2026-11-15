@@ -230,6 +230,14 @@
         "-I",
         "tests/test_thread_policy.py"
       ]
+    },
+    {
+      "name": "item10-inventory-coverage-guard",
+      "argv": [
+        "python3",
+        "-I",
+        "tests/test_item10_coverage.py"
+      ]
     }
   ]
 }
