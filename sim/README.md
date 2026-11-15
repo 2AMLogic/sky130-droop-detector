@@ -26,7 +26,8 @@ evidence.
   spec benches, not here. Records and negative-control output are in
   `smoke/records/`. `package.json`'s `check:all` and `test` run it
   with `RECORD=/dev/null`, so routine checks never touch `smoke/records/`;
-  `check:ci` runs only the PDK-free inventory-coverage guard.
+  `check:ci` runs only the two PDK-free guards (the inventory-coverage guard
+  and the row-5 error-budget re-derivation guard, `tests/check_row5_budget.py`).
 - `tb_rail_model_check/` — the rail model checked before any detector row
   relies on it (target-spec row 1): `sim/tb_rail_model_check/run.sh`. It
   asserts the behavioural envelope (W1–W5, the LDO-compliant transient, the

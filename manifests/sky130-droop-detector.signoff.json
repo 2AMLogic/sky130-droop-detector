@@ -5,7 +5,7 @@
   "tier": null,
   "t1_item_count": 11,
   "build_t1_item_count": 11,
-  "t1_met_count": 2,
+  "t1_met_count": 1,
   "source_doc": "docs/design-evidence-tiers.md",
   "source_doc_content_hash": "sha256:a26b90262320d0fbd32b3f549a02b6300832706041797a559d8bf6bdb62efdc7",
   "build": {
@@ -289,35 +289,10 @@
       "partition": null,
       "text": "a README stating what the block is, its spec table, and how to reproduce every result; a license; CI that at minimum keeps the harness and evidence formats valid.",
       "notes": [],
-      "status": "met",
-      "reason": null,
+      "status": "unmet",
+      "reason": "stale_evidence",
       "graded_by_build": true,
-      "citation": {
-        "file": "evidence/item10.json",
-        "command": null,
-        "kind": "generic",
-        "check_status": "pass",
-        "content_hash": "sha256:4fac8246858bb2db32ff5f9fecad4b88721616df502453220b69cd6b7c006259",
-        "input_verified": true,
-        "exit_status": 0,
-        "artifact_binding": {
-          "t1_item": 10,
-          "path": {
-            "path": "attest/item10.json",
-            "scope": "repo"
-          },
-          "content_hash": "sha256:4fac8246858bb2db32ff5f9fecad4b88721616df502453220b69cd6b7c006259",
-          "input_verified": true,
-          "summary": "T1 item 10 (Repo hygiene): 43/43 attestation checks passed (klt signoff --attest)",
-          "source": "attest/item10.json",
-          "attestation": {
-            "producer": "klt signoff --attest",
-            "inventory_schema_version": 1,
-            "check_count": 43,
-            "passed_count": 43
-          }
-        }
-      }
+      "citation": null
     },
     {
       "tier": "T1",

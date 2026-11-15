@@ -3,14 +3,14 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 10,
-  "summary": "T1 item 10 (Repo hygiene): 43/43 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 10 (Repo hygiene): 44/44 attestation checks passed (klt signoff --attest)",
   "source": "attest/item10.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 43,
-    "passed_count": 43,
+    "check_count": 44,
+    "passed_count": 44,
     "checks": [
       {
         "check": "present",
@@ -24,7 +24,7 @@
         "role": "hygiene",
         "path": ".github/workflows/signoff.yml",
         "passed": true,
-        "content_hash": "sha256:2fb56fb23b1ae50016acb65d406535a8b544fff005d3572e660bd8c5f1997182"
+        "content_hash": "sha256:fdaed3995335986908da44391b6af1caf723a09969ebaf924aa3e32086b4d2b1"
       },
       {
         "check": "present",
@@ -45,21 +45,21 @@
         "role": "hygiene",
         "path": "README.md",
         "passed": true,
-        "content_hash": "sha256:dcf0b5cd43d44510fa9bdbe6d64b2659961cdda324d76f39b84b1054412fc26c"
+        "content_hash": "sha256:4383b05f4b49a868c9c467167ec68f37cba0e81c617cefdc08994b707d36efd5"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "manifests/sky130-droop-detector.json",
         "passed": true,
-        "content_hash": "sha256:b63dd76189b9f7c16091c3893db7fb7160f96f700a6c5d79d7ed5d93ff7b3ea4"
+        "content_hash": "sha256:31bd86f416d71762cfa82bc2b5ef916381d96b0888ee6def19701b171a975929"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "sim/README.md",
         "passed": true,
-        "content_hash": "sha256:f03ca529533be3230e1990e813d62b7e150fc3992852cac79a20567046cfa738"
+        "content_hash": "sha256:46794d8b1785226fc7f6271890d294b755eab281bcc99824ca7f35cc1efb928e"
       },
       {
         "check": "present",
@@ -520,6 +520,19 @@
         "cwd": ".",
         "exit_status": 0,
         "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "row5-budget-rederivation-guard",
+        "argv": [
+          "python3",
+          "-I",
+          "tests/check_row5_budget.py"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
       }
     ]
   },
@@ -533,7 +546,7 @@
         "path": "attest/item10.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:4fac8246858bb2db32ff5f9fecad4b88721616df502453220b69cd6b7c006259"
+      "content_hash": "sha256:6a094234a495fcbb6232cb57517b57a8f1336ea9af4444949696b0b76d23612b"
     }
   }
 }
