@@ -79,7 +79,17 @@ design/<name>.sch -o design/<name>.spice --block --check --pdk sky130A
 --rcfile design/xschemrc` must report `match`. The T1 item 1 inventory is
 `attest/item1.json` (evidence `evidence/item1.json`).
 
-Filter and flag-logic benches: `sim/tb_filter`, `sim/tb_flag_logic`, `verification/flag_logic` (see `sim/README.md`); no bench yet for the top at other rows. See the repo README for scope.
+Filter and flag-logic benches: `sim/tb_filter`, `sim/tb_flag_logic`,
+`verification/flag_logic` (see `sim/README.md`). Benches that instantiate
+`detector_top.spice` are committed for spec rows 2, 5, 6, 7, 8, 9, 10 and 11:
+`sim/tb_supply_headroom`, `sim/tb_threshold_accuracy`, `sim/tb_threshold_mc`,
+`sim/tb_latency`, `sim/tb_min_width`, `sim/tb_false_flag`, `sim/tb_filter`,
+`sim/tb_flag_logic`, `sim/tb_iq` and `verification/flag_logic`. Each has at
+least one committed record, simulated at corner tt, 27 C, except
+`sim/tb_threshold_mc`, whose mismatch Monte Carlo record spans process
+{tt, ss, ff, sf, fs}_mm + mc at 27 C and predates the 2026-11-14 sizing, so
+for the current netlist it is superseded pending #35's Monte Carlo campaign
+(see "Records superseded by this sizing" below). See the repo README for scope.
 
 ## Row 6 sizing at the 2.97 V supply corner (#77, 2026-11-14)
 
@@ -265,12 +275,15 @@ a hash that no longer matches the committed netlist it names (e.g.
 proves nothing more and cannot rank two records of one bench — both
 `tb_rail_model_check` records carry the same matching `ldo_netlist_sha256`,
 so take the newest; README's Reproduce table cites its 2026-11-15 record.
-Two committed records predate hash emission for their bench and carry none:
-`sim/smoke/records/2026-10-17-smoke-tt.txt` and
-`verification/flag_logic/records/2026-11-05-flag_logic-tt.txt`. Each is the
-only record committed for its bench (besides its negative controls), which
-is what establishes its freshness; since 2026-11-15 their runners declare
-their netlists, so later records carry hashes. Re-run at this
+Three committed records predate hash emission for their bench and carry
+none: `sim/smoke/records/2026-10-17-smoke-tt.txt`,
+`sim/smoke/records/2026-11-15-smoke-tt.txt` (recorded by the ngspice
+thread-policy change before its runner declared its netlist) and
+`verification/flag_logic/records/2026-11-05-flag_logic-tt.txt`, the only
+record committed for its bench (besides its negative controls), which is
+what establishes its freshness. Smoke's hashless pair ranks by date, the
+only basis it has: README cites the 2026-11-15 record. Since 2026-11-15
+their runners declare their netlists, so later records carry hashes. Re-run at this
 sizing on 2026-11-14: `tb_supply_headroom`, `tb_latency`, `tb_iq`,
 `tb_comparator`, `tb_min_width`, `tb_filter`, `tb_flag_logic`,
 `tb_false_flag`, `tb_threshold_accuracy`. **Not** re-run:
