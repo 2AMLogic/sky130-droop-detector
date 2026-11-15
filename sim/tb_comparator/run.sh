@@ -10,12 +10,14 @@ here="$(cd "$(dirname "$0")" && pwd)"
 sim="$here/.."
 . "$sim/lib/pdk_pin.sh"
 . "$sim/lib/ngspice_run.sh"
+. "$sim/lib/levels.sh"
 pdk_pin_resolve
 net="$sim/../design/comparator.spice"
 [ -r "$net" ] || { echo "FAIL: netlist unreadable: $net" >&2; exit 2; }
 sim_workdir
 
-taps=(1.728 1.584)
+levels_load   # row 4 table: highest and lowest tap
+taps=("${lv_v[0]}" "${lv_v[3]}")
 for vth in "${taps[@]}"; do
   sed "s#__PDK_LIB__#$lib#;s#__NETLIST__#$net#;s#__VTH__#$vth#;s#__VLOW__#$(awk -v t="$vth" 'BEGIN{printf "%.3f", t-0.1}')#" "$here/tb_comparator.spice" > "$work/tb_$vth.spice"
   NGSPICE_CTX="at tap $vth"

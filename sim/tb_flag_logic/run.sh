@@ -20,6 +20,7 @@ sim="$here/.."
 chk="$sim/../verification/flag_logic/check.py"
 . "$sim/lib/pdk_pin.sh"
 . "$sim/lib/ngspice_run.sh"
+. "$sim/lib/levels.sh"
 pdk_pin_resolve
 lnet="$sim/../design/flag_logic.spice"; tnet="$sim/../design/detector_top.spice"
 for n in "$lnet" "$tnet" "$chk"; do [ -r "$n" ] || { echo "FAIL: unreadable: $n" >&2; exit 2; }; done
@@ -40,7 +41,8 @@ NGSPICE_CTX="(A)" ngspice_run "$work/a.sp" "$work/a.log"
 python3 -I "$chk" "$work/trace_a.txt" --settle 8 > "$work/chk_a.txt" || { cat "$work/chk_a.txt" >&2; fail3 "sequence check A failed"; }
 
 # ---- B: detector_top, rail model --------------------------------------------------------
-rail="$(awk 'BEGIN{thr=1.728; D=thr-0.1; f=(1.8-thr)/(1.8-D); s="0 1.8";
+levels_load   # row 4 table: select 00 trips at the highest tap
+rail="$(awk -v thr="${lv_v[0]}" 'BEGIN{D=thr-0.1; f=(1.8-thr)/(1.8-D); s="0 1.8";
   n=split("100:30 250:150",d," ");
   for(i=1;i<=n;i++){split(d[i],x,":"); t0=x[1]; w=x[2]; h=w-2*(1-f);
     s=s sprintf(" %.4fn 1.8 %.4fn %.4f %.4fn %.4f %.4fn 1.8", t0, t0+1, D, t0+1+h, D, t0+2+h)}

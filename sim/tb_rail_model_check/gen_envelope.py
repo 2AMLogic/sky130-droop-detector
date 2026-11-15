@@ -18,7 +18,8 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "rail_envelope"))
 from rail_envelope import NOM, WIN_LO, WIN_HI, GAP, Pwl, fmt, w2_tone, w3_noise  # noqa: E402
 
-LEVELS = {"l4": 1.728, "l6": 1.692, "l9": 1.638, "l12": 1.584}   # row 4 trips
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "lib", "levels.json")) as _levels_f:
+    LEVELS = {row["label"]: row["v"] for row in json.load(_levels_f)["levels"]}   # row 4 trips, select order
 STARTS = {"lo": 1.764, "nom": 1.8, "hi": 1.836}                  # row 6 start points
 WIDTHS_NS = (2, 10, 50)                                          # row 7: stretch/target/fallback
 SLACK = 1e-6                            # V; below the 6-digit print resolution
