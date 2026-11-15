@@ -17,8 +17,10 @@ net="$sim/../design/detector_top.spice"
 [ -r "$net" ] || { echo "FAIL: netlist unreadable: $net" >&2; exit 2; }
 sim_workdir
 
-# Levels: name nominal-trip select-s0 select-s1 (row 4); starts: row 6 start points.
-LEVELS=("l0 1.728 0 0" "l1 1.692 3.3 0" "l2 1.638 0 3.3" "l3 1.584 3.3 3.3")
+# Levels: name nominal-trip select-s0 select-s1 (row 4, sim/lib/levels.json); starts: row 6 start points.
+. "$sim/lib/levels.sh"
+levels_load
+LEVELS=("${lv_rows[@]}")
 STARTS=("lo 1.764" "nom 1.8" "hi 1.836")
 keys=()
 : > "$work/cases.ctl"

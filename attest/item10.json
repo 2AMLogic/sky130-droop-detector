@@ -13,9 +13,27 @@
     "sim/README.md",
     "sim/pdk.json",
     "sim/toolchain.json",
+    "sim/lib/levels.json",
     "manifests/sky130-droop-detector.json"
   ],
   "checks": [
+    {
+      "name": "levels-json-valid",
+      "argv": [
+        "python3",
+        "-m",
+        "json.tool",
+        "sim/lib/levels.json"
+      ]
+    },
+    {
+      "name": "levels-json-consistent",
+      "argv": [
+        "python3",
+        "-c",
+        "import json\nd = json.load(open('sim/lib/levels.json'))\nrows = d['levels']\nassert d['nominal_v'] == 1.8, 'nominal_v must be 1.8'\nassert [r['code'] for r in rows] == [0, 1, 2, 3], 'levels not in select order 0..3'\nassert [r['label'] for r in rows] == ['l4', 'l6', 'l9', 'l12'], 'labels must be l4/l6/l9/l12 in select order'\nassert len(set((r['s0'], r['s1']) for r in rows)) == 4, 'select columns must decode to 4 distinct s0/s1 pairs'\nfor r in rows:\n    want = round(d['nominal_v'] * (1 - r['pct_below'] / 100), 3)\n    assert r['v'] == want, 'level %d: v %r disagrees with pct_below %d (want %r)' % (r['code'], r['v'], r['pct_below'], want)\nprint('levels.json ok: %d levels; v == nominal_v*(1-pct_below/100) rounded to 3 decimals' % len(rows))"
+      ]
+    },
     {
       "name": "manifest-json-valid",
       "argv": [

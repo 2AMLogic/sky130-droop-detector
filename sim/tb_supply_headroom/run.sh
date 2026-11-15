@@ -24,8 +24,10 @@ net="$sim/../design/detector_top.spice"
 [ -r "$net" ] || { echo "FAIL: netlist unreadable: $net" >&2; exit 2; }
 sim_workdir
 
-# Levels: name nominal-trip select-s0 select-s1 (row 4).
-LEVELS=("l0 1.728 0 0" "l1 1.692 3.3 0" "l2 1.638 0 3.3" "l3 1.584 3.3 3.3")
+# Levels: name nominal-trip select-s0 select-s1 (row 4, sim/lib/levels.json).
+. "$sim/lib/levels.sh"
+levels_load
+LEVELS=("${lv_rows[@]}")
 # Supply conditions: name start-volts sag-depth-volts (sag is an ASSUMED stimulus, see the .spice).
 SUPPLIES=("v3p30 3.3 0" "v2p97 2.97 0" "v2p97_sag100m 2.97 0.1" "v2p97_sag300m 2.97 0.3")
 # Optional overrides for probing an operating point outside the graded default set (see Env above).

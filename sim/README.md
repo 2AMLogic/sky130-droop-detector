@@ -15,6 +15,11 @@ evidence.
   runs as part of the T1 item 10 attestation. The header of the file records which
   ngspice knob is actually honoured (the in-deck one; `OMP_NUM_THREADS` has no effect).
   The `klt sim` benches are not covered: the batch fleet owns their concurrency.
+- `lib/levels.json` + `lib/levels.sh` — the ratified four-level threshold table
+  (spec/target-spec.md row 4: 4/6/9/12 % below nominal) as the single committed
+  source of truth; `levels.sh` (`levels_load`) hands the bench drivers the
+  `LEVELS` / trip-point shapes they use, Python helpers `json.load` the table
+  by path. The trip points change only through a decision record.
 - `smoke/` — one-command check that the pinned PDK and toolchain run:
   `sim/smoke/run.sh`. It fails closed on a missing or mismatched PDK
   revision. Smoke is tt / 27 C / 1.8 V by design; PVT corners belong to the
