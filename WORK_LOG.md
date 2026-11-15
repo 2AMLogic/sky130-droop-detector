@@ -5,6 +5,14 @@ triage role. Newest first.
 
 ### 2026-11-15
 
+- **PR #113**: sim: record the ngspice thread policy in the record header
+- **PR #108**: attest: cover sim/lib/*.sh helpers in item 10 and widen the inventory guard
+- **PR #105**: docs: repoint Reproduce table to the 2026-11-14 resize records
+- **PR #82**: docs: refresh README status prose to the five netlisted blocks and 11 row benches
+- **Issue #107** (closed): sim records do not state the ngspice thread count they were produced with
+- **Issue #99** (closed): README Reproduce table cites nine records superseded by the 2026-11-14 resizing
+- **Issue #97** (closed): Attest item 10: sim/lib/*.sh escape both the inventory and the new coverage guard
+- **Issue #78** (closed): README and design/README.md still describe the block as before the comparator, filter and flags landed
 - **PR #103**: fix: swap tb_rail_model_check's hand-rolled record header for pdk_record_header
 - **PR #102**: docs: quote row5 budget contributor (a) as the pure 3.3 to 2.97 V supply delta, not the record's vs-nominal field
 - **PR #101**: refactor: one committed table for the ratified row 4 threshold levels
