@@ -10,7 +10,7 @@
 #            LEVELS=() record shape: name nominal-trip select-s0 select-s1)
 #   lv_v     the four nominal trip points, select order (lv_v[0]..lv_v[3])
 levels_load() {
-  local f="$sim/lib/levels.json" r x
+  local f="$sim/lib/levels.json" r x v r_s0 r_s1 _
   [ -r "$f" ] || { echo "FAIL: level table unreadable: $f" >&2; exit 2; }
   lv_rows=()
   while read -r r; do lv_rows+=("$r"); done < <(
