@@ -54,13 +54,19 @@ sim_thread_cap() {
   ' "$1" > "$1.capped" && mv "$1.capped" "$1"
 }
 
-# ngspice_run <deck> <log>: one batch ngspice run; sets RESULT_LOG=<log> for get.
-# The deck is thread-capped first, so the policy above applies whether or not the bench's
+# ngspice_run <deck> <log>: one batch ngspice run; sets RESULT_LOG=<log> for get, and
+# SIM_NGSPICE_THREADS_USED for pdk_record_header (see pdk_pin.sh). The deck is
+# thread-capped first, so the policy above applies whether or not the bench's
 # own template mentions threads. Decks are generated into the caller's $work, so the
 # in-place rewrite only ever touches scratch.
 ngspice_run() {
   RESULT_LOG="$2"
   sim_thread_cap "$1"
+  # Mark that a local run happened and at which cap, for the record header.
+  # pdk_pin.sh reads a variable this file sets; every bench that calls
+  # pdk_record_header sources this file first, and the assignment survives all the
+  # call forms the benches use (plain, NGSPICE_CTX assignment prefix, wrapper fn).
+  SIM_NGSPICE_THREADS_USED="$SIM_NGSPICE_THREADS"
   ngspice -b -o "$2" "$1" >/dev/null 2>&1 \
     || ngspice_log_fail "ngspice exited non-zero${NGSPICE_CTX:+ $NGSPICE_CTX}; log:" "$2"
 }
