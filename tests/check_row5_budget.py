@@ -12,8 +12,10 @@ rule discriminates a correctly rounded cell from a wrong last digit.
 
 Fails closed (`.loom/docs/ci-principles.md`): a record path section 1 names that
 does not exist, a record field whose name changed, a section heading, table,
-row or prose anchor the parser cannot locate -- each exits non-zero naming the
-reason. Never "0 cells checked, OK".
+row or prose anchor the parser cannot locate, or a located table whose shape
+changed (an added row/column or a ragged row is never visited by the lookups
+and would otherwise pass silently) -- each exits non-zero naming the reason.
+Never "0 cells checked, OK".
 
 sim/ is append-only; this guard only reads it.
 """
@@ -160,9 +162,28 @@ def md_tables(sec_text):
     return out
 
 
-def find_table(num, sec_text, header_sub):
+def assert_shape(num, label, table, rows, cols):
+    """Fail closed when a located table's shape changed: row()/col() only notice
+    removals, so an added row, an added column or a ragged data row would
+    otherwise pass silently -- its surplus cells are never indexed."""
+    where = "section %d table %r" % (num, label)
+    got = len(table) - 1
+    if got != rows:
+        die("%s: expected %d data rows, found %d (header %r)"
+            % (where, rows, got, table[0]))
+    if len(table[0]) != cols:
+        die("%s: expected %d columns, found %d (header %r)"
+            % (where, cols, len(table[0]), table[0]))
+    for i, r in enumerate(table[1:]):
+        if len(r) != cols:
+            die("%s: data row %d is %d cells wide against a %d-column header"
+                " (ragged row): %r" % (where, i + 1, len(r), cols, r))
+
+
+def find_table(num, sec_text, header_sub, rows, cols):
     for t in md_tables(sec_text):
         if header_sub in norm(t[0][0]) or any(header_sub in norm(h) for h in t[0]):
+            assert_shape(num, header_sub, t, rows, cols)
             return t
     die("section %d: no table with header containing %r" % (num, header_sub))
 
@@ -299,7 +320,7 @@ def ckey(corner):
 # -------------------------------------------------------------------- checking
 
 def check_s3(sec, dv):
-    t = find_table(3, sec, "implied slope")
+    t = find_table(3, sec, "implied slope", len(LEVELS), 4)
     c_lab, c_a, c_pct, c_s = 0, col(t, "vtrip, 3.3"), col(t, "% of 1.8"), col(t, "implied slope")
     for i in LEVELS:
         r = row(t, "l%d" % i)
@@ -318,8 +339,10 @@ def check_s3(sec, dv):
 
 
 def check_s4(sec, dv):
-    t1 = find_table(4, sec, "systematic @ tt")
-    t2 = find_table(4, sec, "(c) `tt`")
+    t1 = find_table(4, sec, "systematic @ tt", len(LEVELS),
+                    len(CORNERS) + 1)  # level + (d) + one per non-tt corner
+    t2 = find_table(4, sec, "(c) `tt`", len(LEVELS),
+                    len(CORNERS) + 1)  # level + one per corner
     for i in LEVELS:
         r = row(t1, "l%d" % i)
         check("S4(d) l%d" % i, r[col(t1, "(d)")], dv["d"][i])
@@ -335,7 +358,7 @@ def check_s4(sec, dv):
 
 
 def check_s5(sec, dv):
-    t1 = find_table(5, sec, "edge lo @3.3")
+    t1 = find_table(5, sec, "edge lo @3.3", len(CORNERS), 9)
     c_d, c_b, c_c = col(t1, "(d)"), col(t1, "(b)"), col(t1, "(c)")
     c_l3, c_h3 = col(t1, "edge lo @3.3"), col(t1, "edge hi @3.3")
     c_l2, c_h2 = col(t1, "edge lo @2.97"), col(t1, "edge hi @2.97")
@@ -353,7 +376,7 @@ def check_s5(sec, dv):
         check("S5 l0 %s hi297" % c, r[c_h2], e["hi297"])
         worst = max(abs(v) for v in e.values())
         check("S5 l0 %s worst_ratio" % c, r[c_w], worst / BAND)
-    t2 = find_table(5, sec, "binding case")
+    t2 = find_table(5, sec, "binding case", len(LEVELS), 4)
     c_case, c_edge, c_ratio = col(t2, "binding case"), col(t2, "worst edge"), col(t2, "vs ±27")
     for i in LEVELS:
         r = row(t2, "l%d" % i)
@@ -373,7 +396,7 @@ def check_s5(sec, dv):
 
 
 def check_s6(sec, dv):
-    t = find_table(6, sec, "share")
+    t = find_table(6, sec, "share", len(LEVELS), 4)
     c_ref, c_full, c_share = col(t, "reference + ladder"), col(t, "full detector"), col(t, "share")
     for i in LEVELS:
         r = row(t, "l%d" % i)
@@ -389,7 +412,7 @@ def check_s6(sec, dv):
 
 
 def check_s7(sec, dv):
-    t = find_table(7, sec, "(a) @ 3.63")
+    t = find_table(7, sec, "(a) @ 3.63", len(LEVELS), 4)
     c_a, c_edge, c_ratio = col(t, "(a) @ 3.63"), col(t, "upper edge"), col(t, "vs ±27")
     for i in LEVELS:
         r = row(t, "l%d" % i)
@@ -411,6 +434,9 @@ def check_s8(sec, dv):
     if t_low is None or t_high is None:
         die("section 8: cannot tell the low-edge table (has an '(a)' row) from"
             " the upper-edge table")
+    # data rows are contributor counts, not levels: (a)..(d) low, (b)..(d) high
+    assert_shape(8, "'remove entirely' low-edge", t_low, 4, 3)
+    assert_shape(8, "'remove entirely' upper-edge", t_high, 3, 3)
 
     bc, bsup, bname, E = dv["binding"][0]
     if not (bc == "sf" and bsup == "2.97" and bname == "lower"):
