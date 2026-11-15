@@ -2,7 +2,7 @@
   "schema_version": 1,
   "kind": "t1-attestation-inventory",
   "t1_item": 10,
-  "description": "Repo hygiene for sky130-droop-detector: top-level docs, license, CI workflow and spec exist; JSON pins parse; every tracked bench runner (sim/*/run.sh, verification/*/run.sh) is syntactically valid and every tracked .py under sim/ and verification/ compiles. PDK-free checks only.",
+  "description": "Repo hygiene for sky130-droop-detector: top-level docs, license, CI workflow and spec exist; JSON pins parse; every tracked shell script (sim/**/*.sh, verification/**/*.sh) is syntactically valid and every tracked .py under sim/ and verification/ compiles. PDK-free checks only.",
   "hygiene": [
     "README.md",
     "LICENSE",
@@ -59,6 +59,30 @@
         "-m",
         "json.tool",
         "sim/toolchain.json"
+      ]
+    },
+    {
+      "name": "lib-ngspice-run-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "sim/lib/ngspice_run.sh"
+      ]
+    },
+    {
+      "name": "lib-pdk-pin-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "sim/lib/pdk_pin.sh"
+      ]
+    },
+    {
+      "name": "lib-levels-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "sim/lib/levels.sh"
       ]
     },
     {

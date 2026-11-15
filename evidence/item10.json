@@ -3,14 +3,14 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 10,
-  "summary": "T1 item 10 (Repo hygiene): 38/38 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 10 (Repo hygiene): 41/41 attestation checks passed (klt signoff --attest)",
   "source": "attest/item10.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 38,
-    "passed_count": 38,
+    "check_count": 41,
+    "passed_count": 41,
     "checks": [
       {
         "check": "present",
@@ -52,7 +52,7 @@
         "role": "hygiene",
         "path": "manifests/sky130-droop-detector.json",
         "passed": true,
-        "content_hash": "sha256:282e59f9c52b8cb73ca64e25710c4b96e666c6912c37cb252c16579e05fee587"
+        "content_hash": "sha256:f6911d06a3eed14d3ae975496baa88808af7de1c9565e61fcc6ba857cbc1b06e"
       },
       {
         "check": "present",
@@ -153,6 +153,45 @@
           "-m",
           "json.tool",
           "sim/toolchain.json"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "lib-ngspice-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/lib/ngspice_run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "lib-pdk-pin-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/lib/pdk_pin.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "lib-levels-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/lib/levels.sh"
         ],
         "cwd": ".",
         "exit_status": 0,
@@ -468,7 +507,7 @@
         "path": "attest/item10.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:f288693c4a94f75e1b9c930c72d17a5b6806d78be1783445588795a6c2a28e5b"
+      "content_hash": "sha256:babd8ed69991620f981024bb50238371159061e35ec2b8bfc212a7b1686911eb"
     }
   }
 }
