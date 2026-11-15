@@ -5,10 +5,13 @@ triage role. Newest first.
 
 ### 2026-11-15
 
+- **PR #115**: ci: re-derive the row-5 error-budget note from its committed records in CI
 - **PR #113**: sim: record the ngspice thread policy in the record header
 - **PR #108**: attest: cover sim/lib/*.sh helpers in item 10 and widen the inventory guard
 - **PR #105**: docs: repoint Reproduce table to the 2026-11-14 resize records
 - **PR #82**: docs: refresh README status prose to the five netlisted blocks and 11 row benches
+- **Issue #112** (closed): README Reproduce table cites tb_rail_model_check's 2026-10-23 record, not the newer 2026-11-15 one
+- **Issue #104** (closed): No CI guard re-derives design/row5-error-budget.md's tables from the committed records
 - **Issue #107** (closed): sim records do not state the ngspice thread count they were produced with
 - **Issue #99** (closed): README Reproduce table cites nine records superseded by the 2026-11-14 resizing
 - **Issue #97** (closed): Attest item 10: sim/lib/*.sh escape both the inventory and the new coverage guard
