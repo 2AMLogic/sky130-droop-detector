@@ -19,9 +19,12 @@ Monte Carlo campaign, **simulated** over process {tt, ss, ff, sf, fs}_mm + mc
 at 27 C with N = 300 draws per section, and it does **not** meet its ±27 mV
 target there: `sim/tb_threshold_mc/records/2026-11-06/record.txt` reads
 `klt yield status: fail` with `sigma_target_met=false` on every one of its 24
-keys. `layout/` holds only a README. [`ROADMAP.md`](ROADMAP.md) tracks what
-comes next. Every figure here is simulated, never measured, with its corner
-and testbench named in its record.
+keys. That record predates the 2026-11-14 sizing — its recorded netlist hash
+no longer matches `design/detector_top.spice` — so for the current netlist it
+is superseded pending #35's Monte Carlo campaign (see `design/README.md`,
+"Records superseded by this sizing"). `layout/` holds only a README.
+[`ROADMAP.md`](ROADMAP.md) tracks what comes next. Every figure here is
+simulated, never measured, with its corner and testbench named in its record.
 
 **Built agent-native.** Every specification, decision record, testbench, and
 line of documentation here is produced by AI agents working from a ratified
@@ -91,14 +94,16 @@ Maturity ladder: spec ratified → schematic simulated across PVT against
 the rail model → layout DRC/LVS-clean → post-layout re-verification →
 shuttle seat → measured silicon. **Current position: spec ratified; each of
 spec rows 1-11 simulated at corner tt, 27 C with a committed record, and the
-full PVT corner sweep still pending.** Rows 1, 2, 6, 7, 8 and 9 are driven by
-the behavioural rail envelope; rows 3, 4, 5, 10 and 11 use an ideal source by
-design — a static trip point, a quiescent-current bias, or a logic-only
-check — and every record names its own stimulus. The one multi-section
+full PVT corner sweep still pending.** Rows 1, 2, 6, 7, 8, 9 and 10 are driven by
+the behavioural rail envelope; rows 3, 4, 5 and 11 use an ideal source by
+design — a static trip point or a quiescent-current bias — and every record
+names its own stimulus. The one multi-section
 campaign committed so far is row 5's mismatch Monte Carlo
 (`sim/tb_threshold_mc/records/2026-11-06/record.txt`, simulated, process
 {tt, ss, ff, sf, fs}_mm + mc at 27 C), in which row 5 does not meet its
-±27 mV target — so "schematic simulated across PVT" is not yet reached.
+±27 mV target. That record predates the 2026-11-14 sizing and is superseded
+for the current netlist pending #35's Monte Carlo campaign, so "schematic
+simulated across PVT" is not yet reached.
 
 ## Tool flow
 
