@@ -266,9 +266,24 @@ the sets actually run). Record:
 
 ### Records superseded by this sizing
 
-`sim/` is append-only, and every record carries the `netlist_sha256` of the
-netlist it simulated, so a record whose hash no longer matches
-`design/detector_top.spice` is self-evidently superseded. Re-run at this
+`sim/` is append-only. A record usually carries the hash of the netlist it
+simulated, under `netlist_sha256` or a `*_netlist_sha256` sibling key for a
+netlist that is not a `design/*.spice` (`tb_rail_model_check` records the
+vendored `sky130-ldo` netlist as `ldo_netlist_sha256`). The test is one-way:
+a hash that no longer matches the committed netlist it names (e.g.
+`design/detector_top.spice`) is self-evidently superseded, but a match
+proves nothing more and cannot rank two records of one bench — both
+`tb_rail_model_check` records carry the same matching `ldo_netlist_sha256`,
+so take the newest; README's Reproduce table cites its 2026-11-15 record.
+Three committed records predate hash emission for their bench and carry
+none: `sim/smoke/records/2026-10-17-smoke-tt.txt`,
+`sim/smoke/records/2026-11-15-smoke-tt.txt` (recorded by the ngspice
+thread-policy change before its runner declared its netlist) and
+`verification/flag_logic/records/2026-11-05-flag_logic-tt.txt`, the only
+record committed for its bench (besides its negative controls), which is
+what establishes its freshness. Smoke's hashless pair ranks by date, the
+only basis it has: README cites the 2026-11-15 record. Since 2026-11-15
+their runners declare their netlists, so later records carry hashes. Re-run at this
 sizing on 2026-11-14: `tb_supply_headroom`, `tb_latency`, `tb_iq`,
 `tb_comparator`, `tb_min_width`, `tb_filter`, `tb_flag_logic`,
 `tb_false_flag`, `tb_threshold_accuracy`. **Not** re-run:

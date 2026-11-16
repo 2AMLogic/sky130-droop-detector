@@ -13,7 +13,7 @@ TRACE_DIR="$dir" RECORD="$dir/sim-record.txt" "$here/../../sim/tb_flag_logic/run
 rec="${RECORD:-/dev/stdout}"
 {
   echo "label: SIMULATED traces (tt, 27 C, 3.3 V) checked against the spec reference model; see sim/tb_flag_logic"
-  cat "$dir/sim-record.txt" | sed -n '/^  [AB] sequence check/p'
+  sed -n '/^ngspice:/,/^results:/{/^results:/d;p;}; /^  [AB] sequence check/p' "$dir/sim-record.txt"
   for part in a b; do
     s=8; [ "$part" = b ] && s=15
     for mode in clr-ignored sticky-follows-live clr-dominant; do

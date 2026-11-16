@@ -21,7 +21,7 @@ pdk_model_files tt "$work/files"
 rec="${RECORD:-/dev/stdout}"
 {
   echo "label: SIMULATED (not measured); testbench sim/smoke/smoke.spice; corner tt, 27 C, 1.8 V"
-  pdk_record_header
+  pdk_record_header netlist_sha256 "$here/smoke.spice" sim/smoke/smoke.spice
   echo "results:"
   grep -E '^RESULT |^tphl|^tplh' "$work/ngspice.log" | sed 's/^/  /'
 } > "$work/record"

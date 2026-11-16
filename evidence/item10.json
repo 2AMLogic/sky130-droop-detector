@@ -3,14 +3,14 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 10,
-  "summary": "T1 item 10 (Repo hygiene): 43/43 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 10 (Repo hygiene): 44/44 attestation checks passed (klt signoff --attest)",
   "source": "attest/item10.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 43,
-    "passed_count": 43,
+    "check_count": 44,
+    "passed_count": 44,
     "checks": [
       {
         "check": "present",
@@ -45,14 +45,14 @@
         "role": "hygiene",
         "path": "README.md",
         "passed": true,
-        "content_hash": "sha256:4383b05f4b49a868c9c467167ec68f37cba0e81c617cefdc08994b707d36efd5"
+        "content_hash": "sha256:f1f09659c41598411d39ecd7488263ab3776039664d07fc01d58898d9f28bf8a"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "manifests/sky130-droop-detector.json",
         "passed": true,
-        "content_hash": "sha256:90be030e682ae7e3b7fcbed8ded5c3dd18dcb700f8c9c3a97478884149595c0f"
+        "content_hash": "sha256:c08b12b30de351549fff24a76ddb25b73f3960f54d4169b2aa2f0f5a33fb6e57"
       },
       {
         "check": "present",
@@ -498,6 +498,19 @@
       {
         "check": "command",
         "role": "audit",
+        "name": "record-header-ngspice-threads",
+        "argv": [
+          "python3",
+          "-I",
+          "tests/test_record_header_threads.py"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
         "name": "item10-inventory-coverage-guard",
         "argv": [
           "python3",
@@ -533,7 +546,7 @@
         "path": "attest/item10.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:a069e7c0cc653129e96a26ebbefc2e407ba7caeb17fbbb97b14058a3f12c45d1"
+      "content_hash": "sha256:913e6d5623518696a9f6f26f1456829b773ebb83a95a726473023cbcf7fa5dcb"
     }
   }
 }
