@@ -132,10 +132,10 @@ reproduce into a scratch path, never over a committed record.
 
 | Bench | Command | Committed record |
 |---|---|---|
-| `sim/smoke` | `RECORD=/tmp/smoke.txt sim/smoke/run.sh` | `sim/smoke/records/2026-10-17-smoke-tt.txt` |
+| `sim/smoke` | `RECORD=/tmp/smoke.txt sim/smoke/run.sh` | `sim/smoke/records/2026-11-15-smoke-tt.txt` |
 | `sim/tb_threshold_select` | `RECORD=/tmp/ts.txt sim/tb_threshold_select/run.sh` | `sim/tb_threshold_select/records/2026-10-23-tb_threshold_select-tt.txt` (pre-dates the 2026-11-14 resizing) |
 | `sim/tb_ref_droop` | `RECORD=/tmp/rd.txt sim/tb_ref_droop/run.sh` | `sim/tb_ref_droop/records/2026-10-23-tb_ref_droop-tt.txt` (pre-dates the 2026-11-14 resizing) |
-| `sim/tb_rail_model_check` (batch fleet) | `RECORD=/tmp/rm.txt sim/tb_rail_model_check/run.sh` | `sim/tb_rail_model_check/records/2026-10-23-rail-model-tt.txt` |
+| `sim/tb_rail_model_check` (batch fleet) | `RECORD=/tmp/rm.txt sim/tb_rail_model_check/run.sh` | `sim/tb_rail_model_check/records/2026-11-15-rail-model-tt.txt` |
 | `sim/tb_comparator` | `RECORD=/tmp/tb_comparator.txt sim/tb_comparator/run.sh` | `sim/tb_comparator/records/2026-11-14-tb_comparator-tt.txt` |
 | `sim/tb_false_flag` | `RECORD=/tmp/tb_false_flag.txt sim/tb_false_flag/run.sh` | `sim/tb_false_flag/records/2026-11-14-tb_false_flag-tt.txt` |
 | `sim/tb_filter` | `RECORD=/tmp/tb_filter.txt sim/tb_filter/run.sh` | `sim/tb_filter/records/2026-11-14-tb_filter-tt.txt` |
