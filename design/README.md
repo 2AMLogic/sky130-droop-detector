@@ -267,9 +267,10 @@ the sets actually run). Record:
 ### Records superseded by this sizing
 
 `sim/` is append-only. A record usually carries the hash of the netlist it
-simulated, under `netlist_sha256` or a `*_netlist_sha256` sibling key for a
-netlist that is not a `design/*.spice` (`tb_rail_model_check` records the
-vendored `sky130-ldo` netlist as `ldo_netlist_sha256`). The test is one-way:
+simulated, under `netlist_sha256`, or under a `*_netlist_sha256` sibling key
+when the bare key cannot name the netlist unambiguously
+(`tb_rail_model_check` records the vendored `sky130-ldo` netlist as
+`ldo_netlist_sha256`). The test is one-way:
 a hash that no longer matches the committed netlist it names (e.g.
 `design/detector_top.spice`) is self-evidently superseded, but a match
 proves nothing more and cannot rank two records of one bench — both
