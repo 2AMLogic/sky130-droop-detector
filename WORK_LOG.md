@@ -3,6 +3,11 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage role. Newest first.
 
+### 2026-11-16
+
+- **PR #118**: fix: enumerate depth-0 scripts in item-10 coverage guard
+- **Issue #110** (closed): Item-10 coverage guard: `sim/**/*.sh` misses a script placed directly in sim/ or verification/
+
 ### 2026-11-15
 
 - **PR #121**: test: fail closed on an added row, column or ragged row in the row-5 budget guard
