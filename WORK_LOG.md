@@ -5,6 +5,8 @@ triage role. Newest first.
 
 ### 2026-11-15
 
+- **PR #121**: test: fail closed on an added row, column or ragged row in the row-5 budget guard
+- **Issue #119** (closed): check_row5_budget.py does not notice an ADDED level row or corner column in row5-error-budget.md
 - **PR #115**: ci: re-derive the row-5 error-budget note from its committed records in CI
 - **PR #113**: sim: record the ngspice thread policy in the record header
 - **PR #108**: attest: cover sim/lib/*.sh helpers in item 10 and widen the inventory guard
