@@ -5,6 +5,14 @@ triage role. Newest first.
 
 ### 2026-11-16
 
+- **PR #129**: fix: keep results: key in flag_logic wrapper record; narrow README sibling-key gloss
+- **PR #126**: guard: sweep tests/ for unlisted scripts in the item-10 coverage check
+- **PR #120**: tests: guard the record header's ngspice_threads coupling to ngspice_run
+- **PR #111**: fix: state record supersession as one-way; emit hashes for smoke and flag_logic wrapper
+- **Issue #123** (closed): Nothing keeps a tests/*.py file in attest/item10.json, so a tests/ guard can go dead in CI without turning red
+- **Issue #116** (closed): Wrapper record: inherited provenance block runs into the [AB] sequence-check lines; narrow design/README's sibling-key gloss
+- **Issue #114** (closed): No guard keeps pdk_record_header's ngspice_threads: field (or its cross-file coupling) from silently regressing
+- **Issue #106** (closed): Narrow design/README.md's supersession rule: it is a one-way hash test, and two benches emit no hash at all
 - **PR #118**: fix: enumerate depth-0 scripts in item-10 coverage guard
 - **Issue #110** (closed): Item-10 coverage guard: `sim/**/*.sh` misses a script placed directly in sim/ or verification/
 
