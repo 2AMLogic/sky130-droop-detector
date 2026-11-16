@@ -10,6 +10,7 @@ Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a h
 
 - **#93**: measure the threshold reference's supply sensitivity across row 2's box and decide its topology
 - **#98**: spec: re-anchor ngspice pin to 47 via DR-004, append records for three stale benches
+- **#111**: fix: state record supersession as one-way; emit hashes for smoke and flag_logic wrapper
 
 ## Very Important
 
@@ -41,14 +42,12 @@ Issues currently being built (`loom:building`).
 - **#106**: Narrow design/README.md's supersession rule: it is a one-way hash test, and two benches emit no hash at all
 - **#110**: Item-10 coverage guard: `sim/**/*.sh` misses a script placed directly in sim/ or verification/
 - **#114**: No guard keeps pdk_record_header's ngspice_threads: field (or its cross-file coupling) from silently regressing
-- **#119**: check_row5_budget.py does not notice an ADDED level row or corner column in row5-error-budget.md
 
 ## PRs Awaiting Review
 
 PRs waiting on Judge (`loom:review-requested`).
 
-- **#111**: fix: state record supersession as one-way; emit hashes for smoke and flag_logic wrapper
-- **#120**: tests: guard the record header's ngspice_threads coupling to ngspice_run
+_None._
 
 ## Approved (Awaiting Merge)
 
@@ -56,8 +55,9 @@ PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
 - **#93**: measure the threshold reference's supply sensitivity across row 2's box and decide its topology
 - **#98**: spec: re-anchor ngspice pin to 47 via DR-004, append records for three stale benches
+- **#111**: fix: state record supersession as one-way; emit hashes for smoke and flag_logic wrapper
 - **#118**: fix: enumerate depth-0 scripts in item-10 coverage guard
-- **#121**: test: fail closed on an added row, column or ragged row in the row-5 budget guard
+- **#120**: tests: guard the record header's ngspice_threads coupling to ngspice_run
 
 ## Proposed
 
@@ -71,7 +71,6 @@ Issues carrying `loom:curated`.
 - **#106**: Narrow design/README.md's supersession rule: it is a one-way hash test, and two benches emit no hash at all *(curated)*
 - **#110**: Item-10 coverage guard: `sim/**/*.sh` misses a script placed directly in sim/ or verification/ *(curated)*
 - **#114**: No guard keeps pdk_record_header's ngspice_threads: field (or its cross-file coupling) from silently regressing *(curated)*
-- **#119**: check_row5_budget.py does not notice an ADDED level row or corner column in row5-error-budget.md *(curated)*
 
 ## Proposed (Architect / Hermit)
 
@@ -86,14 +85,14 @@ _None._
 
 | Bucket | Count |
 |------|-------|
-| Operator merge-risk holds | 2 |
+| Operator merge-risk holds | 3 |
 | Very important | 1 |
 | Important | 4 |
 | Ready (`loom:issue`) | 0 |
-| In Progress (`loom:building`) | 6 |
-| PRs awaiting review | 2 |
-| Approved PRs awaiting merge | 4 |
-| Curated | 9 |
+| In Progress (`loom:building`) | 5 |
+| PRs awaiting review | 0 |
+| Approved PRs awaiting merge | 5 |
+| Curated | 8 |
 | Architect / Hermit proposals | 2 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
