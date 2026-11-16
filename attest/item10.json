@@ -274,6 +274,14 @@
       ]
     },
     {
+      "name": "record-header-ngspice-threads",
+      "argv": [
+        "python3",
+        "-I",
+        "tests/test_record_header_threads.py"
+      ]
+    },
+    {
       "name": "item10-inventory-coverage-guard",
       "argv": [
         "python3",
