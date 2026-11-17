@@ -10,7 +10,7 @@ Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a h
 
 - **#93**: measure the threshold reference's supply sensitivity across row 2's box and decide its topology
 - **#98**: spec: re-anchor ngspice pin to 47 via DR-004, append records for three stale benches
-- **#125**: chore(loom): resync installed Loom to v0.19.1302
+- **#138**: chore(loom): resync installed Loom to v0.19.1306
 
 ## Very Important
 
@@ -31,8 +31,7 @@ Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a h
 
 Human-approved issues ready for implementation (`loom:issue`).
 
-- **#116**: Wrapper record: inherited provenance block runs into the [AB] sequence-check lines; narrow design/README's sibling-key gloss
-- **#127**: signoff.yml step comment still says the item-10 coverage guard covers only sim/ and verification/
+_None._
 
 ## In Progress
 
@@ -52,7 +51,7 @@ PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
 - **#93**: measure the threshold reference's supply sensitivity across row 2's box and decide its topology
 - **#98**: spec: re-anchor ngspice pin to 47 via DR-004, append records for three stale benches
-- **#125**: chore(loom): resync installed Loom to v0.19.1302
+- **#138**: chore(loom): resync installed Loom to v0.19.1306
 
 ## Proposed
 
@@ -63,8 +62,6 @@ Issues carrying `loom:curated`.
 - **#35**: T1 item 6 (Monte Carlo): tb_threshold_mc klt yield campaign on threshold accuracy (row 5) *(curated)*
 - **#83**: Threshold reference drifts into the LDO ±2% window at a 3.63 V detector supply, so the detector flags continuously at a nominal rail *(curated)*
 - **#87**: sim/toolchain.json pins ngspice 46 but the host runs 47p1, and four benches' numbers move *(curated)*
-- **#116**: Wrapper record: inherited provenance block runs into the [AB] sequence-check lines; narrow design/README's sibling-key gloss *(curated)*
-- **#127**: signoff.yml step comment still says the item-10 coverage guard covers only sim/ and verification/ *(curated)*
 
 ## Proposed (Architect / Hermit)
 
@@ -82,11 +79,11 @@ _None._
 | Operator merge-risk holds | 3 |
 | Very important | 1 |
 | Important | 4 |
-| Ready (`loom:issue`) | 2 |
+| Ready (`loom:issue`) | 0 |
 | In Progress (`loom:building`) | 0 |
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 3 |
-| Curated | 7 |
+| Curated | 5 |
 | Architect / Hermit proposals | 2 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
