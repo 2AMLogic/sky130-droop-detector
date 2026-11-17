@@ -20,7 +20,6 @@ Xdut rail s0 s1 clr vdd33 0 live sticky detector_top
 Cl live 0 100f
 
 .control
-set num_threads=2
 __CASES__
 quit
 .endc

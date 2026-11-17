@@ -10,7 +10,8 @@ import json, pathlib, re, sys
 
 SEED = 20261105
 N = 300
-LEVELS = [(0, 0, 0, 1.728), (1, 3.3, 0, 1.692), (2, 0, 3.3, 1.638), (3, 3.3, 3.3, 1.584)]
+with (pathlib.Path(__file__).resolve().parent.parent / "lib" / "levels.json").open() as _levels_f:
+    LEVELS = [(row["code"], row["s0"], row["s1"], row["v"]) for row in json.load(_levels_f)["levels"]]
 MM = ["tt_mm", "ss_mm", "ff_mm", "sf_mm", "fs_mm"]
 SPAN = 0.25   # sweep nominal +/- 250 mV, 0.5 mV steps (static trip, slow ramp)
 CTL_FROM, CTL_TO = "XR2 t0 vref gnd sky130_fd_pr__res_xhigh_po_1p41 L=94.073", "XR2 t0 vref gnd sky130_fd_pr__res_xhigh_po_1p41 L=88"

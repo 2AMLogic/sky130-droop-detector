@@ -17,10 +17,11 @@ pdk_pin_resolve
 net="$sim/../design/detector_top.spice"
 [ -r "$net" ] || { echo "FAIL: netlist unreadable: $net" >&2; exit 2; }
 sim_workdir
-export OMP_NUM_THREADS="${OMP_NUM_THREADS:-2}"   # shared host: keep ngspice modest
 
-# Levels: name nominal-trip select-s0 select-s1 (row 4); widths in ns: row 7 stretch/target/fallback.
-LEVELS=("l0 1.728 0 0" "l1 1.692 3.3 0" "l2 1.638 0 3.3" "l3 1.584 3.3 3.3")
+# Levels: name nominal-trip select-s0 select-s1 (row 4, sim/lib/levels.json); widths in ns: row 7 stretch/target/fallback.
+. "$sim/lib/levels.sh"
+levels_load
+LEVELS=("${lv_rows[@]}")
 WIDTHS=(2 10 50)
 keys=()
 : > "$work/cases.ctl"

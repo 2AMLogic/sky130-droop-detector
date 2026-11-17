@@ -1,6 +1,7 @@
 label: SIMULATED (not measured); testbench sim/smoke/smoke.spice; corner tt, 27 C, 1.8 V
 ngspice: ngspice-47
-klt: klt 0.9.2.dev1029+g76f47afa48f1
+ngspice_threads: 1
+klt: klt 0.9.3.dev3+gd5d57daf9a14
 pdk_sources: open_pdks f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7
 model_files_sha256:
   48de7c677e2c6e7d09b2559279de9f818be71010a4aa933d728eb4db3b133c84  sky130A/libs.tech/combined/sky130.lib.spice

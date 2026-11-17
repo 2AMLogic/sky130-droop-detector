@@ -41,13 +41,17 @@ edit this note's figures in place.
 The four contributors named in the acceptance criteria are **not independent as
 recorded**. A corner mean measured against *nominal* already contains the `tt`
 systematic offset, so adding a raw corner shift to a raw systematic offset
-double-counts ≈ +19 mV. This note therefore uses:
+double-counts ≈ +19 mV. The same class of error exists at smaller scale: a
+supply shift stated against *nominal* already contains the reference-and-ladder
+`tt` offset, so quoting the record's `delta … vs nominal` form as `(a)` would
+double-count up to 0.52 mV (§3, §6). This note therefore uses:
 
 ```
 (d) systematic   = mean(tt_mm) − nominal                 [tt offset of the whole detector]
 (b) process corner = mean(corner) − mean(tt_mm)          [pure process spread, tt removed]
 (c) mismatch     = ±3 × sd(that corner)                  [the only term that is a sigma]
-(a) supply       = Δvtrip for the detector-supply corner being summed
+(a) supply       = Δvtrip between the two detector-supply points being summed
+                   (a difference of two supply points, not a shift against nominal)
 ```
 
 With this convention, `(d) + (b) + (c)` reconstructs the record's own raw
@@ -72,13 +76,20 @@ this term is the **reference-and-ladder** part of the supply sensitivity only.
 
 | level | Δvtrip, 3.3 → 2.97 V | as % of 1.8 V | implied slope |
 |---|---|---|---|
-| l0 (1.728 V) | **−72.64 mV** | −4.036 % | +220.1 mV/V |
-| l1 (1.692 V) | −71.32 mV | −3.962 % | +216.1 mV/V |
-| l2 (1.638 V) | −69.24 mV | −3.847 % | +209.8 mV/V |
-| l3 (1.584 V) | −67.16 mV | −3.731 % | +203.5 mV/V |
+| l0 (1.728 V) | **−73.16 mV** | −4.064 % | +221.7 mV/V |
+| l1 (1.692 V) | −71.62 mV | −3.979 % | +217.0 mV/V |
+| l2 (1.638 V) | −69.33 mV | −3.852 % | +210.1 mV/V |
+| l3 (1.584 V) | −67.03 mV | −3.724 % | +203.1 mV/V |
+
+The record itself states each 2.97 V trip point *against nominal* — its `delta`
+field reads −72.64 / −71.32 / −69.24 / −67.16 mV (l0–l3). That field is **not**
+the column above: it is the pure supply change **plus** the reference-and-ladder
+tt offset (§6), which contributor (d) already carries, so summing it here would
+double-count up to 0.52 mV. The column above is the difference of the record's
+own raw tap voltages, `vtrip @2.97 V − vtrip @3.3 V`.
 
 Same record: `vref_nom_v = 2.38932 V`, and `vref` itself moves −101.115 mV for
-the same step (≈ 0.306 V/V on the reference, ≈ 0.220 V/V referred to the trip
+the same step (≈ 0.306 V/V on the reference, ≈ 0.222 V/V referred to the trip
 point). DR-002's "Noted, not part of this change" cites ≈ 0.31 V/V — that is the
 `vref` figure, not the trip-point figure.
 
@@ -141,22 +152,22 @@ Level l0 (the row-8-critical level), all values mV:
 
 | corner | (d) | (b) | (c) | edge lo @3.3 V | edge hi @3.3 V | edge lo @2.97 V | edge hi @2.97 V | worst / 27 mV |
 |---|---|---|---|---|---|---|---|---|
-| `tt_mm` | +19.57 | +0.00 | ±36.79 | −17.22 | +56.37 | −89.86 | −16.27 | 3.33× |
-| `ss_mm` | +19.57 | +40.18 | ±37.81 | +21.95 | +97.56 | −50.69 | +24.92 | 3.61× |
-| `ff_mm` | +19.57 | −40.87 | ±36.64 | −57.94 | +15.34 | −130.58 | −57.30 | 4.84× |
-| `sf_mm` | +19.57 | −87.37 | ±39.63 | −107.43 | −28.16 | **−180.07** | −100.80 | **6.67×** |
-| `fs_mm` | +19.57 | +85.34 | ±37.31 | +67.61 | **+142.23** | −5.03 | +69.59 | 5.27× |
-| `mc` | +19.57 | −0.38 | ±14.12 | +5.08 | +33.31 | −67.56 | −39.33 | 2.50× |
+| `tt_mm` | +19.57 | +0.00 | ±36.79 | −17.22 | +56.37 | −90.38 | −16.79 | 3.35× |
+| `ss_mm` | +19.57 | +40.18 | ±37.81 | +21.95 | +97.56 | −51.21 | +24.40 | 3.61× |
+| `ff_mm` | +19.57 | −40.87 | ±36.64 | −57.94 | +15.34 | −131.10 | −57.82 | 4.86× |
+| `sf_mm` | +19.57 | −87.37 | ±39.63 | −107.43 | −28.16 | **−180.59** | −101.32 | **6.69×** |
+| `fs_mm` | +19.57 | +85.34 | ±37.31 | +67.61 | **+142.23** | −5.55 | +69.07 | 5.27× |
+| `mc` | +19.57 | −0.38 | ±14.12 | +5.08 | +33.31 | −68.08 | −39.85 | 2.52× |
 
 The other three levels track l0 closely and are all over the band; worst-case
 magnitude per level, over the whole constructed box:
 
 | level | binding case | worst edge | vs ±27 mV |
 |---|---|---|---|
-| l0 | `sf_mm`, 2.97 V, lower edge | −180.07 mV | 6.67× |
-| l1 | `sf_mm`, 2.97 V, lower edge | −177.23 mV | 6.56× |
-| l2 | `sf_mm`, 2.97 V, lower edge | −172.99 mV | 6.41× |
-| l3 | `sf_mm`, 2.97 V, lower edge | −168.40 mV | 6.24× |
+| l0 | `sf_mm`, 2.97 V, lower edge | −180.59 mV | 6.69× |
+| l1 | `sf_mm`, 2.97 V, lower edge | −177.53 mV | 6.58× |
+| l2 | `sf_mm`, 2.97 V, lower edge | −173.08 mV | 6.41× |
+| l3 | `sf_mm`, 2.97 V, lower edge | −168.27 mV | 6.23× |
 
 Two readings worth stating explicitly:
 
@@ -215,15 +226,15 @@ so at 3.63 V/`fs` the two would *stack* rather than cancel as they do at
 
 | level | (a) @ 3.63 V, extrapolated | `fs_mm` upper edge | vs ±27 mV |
 |---|---|---|---|
-| l0 | +72.64 mV | +214.87 mV | 7.96× |
-| l1 | +71.32 mV | +211.39 mV | 7.83× |
-| l2 | +69.24 mV | +206.35 mV | 7.64× |
-| l3 | +67.16 mV | +201.23 mV | 7.45× |
+| l0 | +73.16 mV | +215.39 mV | 7.98× |
+| l1 | +71.62 mV | +211.69 mV | 7.84× |
+| l2 | +69.33 mV | +206.44 mV | 7.65× |
+| l3 | +67.03 mV | +201.10 mV | 7.45× |
 
 **These four rows are an extrapolation from a single measured two-point slope,
 not a measurement.** Treat them as a reason to run the bench, nothing more.
 #83 reports a direct 3.63 V probe of `vth` (code 00 = 1.79409 V, i.e. +65.57 mV
-on the 3.3 V value — slightly sub-linear against the +72.64 mV above), and that
+on the 3.3 V value — slightly sub-linear against the +73.16 mV above), and that
 probe reproduces this note's 2.97 V and 3.3 V tap voltages exactly; but it is a
 figure in an issue body, **not a committed record**, so it is cited here as
 corroboration only. Committing it is #83's acceptance criterion.
@@ -231,16 +242,20 @@ corroboration only. Committing it is #83's acceptance criterion.
 ## 8. Reduction needed to fit ±27 mV at 3σ
 
 Taken at the binding case of §5: **level l0, `sf_mm`, detector supply 2.97 V,
-lower edge −180.07 mV**. Against a −27 mV bound, **153.07 mV must come out.**
+lower edge −180.59 mV**. Against a −27 mV bound, **153.59 mV must come out.**
 
 One contributor eliminated entirely at a time:
 
 | remove entirely | remaining edge | fits ±27 mV? |
 |---|---|---|
-| (a) supply, −72.64 | −107.43 mV | no, over by 80.43 mV |
-| (b) corner, −87.37 | −92.70 mV | no, over by 65.70 mV |
-| (c) mismatch, ±39.63 | −140.43 mV | no, over by 113.43 mV |
-| (d) systematic, +19.57 | **−199.64 mV** | no — **worse by 19.57 mV** |
+| (a) supply, −73.16 | −107.43 mV | no, over by 80.43 mV |
+| (b) corner, −87.37 | −93.22 mV | no, over by 66.22 mV |
+| (c) mismatch, ±39.63 | −140.95 mV | no, over by 113.95 mV |
+| (d) systematic, +19.57 | **−200.16 mV** | no — **worse by 19.57 mV** |
+
+The (a) row's remaining edge is unchanged by the §3 correction: deleting the
+whole term also deletes the reference-and-ladder tt offset the old figure
+wrongly carried, so −107.43 mV / 80.43 mV hold before and after.
 
 And at the worst *upper* edge (l0, `fs_mm`, 3.3 V, **+142.23 mV**, 115.23 mV to
 remove):
@@ -252,7 +267,7 @@ remove):
 | (d) systematic, +19.57 | +122.65 mV | no, over by 95.65 mV |
 
 **No single contributor can be eliminated to meet the row, at either edge.** A
-uniform scaling of all terms needs `k = 27 / 180.07 = 0.150` — **every
+uniform scaling of all terms needs `k = 27 / 180.59 = 0.150` — **every
 contributor cut by 85 %** (`k = 27 / 142.23 = 0.190`, an 81 % cut, for the upper
 edge alone).
 

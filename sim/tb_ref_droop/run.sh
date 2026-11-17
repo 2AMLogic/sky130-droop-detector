@@ -21,7 +21,9 @@ require_results "$work/ngspice.log" vref_nom_v vref_shift_rail_mv vref_tran_dev_
 
 pdk_model_files tt "$work/files"
 rec="${RECORD:-/dev/stdout}"
-nom=(1.728 1.692 1.638 1.584)
+. "$sim/lib/levels.sh"
+levels_load
+nom=("${lv_v[@]}")
 lv() { # tag title
   echo "  $2"
   for i in 0 1 2 3; do

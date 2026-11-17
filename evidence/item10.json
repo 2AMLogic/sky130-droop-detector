@@ -3,14 +3,14 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 10,
-  "summary": "T1 item 10 (Repo hygiene): 34/34 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 10 (Repo hygiene): 44/44 attestation checks passed (klt signoff --attest)",
   "source": "attest/item10.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 34,
-    "passed_count": 34,
+    "check_count": 44,
+    "passed_count": 44,
     "checks": [
       {
         "check": "present",
@@ -24,7 +24,7 @@
         "role": "hygiene",
         "path": ".github/workflows/signoff.yml",
         "passed": true,
-        "content_hash": "sha256:c72bc1702918683702d7bc5ae46e6acab55c56b55f064b2f9570a14c5e9a0fc7"
+        "content_hash": "sha256:ac34a6542c1985aa5e3b0e2a47489b2f97d1d7810dcbc4e95d747a99e8329862"
       },
       {
         "check": "present",
@@ -45,21 +45,28 @@
         "role": "hygiene",
         "path": "README.md",
         "passed": true,
-        "content_hash": "sha256:d2d92a8208ab2c0b5478deb10bbc940f2c7f1cac9b5f60dbd7b8933e54cb654b"
+        "content_hash": "sha256:f1f09659c41598411d39ecd7488263ab3776039664d07fc01d58898d9f28bf8a"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "manifests/sky130-droop-detector.json",
         "passed": true,
-        "content_hash": "sha256:b7e4e16a9eea35d865f3bd42e89819b57b1f4892793cdd3ad1e684db935c9a47"
+        "content_hash": "sha256:c08b12b30de351549fff24a76ddb25b73f3960f54d4169b2aa2f0f5a33fb6e57"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "sim/README.md",
         "passed": true,
-        "content_hash": "sha256:4d2cdd687b1ea61538abadd848e5173dc4c65fcefb6ee07ffe5a961c62dae204"
+        "content_hash": "sha256:46794d8b1785226fc7f6271890d294b755eab281bcc99824ca7f35cc1efb928e"
+      },
+      {
+        "check": "present",
+        "role": "hygiene",
+        "path": "sim/lib/levels.json",
+        "passed": true,
+        "content_hash": "sha256:10b1b0747724c39d874800f3e0d06a81655cb77fc6f1ca0ca1dcbfd58fc16d5d"
       },
       {
         "check": "present",
@@ -81,6 +88,33 @@
         "path": "spec/target-spec.md",
         "passed": true,
         "content_hash": "sha256:0dcdae4da4a44d242ae5e6f1bfb6f49befe746e31d2135af9ed4293bb2ac9ca9"
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "levels-json-valid",
+        "argv": [
+          "python3",
+          "-m",
+          "json.tool",
+          "sim/lib/levels.json"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "levels-json-consistent",
+        "argv": [
+          "python3",
+          "-c",
+          "import json\nd = json.load(open('sim/lib/levels.json'))\nrows = d['levels']\nassert d['nominal_v'] == 1.8, 'nominal_v must be 1.8'\nassert [r['code'] for r in rows] == [0, 1, 2, 3], 'levels not in select order 0..3'\nassert [r['label'] for r in rows] == ['l4', 'l6', 'l9', 'l12'], 'labels must be l4/l6/l9/l12 in select order'\nassert len(set((r['s0'], r['s1']) for r in rows)) == 4, 'select columns must decode to 4 distinct s0/s1 pairs'\nfor r in rows:\n    want = round(d['nominal_v'] * (1 - r['pct_below'] / 100), 3)\n    assert r['v'] == want, 'level %d: v %r disagrees with pct_below %d (want %r)' % (r['code'], r['v'], r['pct_below'], want)\nprint('levels.json ok: %d levels; v == nominal_v*(1-pct_below/100) rounded to 3 decimals' % len(rows))"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
       },
       {
         "check": "command",
@@ -119,6 +153,45 @@
           "-m",
           "json.tool",
           "sim/toolchain.json"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "lib-ngspice-run-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/lib/ngspice_run.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "lib-pdk-pin-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/lib/pdk_pin.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "lib-levels-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/lib/levels.sh"
         ],
         "cwd": ".",
         "exit_status": 0,
@@ -408,6 +481,58 @@
         "cwd": ".",
         "exit_status": 0,
         "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "ngspice-thread-policy-single-source",
+        "argv": [
+          "python3",
+          "-I",
+          "tests/test_thread_policy.py"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "record-header-ngspice-threads",
+        "argv": [
+          "python3",
+          "-I",
+          "tests/test_record_header_threads.py"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "item10-inventory-coverage-guard",
+        "argv": [
+          "python3",
+          "-I",
+          "tests/test_item10_coverage.py"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "row5-budget-rederivation-guard",
+        "argv": [
+          "python3",
+          "-I",
+          "tests/check_row5_budget.py"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
       }
     ]
   },
@@ -421,7 +546,7 @@
         "path": "attest/item10.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:e3b8b8efc01e6618262cb2eb3af46a28af7aa1e09be3ad1e55b42fc64f735f8d"
+      "content_hash": "sha256:913e6d5623518696a9f6f26f1456829b773ebb83a95a726473023cbcf7fa5dcb"
     }
   }
 }

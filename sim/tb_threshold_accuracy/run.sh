@@ -15,7 +15,6 @@ here="$(cd "$(dirname "$0")" && pwd)"
 sim="$here/.."
 bench=tb_threshold_accuracy
 PROC="${PROC:-tt}"; TEMP_C="${TEMP_C:-27}"; VSUP="${VSUP:-3.3}"
-export OMP_NUM_THREADS=1
 . "$sim/lib/pdk_pin.sh"
 . "$sim/lib/ngspice_run.sh"
 pdk_pin_resolve
@@ -37,7 +36,9 @@ awk -v a="$(get vtrip_l0)" -v b="$(get vtrip_l1)" -v c="$(get vtrip_l2)" -v d="$
 
 pdk_model_files "$PROC" "$work/files"
 rec="${RECORD:-/dev/stdout}"
-nom=(1.728 1.692 1.638 1.584)
+. "$sim/lib/levels.sh"
+levels_load
+nom=("${lv_v[@]}")
 {
   echo "label: SIMULATED (not measured); testbench sim/$bench/$bench.spice; corner $PROC, $TEMP_C C, detector supply $VSUP V; one corner, no Monte Carlo"
   echo "stimulus: monitored rail = IDEAL SOURCE, 1.8 -> 1.55 V linear over 250 us (1 mV/us, static trip point); real design/detector_top.spice; trip = vmon where live crosses 0.9 V"
