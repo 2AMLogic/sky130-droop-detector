@@ -269,7 +269,7 @@ measured figures are recorded as failing the rows they fail.
 
 ## Noted, not part of this change
 
-- The comparator's +5.74 mV of supply-dependent offset drift across the box (4.0 % of the
+- The comparator's +5.20 mV of supply-dependent offset drift across the box (3.6 % of the
   trip-point swing) is disclosed here and left to #77's subsystem. It is not large enough
   to change this decision.
 - `sim/tb_supply_headroom`'s four 2.97 V cases not asserting, and #77's 2.97 V latency

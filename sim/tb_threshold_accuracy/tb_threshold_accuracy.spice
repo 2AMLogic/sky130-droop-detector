@@ -16,7 +16,7 @@
 *     code 00 at VSUP=3.63, where the level rises ABOVE 1.8 V: the live flag is already
 *     asserted at t=0, there is no rising edge, and the bench exits 3 (that stuck-high
 *     condition is the row 8 defect of #83, recorded in this bench's records/ as the
-*     fail-closed transcript 2026-11-14-tb_threshold_accuracy-tt-vsup3p63-flag-stuck-high).
+*     fail-closed transcript 2026-11-15-tb_threshold_accuracy-tt-vsup3p63-flag-stuck-high).
 *   end 1.45 V: lowest level 1.584 V (row 4, 12% below nominal), minus row 5's +/-54 mV
 *     fallback band, minus the ~73 mV the reference loses at row 2's 2.97 V corner = 1.457 V.
 *     The original 1.55 V floor could not measure code 11 at VSUP=2.97 (level ~1.53 V).
