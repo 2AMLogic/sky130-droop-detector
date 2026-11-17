@@ -3,6 +3,13 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage role. Newest first.
 
+### 2026-11-17
+
+- **PR #135**: ci: print the item-10 drift remedy in the signoff re-attest step
+- **PR #132**: docs: name tests/ in the item-10 coverage-guard comment in signoff.yml
+- **Issue #133** (closed): signoff.yml: the item-10 re-attest step reports drift without naming the regeneration command
+- **Issue #127** (closed): signoff.yml step comment still says the item-10 coverage guard covers only sim/ and verification/
+
 ### 2026-11-16
 
 - **PR #125**: chore(loom): resync installed Loom to v0.19.1302
