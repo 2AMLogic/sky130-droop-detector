@@ -7,10 +7,24 @@ nanoseconds when the rail falls below a programmed threshold — designed by
 AI agents driving [klayout-tools](https://github.com/2AMLogic/klayout-tools)
 and the open-source xschem + ngspice flow.
 
-**Status: specification ratified (PR #8); schematic-level work in progress.**
-A threshold reference and its tap network are designed and simulated at a
-single corner; the comparator, glitch filter, flag and layout are not started.
-Every figure is simulated, with its corner and testbench named in its record.
+**Status: specification ratified (PR #8); all five schematic blocks netlisted
+and simulated at a single corner; layout not started.** `design/` carries the
+xschem schematic and the committed `klt netlist --block` output for
+`threshold_ref`, `comparator`, `glitch_filter`, `flag_logic` and the
+`detector_top` that instantiates them. Each of spec rows 1-11 has a committed
+testbench with at least one record, every one **simulated** at corner tt,
+27 C — the [Reproduce](#reproduce) table below names each runner and its
+record path. Spec row 5 (threshold accuracy) also has a committed mismatch
+Monte Carlo campaign, **simulated** over process {tt, ss, ff, sf, fs}_mm + mc
+at 27 C with N = 300 draws per section, and it does **not** meet its ±27 mV
+target there: `sim/tb_threshold_mc/records/2026-11-06/record.txt` reads
+`klt yield status: fail` with `sigma_target_met=false` on every one of its 24
+keys. That record predates the 2026-11-14 sizing — its recorded netlist hash
+no longer matches `design/detector_top.spice` — so for the current netlist it
+is superseded pending #35's Monte Carlo campaign (see `design/README.md`,
+"Records superseded by this sizing"). `layout/` holds only a README.
+[`ROADMAP.md`](ROADMAP.md) tracks what comes next. Every figure here is
+simulated, never measured, with its corner and testbench named in its record.
 
 **Built agent-native.** Every specification, decision record, testbench, and
 line of documentation here is produced by AI agents working from a ratified
@@ -71,14 +85,25 @@ nominal, ±2% regulation window, 0–50 mA, per that repo's ratified spec at
 | Minimum detected droop width | 50 ns | 10 ns | 2 ns |
 | False-flag immunity | no flag for excursions inside the LDO's ±2% window | same, across PVT and noise | — |
 | Glitch filter | rejects comparator pulses shorter than a designed width | same; must pass the minimum-width droop, delay counted in latency | — |
-| Quiescent current | < 100 µA | < 50 µA | < 20 µA |
 | Output | sticky digital flag + clear | same, plus a live (non-sticky) flag | — |
+| Quiescent current | < 100 µA | < 50 µA | < 20 µA |
 | Area | deferred (no floorplan yet) | deferred | — |
 | Signoff | DRC + LVS clean | DRC + LVS clean, post-layout re-verified | — |
 
 Maturity ladder: spec ratified → schematic simulated across PVT against
 the rail model → layout DRC/LVS-clean → post-layout re-verification →
-shuttle seat → measured silicon. **Current position: spec ratified; schematic simulation under way (single corner so far, PVT sweep pending).**
+shuttle seat → measured silicon. **Current position: spec ratified; each of
+spec rows 1-11 simulated at corner tt, 27 C with a committed record, and the
+full PVT corner sweep still pending.** Rows 1, 2, 6, 7, 8, 9 and 10 are driven by
+the behavioural rail envelope; rows 3, 4, 5 and 11 use an ideal source by
+design — a static trip point or a quiescent-current bias — and every record
+names its own stimulus. The one multi-section
+campaign committed so far is row 5's mismatch Monte Carlo
+(`sim/tb_threshold_mc/records/2026-11-06/record.txt`, simulated, process
+{tt, ss, ff, sf, fs}_mm + mc at 27 C), in which row 5 does not meet its
+±27 mV target. That record predates the 2026-11-14 sizing and is superseded
+for the current netlist pending #35's Monte Carlo campaign, so "schematic
+simulated across PVT" is not yet reached.
 
 ## Tool flow
 
@@ -107,21 +132,28 @@ reproduce into a scratch path, never over a committed record.
 
 | Bench | Command | Committed record |
 |---|---|---|
-| `sim/smoke` | `RECORD=/tmp/smoke.txt sim/smoke/run.sh` | `sim/smoke/records/2026-10-17-smoke-tt.txt` |
-| `sim/tb_threshold_select` | `RECORD=/tmp/ts.txt sim/tb_threshold_select/run.sh` | `sim/tb_threshold_select/records/2026-10-23-tb_threshold_select-tt.txt` |
-| `sim/tb_ref_droop` | `RECORD=/tmp/rd.txt sim/tb_ref_droop/run.sh` | `sim/tb_ref_droop/records/2026-10-23-tb_ref_droop-tt.txt` |
-| `sim/tb_rail_model_check` (batch fleet) | `RECORD=/tmp/rm.txt sim/tb_rail_model_check/run.sh` | `sim/tb_rail_model_check/records/2026-10-23-rail-model-tt.txt` |
-| `sim/tb_comparator` | `RECORD=/tmp/tb_comparator.txt sim/tb_comparator/run.sh` | `sim/tb_comparator/records/2026-10-27-tb_comparator-tt.txt` |
-| `sim/tb_false_flag` | `RECORD=/tmp/tb_false_flag.txt sim/tb_false_flag/run.sh` | `sim/tb_false_flag/records/2026-11-05-tb_false_flag-tt.txt` |
-| `sim/tb_filter` | `RECORD=/tmp/tb_filter.txt sim/tb_filter/run.sh` | `sim/tb_filter/records/2026-11-05-tb_filter-tt.txt` |
-| `sim/tb_flag_logic` | `RECORD=/tmp/tb_flag_logic.txt sim/tb_flag_logic/run.sh` | `sim/tb_flag_logic/records/2026-11-05-tb_flag_logic-tt.txt` |
-| `sim/tb_iq` | `RECORD=/tmp/tb_iq.txt sim/tb_iq/run.sh` | `sim/tb_iq/records/2026-11-05-tb_iq-tt.txt` |
-| `sim/tb_latency` | `RECORD=/tmp/tb_latency.txt sim/tb_latency/run.sh` | `sim/tb_latency/records/2026-11-05-tb_latency-tt.txt` |
-| `sim/tb_min_width` | `RECORD=/tmp/tb_min_width.txt sim/tb_min_width/run.sh` | `sim/tb_min_width/records/2026-11-05-tb_min_width-tt.txt` |
-| `sim/tb_supply_headroom` | `RECORD=/tmp/tb_supply_headroom.txt sim/tb_supply_headroom/run.sh` | `sim/tb_supply_headroom/records/2026-11-05-tb_supply_headroom-tt.txt` |
-| `sim/tb_threshold_accuracy` | `RECORD=/tmp/tb_threshold_accuracy.txt sim/tb_threshold_accuracy/run.sh` | `sim/tb_threshold_accuracy/records/2026-11-05-tb_threshold_accuracy-tt.txt` |
-| `sim/tb_threshold_mc` (batch fleet) | `RECORD_DIR=/tmp/tmc sim/tb_threshold_mc/run.sh` | `sim/tb_threshold_mc/records/2026-11-06/record.txt` |
+| `sim/smoke` | `RECORD=/tmp/smoke.txt sim/smoke/run.sh` | `sim/smoke/records/2026-11-15-smoke-tt.txt` |
+| `sim/tb_threshold_select` | `RECORD=/tmp/ts.txt sim/tb_threshold_select/run.sh` | `sim/tb_threshold_select/records/2026-10-23-tb_threshold_select-tt.txt` (pre-dates the 2026-11-14 resizing) |
+| `sim/tb_ref_droop` | `RECORD=/tmp/rd.txt sim/tb_ref_droop/run.sh` | `sim/tb_ref_droop/records/2026-10-23-tb_ref_droop-tt.txt` (pre-dates the 2026-11-14 resizing) |
+| `sim/tb_rail_model_check` (batch fleet) | `RECORD=/tmp/rm.txt sim/tb_rail_model_check/run.sh` | `sim/tb_rail_model_check/records/2026-11-15-rail-model-tt.txt` |
+| `sim/tb_comparator` | `RECORD=/tmp/tb_comparator.txt sim/tb_comparator/run.sh` | `sim/tb_comparator/records/2026-11-14-tb_comparator-tt.txt` |
+| `sim/tb_false_flag` | `RECORD=/tmp/tb_false_flag.txt sim/tb_false_flag/run.sh` | `sim/tb_false_flag/records/2026-11-14-tb_false_flag-tt.txt` |
+| `sim/tb_filter` | `RECORD=/tmp/tb_filter.txt sim/tb_filter/run.sh` | `sim/tb_filter/records/2026-11-14-tb_filter-tt.txt` |
+| `sim/tb_flag_logic` | `RECORD=/tmp/tb_flag_logic.txt sim/tb_flag_logic/run.sh` | `sim/tb_flag_logic/records/2026-11-14-tb_flag_logic-tt.txt` |
+| `sim/tb_iq` | `RECORD=/tmp/tb_iq.txt sim/tb_iq/run.sh` | `sim/tb_iq/records/2026-11-14-tb_iq-tt.txt` |
+| `sim/tb_latency` | `RECORD=/tmp/tb_latency.txt sim/tb_latency/run.sh` | `sim/tb_latency/records/2026-11-14-tb_latency-tt.txt` |
+| `sim/tb_min_width` | `RECORD=/tmp/tb_min_width.txt sim/tb_min_width/run.sh` | `sim/tb_min_width/records/2026-11-14-tb_min_width-tt.txt` |
+| `sim/tb_supply_headroom` | `RECORD=/tmp/tb_supply_headroom.txt sim/tb_supply_headroom/run.sh` | `sim/tb_supply_headroom/records/2026-11-14-tb_supply_headroom-tt.txt` |
+| `sim/tb_threshold_accuracy` | `RECORD=/tmp/tb_threshold_accuracy.txt sim/tb_threshold_accuracy/run.sh` | `sim/tb_threshold_accuracy/records/2026-11-14-tb_threshold_accuracy-tt.txt` |
+| `sim/tb_threshold_mc` (batch fleet) | `RECORD_DIR=/tmp/tmc sim/tb_threshold_mc/run.sh` | `sim/tb_threshold_mc/records/2026-11-06/record.txt` (pre-dates the 2026-11-14 resizing) |
 | `verification/flag_logic` | `RECORD=/tmp/fl.txt verification/flag_logic/run.sh` | `verification/flag_logic/records/2026-11-05-flag_logic-tt.txt` |
+
+Rows marked *(pre-dates the 2026-11-14 resizing)* cite the newest record
+committed for that bench, but it was simulated before the row-6 resizing of
+2026-11-14 (`design/README.md`), so the netlists it exercised have since
+changed. A record simulated at the current netlists has not been committed for
+these benches yet; until one lands, treat these rows as historical evidence,
+not current measurements.
 
 `sim/rail_envelope` is a Python module used by the benches, with no runner of its own.
 `sim/tb_threshold_mc/run.sh` likewise submits its 12 requests to the batch fleet.
@@ -142,7 +174,11 @@ committed alongside the passing ones):
   (`sim/tb_rail_model_check/records/2026-10-23-negctl-envelope-out-of-bound.txt`);
   `records/2026-10-23-negctl-tampered-pin.txt` covers a tampered LDO source pin.
 
-`npm test` runs only the smoke bench with `RECORD=/dev/null`.
+`npm test` runs the item-10 inventory-coverage guard
+(`tests/test_item10_coverage.py`), the row-5 error-budget re-derivation guard
+(`tests/check_row5_budget.py`), and then the smoke bench with `RECORD=/dev/null`.
+`npm run check:ci` runs the two guards alone — PDK-free, the same checks the CI
+signoff job runs.
 
 ## Repo layout
 
@@ -162,10 +198,16 @@ The block manifest is
 [`manifests/sky130-droop-detector.json`](manifests/sky130-droop-detector.json)
 and the committed verdict of record is
 [`manifests/sky130-droop-detector.signoff.json`](manifests/sky130-droop-detector.signoff.json).
-Items without cited evidence are honestly `unmet` (`tier: null`). Item 10
-(repo hygiene) is attested by `klt signoff --attest 10` from
+Items without cited evidence are honestly `unmet` (`tier: null`); the
+committed record grades **2 of 11 T1 items `met`** — items 1 and 10. Item 1
+(design sources) is attested by `klt signoff --attest 1` from
+[`attest/item1.json`](attest/item1.json) into
+[`evidence/item1.json`](evidence/item1.json). Item 10 (repo hygiene) is
+attested the same way by `klt signoff --attest 10` from
 [`attest/item10.json`](attest/item10.json) into
-[`evidence/item10.json`](evidence/item10.json); CI re-runs it with `--check`.
+[`evidence/item10.json`](evidence/item10.json), and item 10 is the one CI
+re-runs with `--check`; item 1's evidence is committed but not re-attested in
+CI.
 The `klayout-tools` version is pinned in
 [`.github/klt-version`](.github/klt-version); CI fails if the record drifts
 from a fresh render. To regenerate it:

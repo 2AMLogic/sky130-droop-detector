@@ -23,7 +23,6 @@ RAMP_START="${RAMP_START:-1.9}"; RAMP_END="${RAMP_END:-1.45}"
 # the duration follows the window rather than being a third free parameter.
 RAMP_US="$(awk -v s="$RAMP_START" -v e="$RAMP_END" 'BEGIN{t=(s-e)*1000; if (t<=0) exit 1; printf "%g", t}')" \
   || { echo "FAIL: RAMP_END ($RAMP_END) must be below RAMP_START ($RAMP_START)" >&2; exit 3; }
-export OMP_NUM_THREADS=1
 . "$sim/lib/pdk_pin.sh"
 . "$sim/lib/ngspice_run.sh"
 pdk_pin_resolve
@@ -45,7 +44,9 @@ awk -v a="$(get vtrip_l0)" -v b="$(get vtrip_l1)" -v c="$(get vtrip_l2)" -v d="$
 
 pdk_model_files "$PROC" "$work/files"
 rec="${RECORD:-/dev/stdout}"
-nom=(1.728 1.692 1.638 1.584)
+. "$sim/lib/levels.sh"
+levels_load
+nom=("${lv_v[@]}")
 {
   echo "label: SIMULATED (not measured); testbench sim/$bench/$bench.spice; corner $PROC, $TEMP_C C, detector supply $VSUP V; one corner, no Monte Carlo"
   echo "stimulus: monitored rail = IDEAL SOURCE, $RAMP_START -> $RAMP_END V linear over $RAMP_US us (1 mV/us, static trip point); real design/detector_top.spice; trip = vmon where live crosses 0.9 V"

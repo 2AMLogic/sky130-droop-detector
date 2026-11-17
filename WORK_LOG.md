@@ -3,8 +3,59 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage role. Newest first.
 
+### 2026-11-17
+
+- **PR #135**: ci: print the item-10 drift remedy in the signoff re-attest step
+- **PR #132**: docs: name tests/ in the item-10 coverage-guard comment in signoff.yml
+- **Issue #133** (closed): signoff.yml: the item-10 re-attest step reports drift without naming the regeneration command
+- **Issue #127** (closed): signoff.yml step comment still says the item-10 coverage guard covers only sim/ and verification/
+
+### 2026-11-16
+
+- **PR #125**: chore(loom): resync installed Loom to v0.19.1302
+- **PR #129**: fix: keep results: key in flag_logic wrapper record; narrow README sibling-key gloss
+- **PR #126**: guard: sweep tests/ for unlisted scripts in the item-10 coverage check
+- **PR #120**: tests: guard the record header's ngspice_threads coupling to ngspice_run
+- **PR #111**: fix: state record supersession as one-way; emit hashes for smoke and flag_logic wrapper
+- **Issue #123** (closed): Nothing keeps a tests/*.py file in attest/item10.json, so a tests/ guard can go dead in CI without turning red
+- **Issue #116** (closed): Wrapper record: inherited provenance block runs into the [AB] sequence-check lines; narrow design/README's sibling-key gloss
+- **Issue #114** (closed): No guard keeps pdk_record_header's ngspice_threads: field (or its cross-file coupling) from silently regressing
+- **Issue #106** (closed): Narrow design/README.md's supersession rule: it is a one-way hash test, and two benches emit no hash at all
+- **PR #118**: fix: enumerate depth-0 scripts in item-10 coverage guard
+- **Issue #110** (closed): Item-10 coverage guard: `sim/**/*.sh` misses a script placed directly in sim/ or verification/
+
+### 2026-11-15
+
+- **PR #121**: test: fail closed on an added row, column or ragged row in the row-5 budget guard
+- **Issue #119** (closed): check_row5_budget.py does not notice an ADDED level row or corner column in row5-error-budget.md
+- **PR #115**: ci: re-derive the row-5 error-budget note from its committed records in CI
+- **PR #113**: sim: record the ngspice thread policy in the record header
+- **PR #108**: attest: cover sim/lib/*.sh helpers in item 10 and widen the inventory guard
+- **PR #105**: docs: repoint Reproduce table to the 2026-11-14 resize records
+- **PR #82**: docs: refresh README status prose to the five netlisted blocks and 11 row benches
+- **Issue #112** (closed): README Reproduce table cites tb_rail_model_check's 2026-10-23 record, not the newer 2026-11-15 one
+- **Issue #104** (closed): No CI guard re-derives design/row5-error-budget.md's tables from the committed records
+- **Issue #107** (closed): sim records do not state the ngspice thread count they were produced with
+- **Issue #99** (closed): README Reproduce table cites nine records superseded by the 2026-11-14 resizing
+- **Issue #97** (closed): Attest item 10: sim/lib/*.sh escape both the inventory and the new coverage guard
+- **Issue #78** (closed): README and design/README.md still describe the block as before the comparator, filter and flags landed
+- **PR #103**: fix: swap tb_rail_model_check's hand-rolled record header for pdk_record_header
+- **PR #102**: docs: quote row5 budget contributor (a) as the pure 3.3 to 2.97 V supply delta, not the record's vs-nominal field
+- **PR #101**: refactor: one committed table for the ratified row 4 threshold levels
+- **PR #96**: ci: run the item-10 inventory-coverage guard in the signoff workflow
+- **PR #88**: sim: move the ngspice thread count into sim/lib/ngspice_run.sh and force it per run
+- **Issue #94** (closed): row5-error-budget.md: contributor (a) is quoted against nominal, not against the 3.3 V trip point, double-counting the ladder's tt offset by up to 0.52 mV
+- **Issue #86** (closed): Finish the record-header consolidation: tb_rail_model_check hand-rolls pdk_record_header and records one wrapper hash instead of 14 model-file hashes
+- **Issue #85** (closed): Dedupe the ngspice thread-count knob: one host-concurrency policy in sim/lib, not 13 scattered settings
+- **Issue #80** (closed): Wire tests/test_item10_coverage.py into CI: the attest-inventory completeness guard never runs
+- **Issue #79** (closed): Dedupe the ratified four-level threshold table copied into 12 sites across the sim benches
+
 ### 2026-11-14
 
+- **PR #92**: docs: apportion the row 5 trip-point error by contributor from committed records
+- **Issue #76** (closed): Row 5 error budget: split the threshold trip-point error by contributor from the committed records
+- **PR #84**: fix: resize comparator and flag_logic output path to meet row 6 at 2.97 V
+- **Issue #77** (closed): Comparator path misses the row 6 latency target at a 2.97 V detector supply
 - **PR #75**: docs: roadmap as of 2026-11-13
 
 ### 2026-11-13

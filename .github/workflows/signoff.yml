@@ -77,5 +77,29 @@ jobs:
       # PDK-free checks only; nothing here installs ngspice or the PDK.
       - name: Re-attest T1 item 10 against the committed evidence
         run: |
+          set -uo pipefail
+          rc=0
           klt signoff --attest 10 --inventory attest/item10.json \
-                      --check evidence/item10.json
+                      --check evidence/item10.json || rc=$?
+          if [ "$rc" -ne 0 ]; then
+            echo "::error::Committed evidence evidence/item10.json no longer reproduces (klt signoff --attest exited $rc) - a hygiene file changed without re-attesting."
+            echo "Regenerate and commit the evidence in this same PR:"
+            echo "  klt signoff --attest 10 --inventory attest/item10.json -o evidence/item10.json"
+            echo "For this drift only evidence/item10.json needs regenerating: the committed record manifests/sky130-droop-detector.signoff.json stays fresh (measured 2026-11-16 with pinned klayout-tools $(cat .github/klt-version), issue #133)."
+            exit "$rc"
+          fi
+          echo "Committed item-10 evidence is fresh."
+
+      # Inventory-completeness guard: every tracked bench runner / .py under
+      # sim/, verification/ and tests/ must be declared in attest/item10.json.
+      # A new bench added without an inventory entry turns CI red here, not
+      # silently. PDK-free; needs only git and python3.
+      - name: Check attest/item10.json covers every tracked bench runner and script
+        run: python3 -I tests/test_item10_coverage.py
+
+      # Row-5 budget re-derivation guard: every numeric table cell of
+      # design/row5-error-budget.md §3–§8 must re-derive from the committed
+      # records its §1 provenance table names. A stale figure anywhere in the
+      # note turns CI red here, not silently. PDK-free; needs only python3.
+      - name: Re-derive design/row5-error-budget.md from the committed records
+        run: python3 -I tests/check_row5_budget.py
