@@ -8,7 +8,8 @@ region between the markers is machine-generated and overwritten each time.
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
 
-_None._
+- **#93**: measure the threshold reference's supply sensitivity across row 2's box and decide its topology
+- **#98**: spec: re-anchor ngspice pin to 47 via DR-004, append records for three stale benches
 
 ## Very Important
 
@@ -29,8 +30,7 @@ _None._
 
 Human-approved issues ready for implementation (`loom:issue`).
 
-- **#83**: Threshold reference drifts into the LDO ±2% window at a 3.63 V detector supply, so the detector flags continuously at a nominal rail
-- **#87**: sim/toolchain.json pins ngspice 46 but the host runs 47p1, and four benches' numbers move
+_None._
 
 ## In Progress
 
@@ -48,7 +48,8 @@ _None._
 
 PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
-_None._
+- **#93**: measure the threshold reference's supply sensitivity across row 2's box and decide its topology
+- **#98**: spec: re-anchor ngspice pin to 47 via DR-004, append records for three stale benches
 
 ## Proposed
 
@@ -73,13 +74,13 @@ _None._
 
 | Bucket | Count |
 |------|-------|
-| Operator merge-risk holds | 0 |
+| Operator merge-risk holds | 2 |
 | Very important | 1 |
 | Important | 4 |
-| Ready (`loom:issue`) | 2 |
+| Ready (`loom:issue`) | 0 |
 | In Progress (`loom:building`) | 0 |
 | PRs awaiting review | 0 |
-| Approved PRs awaiting merge | 0 |
+| Approved PRs awaiting merge | 2 |
 | Curated | 5 |
 | Architect / Hermit proposals | 2 |
 | Active epics | 0 |
