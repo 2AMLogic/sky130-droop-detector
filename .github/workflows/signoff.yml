@@ -77,8 +77,18 @@ jobs:
       # PDK-free checks only; nothing here installs ngspice or the PDK.
       - name: Re-attest T1 item 10 against the committed evidence
         run: |
+          set -uo pipefail
+          rc=0
           klt signoff --attest 10 --inventory attest/item10.json \
-                      --check evidence/item10.json
+                      --check evidence/item10.json || rc=$?
+          if [ "$rc" -ne 0 ]; then
+            echo "::error::Committed evidence evidence/item10.json no longer reproduces (klt signoff --attest exited $rc) - a hygiene file changed without re-attesting."
+            echo "Regenerate and commit the evidence in this same PR:"
+            echo "  klt signoff --attest 10 --inventory attest/item10.json -o evidence/item10.json"
+            echo "For this drift only evidence/item10.json needs regenerating: the committed record manifests/sky130-droop-detector.signoff.json stays fresh (measured 2026-11-16 with pinned klayout-tools $(cat .github/klt-version), issue #133)."
+            exit "$rc"
+          fi
+          echo "Committed item-10 evidence is fresh."
 
       # Inventory-completeness guard: every tracked bench runner / .py under
       # sim/ and verification/ must be declared in attest/item10.json. A new
