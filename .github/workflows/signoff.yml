@@ -91,9 +91,9 @@ jobs:
           echo "Committed item-10 evidence is fresh."
 
       # Inventory-completeness guard: every tracked bench runner / .py under
-      # sim/ and verification/ must be declared in attest/item10.json. A new
-      # bench added without an inventory entry turns CI red here, not silently.
-      # PDK-free; needs only git and python3.
+      # sim/, verification/ and tests/ must be declared in attest/item10.json.
+      # A new bench added without an inventory entry turns CI red here, not
+      # silently. PDK-free; needs only git and python3.
       - name: Check attest/item10.json covers every tracked bench runner and script
         run: python3 -I tests/test_item10_coverage.py
 
