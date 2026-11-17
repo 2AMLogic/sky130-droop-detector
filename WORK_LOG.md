@@ -5,6 +5,7 @@ triage role. Newest first.
 
 ### 2026-11-16
 
+- **PR #125**: chore(loom): resync installed Loom to v0.19.1302
 - **PR #129**: fix: keep results: key in flag_logic wrapper record; narrow README sibling-key gloss
 - **PR #126**: guard: sweep tests/ for unlisted scripts in the item-10 coverage check
 - **PR #120**: tests: guard the record header's ngspice_threads coupling to ngspice_run
