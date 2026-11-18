@@ -37,7 +37,7 @@ Human-approved issues ready for implementation (`loom:issue`).
 
 Issues currently being built (`loom:building`).
 
-_None._
+- **#142**: Merge queue: add the merge_group trigger to the required-check workflow(s)
 
 ## PRs Awaiting Review
 
@@ -49,6 +49,7 @@ _None._
 
 PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
+- **#143**: ci: add merge_group trigger to the signoff workflow — closes #142
 - **#93**: measure the threshold reference's supply sensitivity across row 2's box and decide its topology
 - **#98**: spec: re-anchor ngspice pin to 47 via DR-004, append records for three stale benches
 
@@ -79,9 +80,9 @@ _None._
 | Very important | 1 |
 | Important | 4 |
 | Ready (`loom:issue`) | 2 |
-| In Progress (`loom:building`) | 0 |
+| In Progress (`loom:building`) | 1 |
 | PRs awaiting review | 0 |
-| Approved PRs awaiting merge | 2 |
+| Approved PRs awaiting merge | 3 |
 | Curated | 5 |
 | Architect / Hermit proposals | 2 |
 | Active epics | 0 |
