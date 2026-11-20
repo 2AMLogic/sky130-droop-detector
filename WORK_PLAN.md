@@ -30,8 +30,7 @@ Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a h
 
 Human-approved issues ready for implementation (`loom:issue`).
 
-- **#83**: Threshold reference drifts into the LDO ±2% window at a 3.63 V detector supply, so the detector flags continuously at a nominal rail *(addressed by approved PR #93, pending merge)*
-- **#87**: sim/toolchain.json pins ngspice 46 but the host runs 47p1, and four benches' numbers move *(addressed by approved PR #98, pending merge)*
+_None._
 
 ## In Progress
 
@@ -78,7 +77,7 @@ _None._
 | Operator merge-risk holds | 2 |
 | Very important | 1 |
 | Important | 4 |
-| Ready (`loom:issue`) | 2 |
+| Ready (`loom:issue`) | 0 |
 | In Progress (`loom:building`) | 0 |
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 2 |
