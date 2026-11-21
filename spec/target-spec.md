@@ -165,8 +165,9 @@ step and ΔV = I·t/C ≈ 1.5 mV in 10 ns. So:
   not by the testbench record.
 - **PDK/ngspice pin: landed, #4.** `sim/pdk.json` pins open_pdks
   `f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7` (`sky130A`, installed with
-  `ciel`); `sim/toolchain.json` pins ngspice 46, xschem 3.4.7 and
-  klayout-tools 0.7.0. Every graded row runs against that pin. Note that
+  `ciel`); `sim/toolchain.json` pins ngspice 47
+  ([DR-004](decision-records/DR-004-ngspice-toolchain-pin.md)), xschem 3.4.7 and
+  klayout-tools 0.8.0. Every graded row runs against that pin. Note that
   `sky130-ldo@aaaae71` is pinned to open_pdks
   `c6d73a35f524070e85faff4a6a9eef49553ebc2b` (its `sim/pdk.json`); the
   combined `.lib` file is identical between the two pins but the FET model
