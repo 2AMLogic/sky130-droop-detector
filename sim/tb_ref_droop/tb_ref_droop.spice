@@ -1,6 +1,15 @@
 * tb_ref_droop: does the threshold reference move when (a) the monitored rail
-* collapses 1.8 -> 0.9 V, (b) the detector supply drops 3.3 -> 2.97 V?
-* tt / 27 C, select code 00. Both stimuli are IDEAL SOURCES, so this is a
+* collapses 1.8 -> 0.9 V, (b) the detector supply moves off its 3.3 V nominal
+* to the corner __VSUP__ V? The nominal supply (__VNOM__ = 3.3 V) and the
+* perturbed corner (__VSUP__, run.sh's VSUP: 2.97 V by default, 3.63 V for the
+* upper corner of spec row 2's box) are substituted by run.sh, so one deck
+* covers both ends of the supply box instead of a second hardcoded literal.
+* The select inputs are driven at whichever supply is in force for the case:
+* s0/s1 feed CMOS inverters powered from vdd33 (XM3-XM6), so a select high
+* pinned to 3.3 V while vdd33 sits at 3.63 V would not represent the design.
+* This matches tb_threshold_accuracy, whose select highs are already {vsup}.
+* Select code 00 is unaffected either way (both selects low).
+* tt / 27 C. Both stimuli are IDEAL SOURCES, so this is a
 * reference-coupling check only; it is NOT the rail-model verdict (that is
 * tb_rail_model_check, and the rail-model re-run of this bench follows it).
 * The monitored rail reaches the design only through a bench-side ideal
@@ -9,7 +18,7 @@
 .include "__NETLIST__"
 .temp 27
 
-Vdd vdd33 0 3.3
+Vdd vdd33 0 __VNOM__
 Vrail rail 0 1.8
 Vs0 s0 0 0
 Vs1 s1 0 0
@@ -30,18 +39,18 @@ alter Vs1 dc = 0
 op
 let t = v(vth)
 echo "RESULT vtrip_l0_nom = $&t"
-alter Vs0 dc = 3.3
+alter Vs0 dc = __VNOM__
 alter Vs1 dc = 0
 op
 let t = v(vth)
 echo "RESULT vtrip_l1_nom = $&t"
 alter Vs0 dc = 0
-alter Vs1 dc = 3.3
+alter Vs1 dc = __VNOM__
 op
 let t = v(vth)
 echo "RESULT vtrip_l2_nom = $&t"
-alter Vs0 dc = 3.3
-alter Vs1 dc = 3.3
+alter Vs0 dc = __VNOM__
+alter Vs1 dc = __VNOM__
 op
 let t = v(vth)
 echo "RESULT vtrip_l3_nom = $&t"
@@ -59,18 +68,18 @@ alter Vs1 dc = 0
 op
 let t = v(vth)
 echo "RESULT vtrip_l0_rail = $&t"
-alter Vs0 dc = 3.3
+alter Vs0 dc = __VNOM__
 alter Vs1 dc = 0
 op
 let t = v(vth)
 echo "RESULT vtrip_l1_rail = $&t"
 alter Vs0 dc = 0
-alter Vs1 dc = 3.3
+alter Vs1 dc = __VNOM__
 op
 let t = v(vth)
 echo "RESULT vtrip_l2_rail = $&t"
-alter Vs0 dc = 3.3
-alter Vs1 dc = 3.3
+alter Vs0 dc = __VNOM__
+alter Vs1 dc = __VNOM__
 op
 let t = v(vth)
 echo "RESULT vtrip_l3_rail = $&t"
@@ -86,9 +95,9 @@ let dmax = (vref_tran_max-$vref0)*1e3
 let dmin = (vref_tran_min-$vref0)*1e3
 echo "RESULT vref_tran_dev_max_mv = $&dmax"
 echo "RESULT vref_tran_dev_min_mv = $&dmin"
-* (b) detector supply 3.3 -> 2.97 V, rail at 1.8 V: legitimately moves the reference
+* (b) detector supply __VNOM__ -> __VSUP__ V, rail at 1.8 V: legitimately moves the reference
 alter Vrail dc = 1.8
-alter Vdd dc = 2.97
+alter Vdd dc = __VSUP__
 op
 let d = (v(vref)-$vref0)*1e3
 echo "RESULT vref_shift_supply_mv = $&d"
@@ -99,18 +108,18 @@ alter Vs1 dc = 0
 op
 let t = v(vth)
 echo "RESULT vtrip_l0_supply = $&t"
-alter Vs0 dc = 3.3
+alter Vs0 dc = __VSUP__
 alter Vs1 dc = 0
 op
 let t = v(vth)
 echo "RESULT vtrip_l1_supply = $&t"
 alter Vs0 dc = 0
-alter Vs1 dc = 3.3
+alter Vs1 dc = __VSUP__
 op
 let t = v(vth)
 echo "RESULT vtrip_l2_supply = $&t"
-alter Vs0 dc = 3.3
-alter Vs1 dc = 3.3
+alter Vs0 dc = __VSUP__
+alter Vs1 dc = __VSUP__
 op
 let t = v(vth)
 echo "RESULT vtrip_l3_supply = $&t"

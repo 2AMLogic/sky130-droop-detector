@@ -1,0 +1,37 @@
+label: SIMULATED (not measured); testbench sim/tb_threshold_accuracy/tb_threshold_accuracy.spice; corner tt, 27 C, detector supply 3.63 V; one corner, no Monte Carlo
+what this record is: a FAIL-CLOSED TRANSCRIPT, not a measurement record. The bench exits 3
+  before writing a record, so there is no results block to commit. It is committed as the
+  direct evidence of the spec row 8 violation reported in issue #83: with the monitored rail
+  held at its NOMINAL 1.8 V -- inside the LDO +/-2% window (1.764-1.836 V), where row 8
+  requires zero flags -- the code-00 live flag is ALREADY ASSERTED at t = 0.
+  It is NOT a negative control: nothing about the setup is deliberately broken. The PDK pin,
+  the netlist and every result key are intact; the design is what fails.
+netlist: design/detector_top.spice sha256 c6307eb13bb46c8c3d150dbf57605ec9716e35da9f6c8b69191695a79740ee93
+  -- the MERGED post-#84 tree (comparator/flag_logic resize). This transcript re-takes
+  2026-11-14-tb_threshold_accuracy-tt-vsup3p63-flag-stuck-high.txt, which ran the same
+  setup on the pre-#84 netlist (0fca89f6); the asserted-high figure below is identical
+  (1.69708 V), so #84's resize does not soften the row 8 violation.
+why the bench cannot measure it: this run pins RAMP_START to the bench's former 1.8 V ramp
+  start. At VSUP=3.63 the code-00 trip point sits at 1.80935 V (see
+  2026-11-15-tb_threshold_accuracy-tt-vsup3p63.txt), i.e. ABOVE the ramp's own starting
+  point, so v(l0) never makes the rising transition `meas ... rise=1` looks for and
+  vtrip_l0 is unmeasurable. The bench's default window is now 1.9 -> 1.45 V so the sweep
+  spans the levels across row 2's whole supply box; that measured record is the companion
+  to this one.
+command: PDK_ROOT=<pinned ~/.ciel> PROC=tt TEMP_C=27 VSUP=3.63 RAMP_START=1.8 sim/tb_threshold_accuracy/run.sh
+exit code: 3
+stderr (first line):
+FAIL: no 'vtrip_l0' result in ngspice log
+measured flag state during the pre-ramp idle window (from=2u to=20u, rail 1.800-1.782 V,
+every one of those points inside the LDO +/-2% window):
+  RESULT idle_max_l0 = 1.69708      <- code 00: ASSERTED. 1.69708 V is a logic HIGH for the
+                                       1.8 V CMOS consumer of spec row 10 (VOH >= 1.44 V).
+  RESULT idle_max_l1 = 9.15923E-10  <- code 01: idle
+  RESULT idle_max_l2 = 9.15923E-10  <- code 10: idle
+  RESULT idle_max_l3 = 9.15923E-10  <- code 11: idle
+  (the bench's own idle gate -- "live flag not idle (VOL > 0.36 V) before the ramp" -- would
+  also have failed closed on idle_max_l0; require_results reaches the missing vtrip_l0 first.)
+reproduces: the 1.69708 V figure reported in issue #83 ("live with the rail static at 1.8 V:
+  asserted (1.69708 V)"), independently, on the merged post-#84 tree.
+no verdict for spec row 5 is made here. The row 8 verdict belongs to sim/tb_false_flag
+  (waveform W1 is exactly "static rail anywhere in 1.764-1.836 V"); this bench reports.

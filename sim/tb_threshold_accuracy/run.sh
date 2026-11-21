@@ -9,19 +9,27 @@
 # Env: PDK_ROOT, KLT (default klt), RECORD (output path, default stdout),
 #      PDK_PIN (pin file, default sim/pdk.json; negative control),
 #      NEGCTL_DROP=<key> (negative control: delete that RESULT line from the bench),
-#      PROC (default tt), TEMP_C (default 27), VSUP (default 3.3).
+#      PROC (default tt), TEMP_C (default 27), VSUP (default 3.3),
+#      RAMP_START / RAMP_END (ramp window in volts, default 1.9 -> 1.45; the ramp always
+#        holds 1 mV/us, so its duration is derived, not set -- the window must span the
+#        levels at the corner being run or `meas` finds no crossing and the bench exits 3).
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 sim="$here/.."
 bench=tb_threshold_accuracy
 PROC="${PROC:-tt}"; TEMP_C="${TEMP_C:-27}"; VSUP="${VSUP:-3.3}"
+RAMP_START="${RAMP_START:-1.9}"; RAMP_END="${RAMP_END:-1.45}"
+# 1 mV/us from RAMP_START down to RAMP_END: the slew is the bench's declared stimulus, so
+# the duration follows the window rather than being a third free parameter.
+RAMP_US="$(awk -v s="$RAMP_START" -v e="$RAMP_END" 'BEGIN{t=(s-e)*1000; if (t<=0) exit 1; printf "%g", t}')" \
+  || { echo "FAIL: RAMP_END ($RAMP_END) must be below RAMP_START ($RAMP_START)" >&2; exit 3; }
 . "$sim/lib/pdk_pin.sh"
 . "$sim/lib/ngspice_run.sh"
 pdk_pin_resolve
 net="$sim/../design/detector_top.spice"
 [ -r "$net" ] || { echo "FAIL: netlist unreadable: $net" >&2; exit 2; }
 sim_workdir
-sed "s#__PDK_LIB__#$lib#;s#__NETLIST__#$net#;s#__PROC__#$PROC#;s#__TEMP__#$TEMP_C#;s#__VSUP__#$VSUP#" \
+sed "s#__PDK_LIB__#$lib#;s#__NETLIST__#$net#;s#__PROC__#$PROC#;s#__TEMP__#$TEMP_C#;s#__VSUP__#$VSUP#;s#__RAMP_START__#$RAMP_START#g;s#__RAMP_END__#$RAMP_END#;s#__RAMP_US__#$RAMP_US#" \
   "$here/$bench.spice" > "$work/tb.spice"
 if [ -n "${NEGCTL_DROP:-}" ]; then sed -i "/RESULT $NEGCTL_DROP =/d" "$work/tb.spice"; fi
 ngspice_run "$work/tb.spice" "$work/ngspice.log"
@@ -41,7 +49,7 @@ levels_load
 nom=("${lv_v[@]}")
 {
   echo "label: SIMULATED (not measured); testbench sim/$bench/$bench.spice; corner $PROC, $TEMP_C C, detector supply $VSUP V; one corner, no Monte Carlo"
-  echo "stimulus: monitored rail = IDEAL SOURCE, 1.8 -> 1.55 V linear over 250 us (1 mV/us, static trip point); real design/detector_top.spice; trip = vmon where live crosses 0.9 V"
+  echo "stimulus: monitored rail = IDEAL SOURCE, $RAMP_START -> $RAMP_END V linear over $RAMP_US us (1 mV/us, static trip point); real design/detector_top.spice; trip = vmon where live crosses 0.9 V"
   pdk_record_header netlist_sha256 "$net" design/detector_top.spice
   echo "results:"
   echo "  target band: +/-27 mV (+/-1.5% of 1.8 V); fallback band: +/-54 mV (+/-3%); immunity floor: highest level must sit below the 1.764 V window edge (3.5% below nominal at target)"
