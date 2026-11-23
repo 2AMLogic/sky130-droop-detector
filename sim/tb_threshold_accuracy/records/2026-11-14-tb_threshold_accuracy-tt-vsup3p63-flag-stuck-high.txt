@@ -30,3 +30,12 @@ reproduces: the 1.69708 V figure reported in issue #83 ("live with the rail stat
   asserted (1.69708 V)"), independently, on origin/main.
 no verdict for spec row 5 is made here. The row 8 verdict belongs to sim/tb_false_flag
   (waveform W1 is exactly "static rail anywhere in 1.764-1.836 V"); this bench reports.
+
+ANNOTATION (appended in review, PR #93, after the EE ratification review at 204bb2fd): the
+  stimulus of this run is NOT a static 1.800 V rail. The PWL holds 1.800 V only to 1 ns and then
+  ramps down at 1 mV/us, so the 2-20 us idle window samples a rail of about 1.798 -> 1.780 V
+  (inside the LDO window). idle_max_l0 is a MAX over that window: it shows the code-00 live flag
+  reached 1.69708 V at some point in that span, and cannot show the flag state at t = 0, how long
+  it was high, or its settled level under a constant 1.800 V hold. Read "held at nominal" and
+  "ALREADY ASSERTED at t = 0" above as "high during an in-window ramp segment". A settled
+  minimum live voltage under a constant 1.800 V hold is not recorded here (sim/tb_false_flag W1).

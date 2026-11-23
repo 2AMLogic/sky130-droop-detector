@@ -21,7 +21,7 @@ error budget". Row 2 names the supply corners 2.97 / 3.3 / 3.63 V. Nobody had me
 what that residual sensitivity actually costs across that box: every committed record
 was taken at 3.3 V, or (for `tb_ref_droop`) at 3.3 → 2.97 V only. Issue #83 reported that
 at 3.63 V the code-00 threshold rises *into* the LDO ±2 % window, so the detector asserts
-`live` with the monitored rail static at its nominal 1.8 V — a failure of the block's core
+`live` with the monitored rail at its nominal 1.8 V — a failure of the block's core
 function at a ratified corner, and a row 8 violation.
 
 This DR records the measurement across the whole box and decides whether row 3's
@@ -55,6 +55,11 @@ sit ~6 mV higher at every corner.
 | 3.30 V | 1.74137 V | +13.37 mV (+0.743 %) | inside target | +22.63 mV below |
 | 3.63 V | 1.80935 V | **+81.35 mV (+4.519 %)** | **OUTSIDE fallback** | **−45.35 mV: inside the window** |
 
+- **Two different quantities are quoted below; do not conflate them.** *Total one-sided
+  error* at a corner is the trip minus the specified 1.728 V (+81.35 mV = +4.519 % of 1.8 V
+  at 3.63 V). *Incremental supply drift* is the trip minus the same netlist's own 3.3 V trip
+  (1.80935 − 1.74137 = +67.98 mV = +3.777 % of 1.8 V at 3.63 V). The remaining +13.37 mV
+  (+0.743 %) is already present at the nominal 3.3 V supply and is not supply drift.
 - **Total code-00 swing across row 2's box: 143.93 mV, i.e. +0.2180 V/V.** That is
   **2.67×** row 5's entire ±27 mV target band (54 mV peak-to-peak) and **1.33×** its
   ±54 mV fallback band (108 mV peak-to-peak) — from the supply term **alone**, at one
@@ -92,10 +97,12 @@ Ideal comparator, so this isolates the reference from the comparator. Two record
   `vth`/`vref` is constant to 7e-6 across the box, so `XR2`–`XR6` and the select mux
   contribute under 0.02 mV. **Do not resize the ladder.**
 - **Decomposition of the 143.93 mV trip swing**: 138.73 mV (96.4 %) is the reference and
-  5.20 mV (3.6 %) is the comparator's own supply-dependent input offset, which grows
-  +10.06 → +12.85 → +15.26 mV across the box (trip minus tap at each corner). The
-  comparator term is real but secondary
-  and belongs to #77's subsystem, not to this decision.
+  5.20 mV (3.6 %) is the **full-chain residual** (trip minus tap), which grows
+  +10.06 → +12.85 → +15.26 mV across the box. It is *not* isolated to the comparator: the
+  residual also contains any reference-to-comparator loading, tap-to-input interaction and
+  filter/flag-logic threshold shift, and no isolated comparator-offset measurement exists
+  in this repo. Attributing it to comparator input offset is a hypothesis, left to #77's
+  subsystem; it is small enough not to change this decision.
 - **Monitored-rail rejection is already excellent and is not the problem.** For a
   1.8 → 0.9 V rail collapse `vref` moves **−0.0035 mV** DC and at most −0.004 mV during a
   5 ns edge. Row 3's "must not move with the monitored rail" is met; row 2's supply box
@@ -111,12 +118,18 @@ and waveform W1 is exactly "static rail anywhere in 1.764–1.836 V".
 
 The direct consequence is committed alongside it as a fail-closed transcript,
 `2026-11-15-…-tt-vsup3p63-flag-stuck-high.txt`, re-taken on the post-#84 tree (the pre-#84
-`2026-11-14-…-flag-stuck-high.txt` stays committed beside it): with the rail held at a
-nominal **1.8 V**, the code-00
-live flag reads `idle_max_l0 = 1.69708 V` — a logic HIGH for the 1.8 V CMOS consumer of
-row 10 — i.e. **asserted continuously with the rail at nominal**, at the identical figure
-pre- and post-#84. That reproduces #83's
-headline figure independently. (The row 8 *verdict* is `sim/tb_false_flag`'s; these records
+`2026-11-14-…-flag-stuck-high.txt` stays committed beside it). **What that transcript does
+and does not establish**: its stimulus is *not* a static rail. The PWL holds 1.800 V only
+to 1 ns, then ramps down at 1 mV/µs, so `idle_max_l0` (a MAX over 2–20 µs) samples a rail
+of 1.798 → 1.780 V — inside the LDO window — and reads **1.69708 V, a logic HIGH for the
+1.8 V CMOS consumer of row 10**, at the identical figure pre- and post-#84. That shows the
+code-00 live flag is high at some point in that in-window span, consistent with the 3.63 V
+code-00 trip (1.80935 V) lying above the whole span. It does **not** establish the flag
+state at t = 0, its duration, or its settled level under a constant 1.800 V hold; a MAX
+cannot. A settled minimum live voltage under a constant 1.800 V hold is not yet recorded;
+it is `sim/tb_false_flag` W1's job (#90 re-runs it). Both transcripts carry an appended
+annotation saying so. The in-window trip evidence (1.80935 V and 1.77165 V, table above) is
+unaffected. This reproduces #83's headline figure, with that qualification. (The row 8 *verdict* is `sim/tb_false_flag`'s; these records
 report.)
 
 ### The cost at the low corner is missed detection, not false flagging
@@ -159,6 +172,16 @@ detection at the other.
    run in this repo.** #90 measures it and may refute it; if it does, #90 supersedes this
    clause with its own DR rather than quietly substituting a different cell.
 
+   *What the topology does not, by itself, settle* (open for #90; none of it is decided
+   here): (i) the present core's line gain has two terms — `XR1` and the diode stack's
+   incremental resistance — so "no supply term to first order" is a claim about the
+   replacement, not proof that no sizing of the present cell could reduce it; (ii) cascoding
+   reduces line sensitivity at a headroom cost, and the absolute trip still depends on
+   device and resistor variation; (iii) `vref` remains 2·V_GS(I), and V_GS has a threshold
+   tempco of order −1 to −2 mV/K per device, which a beta-multiplier does not remove.
+   **This DR contains no temperature evidence** (every record is tt / 27 °C), so row 5 over
+   −40 to 125 °C is neither addressed nor claimed here.
+
 3. **The constraint set #90 must hold** (this is the operative part of the decision):
    - **Untrimmed** — row 5 and DR-002 clause 3. A trim is a different architecture needing
      a superseding DR; it is not a route to meeting this row.
@@ -167,12 +190,15 @@ detection at the other.
    - **Operational over 2.97–3.63 V** (row 2) using 5 V-class devices where the 3.3 V
      domain needs them. The cascode stack height competes with the `g5v0d10v5` V_GS at the
      2.97 V corner; headroom there is the first thing to check, not the last.
-   - **Must not spend quiescent current it does not have.** Row 11's target is < 50 µA and
-     the committed `sim/tb_iq/records/2026-11-05-tb_iq-tt.txt` already reads
-     **51.592 µA at code 0** (SIMULATED, tt / 27 °C, 3.3 V) — *over* the target, inside the
-     fallback band only. **The compensated core must be no more expensive than the resistor
-     bias it replaces**, and #90 re-runs `tb_iq`. Buying row 5 by breaking row 11 is not a
-     fix.
+   - **Must not spend quiescent current it does not have.** Row 11's target is < 50 µA. The
+     current post-#84 record, `sim/tb_iq/records/2026-11-14-tb_iq-tt.txt` (netlist hash
+     `c6307eb1…`, matching `design/detector_top.spice` at this head), reads **47.576 µA at
+     code 0** (SIMULATED, tt / 27 °C, 3.3 V, one corner) — inside the target with
+     **2.424 µA** of margin. (The earlier 51.592 µA figure, `2026-11-05-tb_iq-tt.txt`,
+     predates #84's resize and is superseded for this purpose.) That margin is thin and
+     holds at one corner only, so **the compensated core must be no more expensive than the
+     resistor bias it replaces** — a zero-increase budget is the conservative choice — and
+     #90 re-runs `tb_iq` at all corners. Buying row 5 by breaking row 11 is not a fix.
    - **Must preserve the monitored-rail rejection already achieved** (−0.004 mV for a
      1.8 → 0.9 V collapse). A compensated core that couples the monitored rail into `vref`
      would trade a known defect for a worse one.
@@ -185,18 +211,26 @@ detection at the other.
 
 4. **Row 5's immunity floor is restated to bind across row 2's supply box**, not at the
    3.3 V point alone (the wording change in `spec/target-spec.md`; **no number moves**).
-   The floor requires the shallowest level to sit ≥ 2 % + accuracy below nominal. With the
-   measured one-sided supply term of **+4.52 %** at 3.63 V, that requires the shallowest
-   level placed **≥ 6.52 % below nominal** — deeper than row 4's ratified 4 % *and* 6 %
+   The floor requires the shallowest level to sit ≥ 2 % + accuracy below nominal. The
+   measured code-00 **total one-sided error** at 3.63 V is **+4.52 %** of 1.8 V (+81.35 mV
+   against the specified 1.728 V). Of that, the incremental supply drift against the 3.3 V
+   trip is **3.78 %** (+67.98 mV); the other 0.74 % (+13.37 mV) is present at nominal
+   supply. The 6.52 % figure uses the *total* error, because the floor bounds where the
+   trip may land, not the drift alone. Keeping the trip at or below 1.764 V at that corner
+   requires the shallowest level placed **≥ 6.52 % below nominal** — deeper than row 4's ratified 4 % *and* 6 %
    placements, and the measurement agrees: at 3.63 V the 4 % and 6 % levels both trip
    inside the window while the 9 % and 12 % levels (1.71524 / 1.65883 V) clear it. So
    **the floor is not reachable by level placement within row 4's ratified set**; it has to
    be met by reducing the supply term, which is clause 2.
 
-5. **No operator decision is triggered.** Implementation Guidance on #83 routes a
-   "row 5 is unmeetable untrimmed or the band must widen" conclusion to the operator rather
-   than to a DR. That is **not** this conclusion: row 5 is reachable untrimmed, within the
-   ratified rows, by replacing the bias core — a design change, which is #90's. The
+5. **No operator decision is triggered *by this DR*.** Implementation Guidance on #83
+   routes a "row 5 is unmeetable untrimmed or the band must widen" conclusion to the
+   operator rather than to a DR. That is **not** this conclusion: what is established is
+   that the *present* core cannot meet row 5 (clause 1). That row 5 is reachable untrimmed,
+   within the ratified rows, by replacing the bias core is a **hypothesis for #90 to
+   test**, not a result — it is unsimulated, and #90 must show it, including cold start-up,
+   headroom at the 2.97 V corner and quiescent current against clause 3. A design change is
+   #90's. The
    condition that *would* trigger an operator decision is named here so #90 does not have
    to improvise one: **if a cascoded, untrimmed, in-tree compensated core cannot bring the
    code-00 trip inside ±27 mV across 2.97–3.63 V without exceeding row 11's < 50 µA**, then
@@ -221,11 +255,25 @@ detection at the other.
 - **Widen row 5's band to fit the measurement** — rejected: agents do not relax the
   ratified spec to make results pass.
 - **A bandgap reference** — not adopted: it meets the supply constraint but spends area and
-  quiescent current this block does not have (row 11 is already over target at code 0), and
+  quiescent current this block has little of (row 11 has 2.424 µA of margin at code 0, one
+  corner), and
   the threshold is a *ratio* of the 1.8 V nominal, not an absolute voltage, so absolute
   bandgap accuracy buys nothing here. Noted rather than rejected outright: if #90 finds the
   beta-multiplier's residual PSRR insufficient at the 2.97 V headroom corner, this is the
   next candidate and needs its own DR.
+
+## Carried failure: recorded, not accepted
+
+The market-key review of this PR at `204bb2fd` found the carried behaviour uncompetitive
+(a 1.8 V catalog supervisor keeps a healthy rail inside its static window across the same
+supply span) and recommended operator escalation. This record does not contest that
+finding: at 3.63 V the committed design trips codes 00 and 01 inside the healthy window
+(row 8), and at 2.97 V it misses shallow droops (row 5). **This DR does not accept that
+behaviour, does not present it as meeting any row, and makes no catalog-competitiveness
+claim for the detector as built.** It records the failure and its measured cause and
+assigns the corrective design and its verification to #90, which re-runs rows 5, 6, 8 and
+11 at all three supply corners. Until #90 closes with measured results, rows 5 and 8 are
+carried as **failing**. The operator-decision trigger in clause 5 stands.
 
 ## Not relaxed
 
@@ -236,8 +284,8 @@ measured figures are recorded as failing the rows they fail.
 
 ## Consequences
 
-- #90 has a ratified topology and a constraint set, and is no longer blocked on an
-  undecided architecture.
+- #90 has a proposed topology hypothesis and a constraint set, and is no longer blocked on
+  an undecided architecture. The topology stays unsimulated until #90 shows it.
 - #76 (row 5 error budget) gains the supply-sensitivity term as committed evidence at all
   three corners. It should **read the post-#84 records this DR cites** (the
   `2026-11-15-tb_threshold_accuracy-tt-vsup{2p97,3p63}.txt` set plus main's
