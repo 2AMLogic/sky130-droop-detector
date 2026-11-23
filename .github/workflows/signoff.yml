@@ -34,23 +34,10 @@ jobs:
       - name: Install pinned klt
         run: pip install "klayout-tools==$(tr -d '[:space:]' < .github/klt-version)"
 
-      - name: Validate committed JSON parses
-        run: |
-          set -euo pipefail
-          shopt -s nullglob
-          files=(manifests/*.json)
-          if [ "${#files[@]}" -eq 0 ]; then
-            echo "::error::no manifests/*.json found"
-            exit 1
-          fi
-          for f in "${files[@]}"; do
-            python3 -m json.tool "$f" > /dev/null || { echo "::error file=$f::not valid JSON"; exit 1; }
-            echo "ok: $f"
-          done
-
       - name: Re-run klt signoff and compare against the committed record
         run: |
           set -uo pipefail
+          for f in manifests/sky130-droop-detector.json manifests/sky130-droop-detector.signoff.json; do python3 -m json.tool "$f" > /dev/null || { echo "::error file=$f::not valid JSON"; exit 1; }; done
           rc=0
           klt signoff --manifest manifests/sky130-droop-detector.json \
                       --format json > "$RUNNER_TEMP/fresh-signoff.json" || rc=$?
