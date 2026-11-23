@@ -31,6 +31,30 @@ jobs:
         with:
           python-version: "3.10"
 
+      # PDK-free guards under tests/: every tracked .py there is a
+      # standalone, stdlib-only guard whose docstring says what it checks.
+      # They are discovered from the index, never listed by hand, so a guard
+      # added under tests/ runs here and in package.json's check:ci with no
+      # per-file edit to either (it still needs a checks[] entry in
+      # attest/item10.json; the inventory-coverage guard among them fails
+      # until it has one). Needs only bash, git and the pinned python3.
+      # Runs ahead of the klt re-attestations so a coverage failure there
+      # cannot skip it. NUL-delimited, so names are passed as literal args.
+      # Fail-closed: an empty guard list is an error, and every guard runs
+      # before the step exits non-zero if any failed.
+      - name: Run PDK-free guards under tests/
+        run: |
+          set -euo pipefail
+          mapfile -d '' -t guards < <(git ls-files -z ':(glob)tests/**/*.py')
+          [ "${#guards[@]}" -gt 0 ] || { echo "::error::no tracked tests/**/*.py guards found"; exit 1; }
+          rc=0
+          for f in "${guards[@]}"; do
+            echo "::group::$f"
+            if ! python3 -I "$f"; then rc=1; echo "::error::$f failed"; fi
+            echo "::endgroup::"
+          done
+          exit "$rc"
+
       - name: Install pinned klt
         run: pip install "klayout-tools==$(tr -d '[:space:]' < .github/klt-version)"
 
@@ -99,25 +123,3 @@ jobs:
             exit "$rc"
           fi
           echo "Committed item-9 evidence is fresh."
-
-      # PDK-free guards under tests/: every tracked .py there is a
-      # standalone, stdlib-only guard whose docstring says what it checks.
-      # They are discovered from the index, never listed by hand, so a guard
-      # added under tests/ runs here and in package.json's check:ci with no
-      # per-file edit to either (it still needs a checks[] entry in
-      # attest/item10.json; the inventory-coverage guard among them fails
-      # until it has one). Needs only bash, git and the pinned python3.
-      # Fail-closed: an empty guard list is an error, and every guard runs
-      # before the step exits non-zero if any failed.
-      - name: Run PDK-free guards under tests/
-        run: |
-          set -euo pipefail
-          mapfile -t guards < <(git ls-files ':(glob)tests/**/*.py')
-          [ "${#guards[@]}" -gt 0 ] || { echo "::error::no tracked tests/**/*.py guards found"; exit 1; }
-          rc=0
-          for f in "${guards[@]}"; do
-            echo "::group::$f"
-            if ! python3 -I "$f"; then rc=1; echo "::error::$f failed"; fi
-            echo "::endgroup::"
-          done
-          exit "$rc"
