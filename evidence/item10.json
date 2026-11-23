@@ -87,7 +87,7 @@
         "role": "hygiene",
         "path": "spec/target-spec.md",
         "passed": true,
-        "content_hash": "sha256:7c382b50fe758b29ab950f7b2cfdc03eb5db81d9071413a6b3a6f165e2c323c4"
+        "content_hash": "sha256:5d5c3f307f57129fef778178b3698790bf2c96616220b09dcd824b084454e752"
       },
       {
         "check": "command",
@@ -534,11 +534,12 @@
         "exit_status": 0,
         "passed": true
       }
-    ]
+    ],
+    "description": "Repo hygiene for sky130-droop-detector: top-level docs, license, CI workflow and spec exist; JSON pins parse; every tracked shell script (.sh) under sim/ and verification/ is syntactically valid and every tracked .py under sim/ and verification/ compiles; the inventory-coverage guard (tests/test_item10_coverage.py) requires every tracked .sh/.py under sim/, verification/ and tests/ to be declared in this inventory; the local-ngspice thread policy has a single source (tests/test_thread_policy.py). PDK-free checks only; the row-5 error-budget note's tables re-derive from the committed records they cite (tests/check_row5_budget.py)."
   },
   "provenance": {
-    "klt_version": "0.8.0",
-    "klayout_version": null,
+    "klt_version": "0.9.3.dev3510+gfd0e55db542e",
+    "klayout_version": "0.30.12",
     "pdk": null,
     "deck": null,
     "input": {
