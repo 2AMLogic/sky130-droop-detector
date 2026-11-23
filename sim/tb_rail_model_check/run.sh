@@ -119,12 +119,15 @@ EOF
 EOF
 done
 nf_rc=0
-(cd "$work/nf" && $KLT sim --batch-set netlist_form_*.request.json --wait-for-capacity 600 \
+(cd "$work/nf" && $KLT sim --batch-set netlist_form_*.request.json --capacity-retries 5 \
   -o "$work/nf/out" --format json \
   >"$work/nf/set.json" 2>"$work/nf/stderr.log") || nf_rc=$?
 for pt in "${POINTS[@]}"; do
   p="${pt%%:*}"
+  # Collect layout is version-dependent: klt <= 0.9.2 writes
+  # out/<request>.request/report.json, klt >= 0.9.3 writes out/<netlist-stem>/report.json.
   rep="$work/nf/out/netlist_form_$p.request/report.json"
+  [ -r "$rep" ] || rep="$work/nf/out/netlist_form_$p/report.json"
   [ -r "$rep" ] && jq -e '.corners[0].measurements|length>0' "$rep" >/dev/null 2>&1 \
     && [ "$(jq -r '[.corners[0].measurements[]|select(.value==null)]|length' "$rep")" = 0 ] \
     || { tail -n 20 "$work/nf/stderr.log" >&2
@@ -154,6 +157,7 @@ pdk_model_files tt "$work/files"
   for pt in "${POINTS[@]}"; do
     p="${pt%%:*}"
     rep="$work/nf/out/netlist_form_$p.request/report.json"
+    [ -r "$rep" ] || rep="$work/nf/out/netlist_form_$p/report.json"
     echo "point $p: job_id=$(jq -r '.environment.remote.job_id // "none"' "$rep")"
     jq -r '.corners[0].measurements|map({(.name):.value})|add
       | (([.v_pre-.vmin_rise,.vmax_rise-.v_pre,.v_pre-.vmin_fall,.vmax_fall-.v_pre]|max)*1e3) as $pk

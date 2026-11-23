@@ -3,14 +3,14 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 10,
-  "summary": "T1 item 10 (Repo hygiene): 44/44 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 10 (Repo hygiene): 46/46 attestation checks passed (klt signoff --attest)",
   "source": "attest/item10.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 44,
-    "passed_count": 44,
+    "check_count": 46,
+    "passed_count": 46,
     "checks": [
       {
         "check": "present",
@@ -24,7 +24,7 @@
         "role": "hygiene",
         "path": ".github/workflows/signoff.yml",
         "passed": true,
-        "content_hash": "sha256:6838697019a1f4d963d9585b84712db6c477c1417a60429a1101e1e81395d5f5"
+        "content_hash": "sha256:90be141c1545ad48545b94d7d7bb3c17fd31186027d762622f9348586e1510e5"
       },
       {
         "check": "present",
@@ -52,7 +52,7 @@
         "role": "hygiene",
         "path": "manifests/sky130-droop-detector.json",
         "passed": true,
-        "content_hash": "sha256:c08b12b30de351549fff24a76ddb25b73f3960f54d4169b2aa2f0f5a33fb6e57"
+        "content_hash": "sha256:65becc5b1796e2f7b9f5fc27a3d38c705e42cafa3f7c7f4317460b208243ddb7"
       },
       {
         "check": "present",
@@ -161,6 +161,20 @@
       {
         "check": "command",
         "role": "audit",
+        "name": "inventory-json-valid",
+        "argv": [
+          "python3",
+          "-m",
+          "json.tool",
+          "sim/inventory.json"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
         "name": "lib-ngspice-run-syntax",
         "argv": [
           "bash",
@@ -207,6 +221,19 @@
           "-m",
           "py_compile",
           "sim/rail_envelope/rail_envelope.py"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "run-all-syntax",
+        "argv": [
+          "bash",
+          "-n",
+          "sim/run_all.sh"
         ],
         "cwd": ".",
         "exit_status": 0,
@@ -546,7 +573,7 @@
         "path": "attest/item10.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:913e6d5623518696a9f6f26f1456829b773ebb83a95a726473023cbcf7fa5dcb"
+      "content_hash": "sha256:142dcb61a4469715521a2ab9da054593267278e6b8a1b1808400aa76c495c019"
     }
   }
 }

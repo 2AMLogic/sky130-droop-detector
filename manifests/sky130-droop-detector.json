@@ -6,9 +6,13 @@
       "file": "evidence/item1.json",
       "content_hash": "sha256:3e2914d9849a3c33b5bb2fea021457b72ada307283b3c9965a6f088538e8b59f"
     },
+    "9": {
+      "file": "evidence/item9.json",
+      "content_hash": "sha256:2c824e5713b473b1b44a4b9b8db3040689727ffcdc5190feae5c4dd57436282a"
+    },
     "10": {
       "file": "evidence/item10.json",
-      "content_hash": "sha256:913e6d5623518696a9f6f26f1456829b773ebb83a95a726473023cbcf7fa5dcb"
+      "content_hash": "sha256:142dcb61a4469715521a2ab9da054593267278e6b8a1b1808400aa76c495c019"
     }
   }
 }
