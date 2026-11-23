@@ -91,6 +91,28 @@ jobs:
           fi
           echo "Committed item-10 evidence is fresh."
 
+      # T1 item 9 (testbenches shipped): re-attest from the committed inventory
+      # and fail if evidence/item9.json no longer reproduces. PDK-free: the
+      # cold start (sim/run_all.sh) needs ngspice, the pinned PDK and the
+      # batch fleet, so it is declared local_only in sim/inventory.json and
+      # --check skips it, carrying the committed outcome; the present checks
+      # re-hash every committed bench, so bench or inventory drift still fails
+      # here. Regenerating the evidence needs the full toolchain - see
+      # sim/inventory.json "cold_start".
+      - name: Re-attest T1 item 9 against the committed evidence
+        run: |
+          set -uo pipefail
+          rc=0
+          klt signoff --attest 9 --inventory sim/inventory.json \
+                      --check evidence/item9.json || rc=$?
+          if [ "$rc" -ne 0 ]; then
+            echo "::error::Committed evidence evidence/item9.json no longer reproduces (klt signoff --attest exited $rc) - a testbench or the inventory changed without re-attesting."
+            echo "Regenerate and commit the evidence in this same PR:"
+            echo "  klt signoff --attest 9 --inventory sim/inventory.json -o evidence/item9.json"
+            exit "$rc"
+          fi
+          echo "Committed item-9 evidence is fresh."
+
       # Inventory-completeness guard: every tracked bench runner / .py under
       # sim/, verification/ and tests/ must be declared in attest/item10.json.
       # A new bench added without an inventory entry turns CI red here, not

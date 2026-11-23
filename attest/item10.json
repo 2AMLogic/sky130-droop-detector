@@ -62,6 +62,15 @@
       ]
     },
     {
+      "name": "inventory-json-valid",
+      "argv": [
+        "python3",
+        "-m",
+        "json.tool",
+        "sim/inventory.json"
+      ]
+    },
+    {
       "name": "lib-ngspice-run-syntax",
       "argv": [
         "bash",
@@ -93,6 +102,14 @@
         "-m",
         "py_compile",
         "sim/rail_envelope/rail_envelope.py"
+      ]
+    },
+    {
+      "name": "run-all-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "sim/run_all.sh"
       ]
     },
     {
