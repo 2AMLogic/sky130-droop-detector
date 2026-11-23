@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "worktree:return": "./.loom/scripts/worktree-return.sh",
-    "check:ci": "python3 -I tests/test_item10_coverage.py && python3 -I tests/check_row5_budget.py && python3 -I tests/test_thread_policy.py && python3 -I tests/test_record_header_threads.py",
-    "check:all": "python3 -I tests/test_item10_coverage.py && python3 -I tests/check_row5_budget.py && python3 -I tests/test_thread_policy.py && python3 -I tests/test_record_header_threads.py && RECORD=/dev/null ./sim/smoke/run.sh",
-    "test": "python3 -I tests/test_item10_coverage.py && python3 -I tests/check_row5_budget.py && python3 -I tests/test_thread_policy.py && python3 -I tests/test_record_header_threads.py && RECORD=/dev/null ./sim/smoke/run.sh"
+    "check:ci": "guards=$(git ls-files ':(glob)tests/**/*.py') || exit; [ -n \"$guards\" ] || { echo 'no tracked tests/**/*.py guards found' >&2; exit 1; }; rc=0; for f in $guards; do python3 -I \"$f\" || { echo \"$f failed\" >&2; rc=1; }; done; exit \"$rc\"",
+    "check:all": "npm run --silent check:ci && RECORD=/dev/null ./sim/smoke/run.sh",
+    "test": "npm run --silent check:all"
   }
 }

@@ -174,11 +174,11 @@ committed alongside the passing ones):
   (`sim/tb_rail_model_check/records/2026-10-23-negctl-envelope-out-of-bound.txt`);
   `records/2026-10-23-negctl-tampered-pin.txt` covers a tampered LDO source pin.
 
-`npm test` runs the item-10 inventory-coverage guard
-(`tests/test_item10_coverage.py`), the row-5 error-budget re-derivation guard
-(`tests/check_row5_budget.py`), and then the smoke bench with `RECORD=/dev/null`.
-`npm run check:ci` runs the two guards alone — PDK-free, the same checks the CI
-signoff job runs.
+`npm run check:ci` runs every tracked guard under `tests/`: each `.py` there is
+a standalone, stdlib-only, PDK-free check, and the list comes from the git
+index (`git ls-files`), so a new guard runs in CI and here without a
+per-file edit. `npm run check:all` runs them and then the smoke bench with
+`RECORD=/dev/null`; `npm test` is the same as `check:all`.
 
 ## Repo layout
 
