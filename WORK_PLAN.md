@@ -4,11 +4,12 @@ Roadmap generated from GitHub label state by the Guide triage role. Only the
 region between the markers is machine-generated and overwritten each time.
 
 <!-- guide:plan-body:start -->
-_Generated: 2026-11-23T01:30:00Z (snapshot; compare against live labels)_
+_Generated: 2026-11-23T03:15:00Z (snapshot; compare against live labels)_
 ## Operator Attention: Merge-Risk-Hold Pileup
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
 
+- **#93**: measure the threshold reference's supply sensitivity across row 2's box and decide its topology — closes #83
 - **#98**: spec: re-anchor ngspice pin to 47 via DR-004, append records for three stale benches
 
 ## Very Important
@@ -42,7 +43,7 @@ _None._
 
 PRs waiting on Judge (`loom:review-requested`).
 
-- **#93**: measure the threshold reference's supply sensitivity across row 2's box and decide its topology — closes #83
+_None._
 
 ## Approved (Awaiting Merge)
 
@@ -78,8 +79,8 @@ _None._
 | Important | 4 |
 | Ready (`loom:issue`, net of holds/building/merge-pending) | 0 |
 | In Progress (`loom:building`) | 0 |
-| PRs awaiting review | 1 |
-| Approved PRs awaiting merge | 1 |
+| PRs awaiting review | 0 |
+| Approved PRs awaiting merge | 2 |
 | Curated | 5 |
 | Architect / Hermit proposals | 2 |
 | Active epics | 0 |
