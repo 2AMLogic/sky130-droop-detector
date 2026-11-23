@@ -3,6 +3,11 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage role. Newest first.
 
+### 2026-11-23
+
+- **PR #150**: ci: wire thread-policy and record-header guard tests into signoff workflow and npm scripts
+- **Issue #149** (closed): Wire up tests/test_thread_policy.py and tests/test_record_header_threads.py: guards no runner executes
+
 ### 2026-11-18
 
 - **PR #143**: ci: add merge_group trigger to the signoff workflow
