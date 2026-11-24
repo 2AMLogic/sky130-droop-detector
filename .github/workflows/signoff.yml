@@ -31,6 +31,32 @@ jobs:
         with:
           python-version: "3.10"
 
+      # PDK-free guards under tests/: every tracked .py there is a
+      # standalone, stdlib-only guard whose docstring says what it checks.
+      # They are discovered from the index, never listed by hand, so a guard
+      # added under tests/ runs here and in package.json's check:ci with no
+      # per-file edit to either (it still needs a checks[] entry in
+      # attest/item10.json; the inventory-coverage guard among them fails
+      # until it has one). Needs only bash, git and the pinned python3.
+      # Runs ahead of the klt re-attestations so a coverage failure there
+      # cannot skip it. NUL-delimited, so names are passed as literal args.
+      # Fail-closed: an empty guard list is an error, and every guard runs
+      # before the step exits non-zero if any failed.
+      - name: Run PDK-free guards under tests/
+        run: |
+          set -euo pipefail
+          list=$(mktemp)
+          git ls-files -z ':(glob)tests/**/*.py' > "$list" || { echo "::error::git ls-files failed"; exit 1; }
+          mapfile -d '' -t guards < "$list"
+          [ "${#guards[@]}" -gt 0 ] || { echo "::error::no tracked tests/**/*.py guards found"; exit 1; }
+          rc=0
+          for f in "${guards[@]}"; do
+            echo "::group::$f"
+            if ! python3 -I "$f"; then rc=1; echo "::error::$f failed"; fi
+            echo "::endgroup::"
+          done
+          exit "$rc"
+
       - name: Install pinned klt
         run: pip install "klayout-tools==$(tr -d '[:space:]' < .github/klt-version)"
 
@@ -99,32 +125,3 @@ jobs:
             exit "$rc"
           fi
           echo "Committed item-9 evidence is fresh."
-
-      # Inventory-completeness guard: every tracked bench runner / .py under
-      # sim/, verification/ and tests/ must be declared in attest/item10.json.
-      # A new bench added without an inventory entry turns CI red here, not
-      # silently. PDK-free; needs only git and python3.
-      - name: Check attest/item10.json covers every tracked bench runner and script
-        run: python3 -I tests/test_item10_coverage.py
-
-      # Row-5 budget re-derivation guard: every numeric table cell of
-      # design/row5-error-budget.md §3–§8 must re-derive from the committed
-      # records its §1 provenance table names. A stale figure anywhere in the
-      # note turns CI red here, not silently. PDK-free; needs only python3.
-      - name: Re-derive design/row5-error-budget.md from the committed records
-        run: python3 -I tests/check_row5_budget.py
-
-      # Thread-policy guard: no tracked file under sim/ outside sim/lib/ may
-      # set num_threads or OMP_NUM_THREADS, and sim/lib/ngspice_run.sh must
-      # still define SIM_NGSPICE_THREADS and force it into every deck it
-      # runs. Makes the sim/README.md thread-policy claim CI-enforced
-      # instead of merely stated. PDK-free; needs only git and python3.
-      - name: Enforce the local-ngspice thread policy
-        run: python3 -I tests/test_thread_policy.py
-
-      # Record-header coupling guard: pdk_record_header's ngspice_threads:
-      # field must stay coupled to ngspice_run's SIM_NGSPICE_THREADS_USED,
-      # so a record for a bench that ran local ngspice never reads none.
-      # PDK-free; ngspice and klt are stubbed on PATH inside the test.
-      - name: Enforce the ngspice_threads record-header coupling
-        run: python3 -I tests/test_record_header_threads.py

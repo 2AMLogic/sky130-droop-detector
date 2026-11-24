@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "worktree:return": "./.loom/scripts/worktree-return.sh",
-    "check:ci": "python3 -I tests/test_item10_coverage.py && python3 -I tests/check_row5_budget.py && python3 -I tests/test_thread_policy.py && python3 -I tests/test_record_header_threads.py",
-    "check:all": "python3 -I tests/test_item10_coverage.py && python3 -I tests/check_row5_budget.py && python3 -I tests/test_thread_policy.py && python3 -I tests/test_record_header_threads.py && RECORD=/dev/null ./sim/smoke/run.sh",
-    "test": "python3 -I tests/test_item10_coverage.py && python3 -I tests/check_row5_budget.py && python3 -I tests/test_thread_policy.py && python3 -I tests/test_record_header_threads.py && RECORD=/dev/null ./sim/smoke/run.sh"
+    "check:ci": "t=$(mktemp) || exit 1; git ls-files -z ':(glob)tests/**/*.py' > \"$t\" || { echo 'git ls-files failed' >&2; rm -f \"$t\"; exit 1; }; [ -s \"$t\" ] || { echo 'no tracked tests/**/*.py guards found' >&2; rm -f \"$t\"; exit 1; }; rc=0; xargs -0 -n1 sh -c 'python3 -I \"$0\" || { echo \"$0 failed\" >&2; exit 1; }' < \"$t\" || rc=1; rm -f \"$t\"; [ \"$rc\" -eq 0 ] || { echo 'a tests/ guard failed' >&2; exit 1; }",
+    "check:all": "npm run --silent check:ci && RECORD=/dev/null ./sim/smoke/run.sh",
+    "test": "npm run --silent check:all"
   }
 }
