@@ -4,7 +4,7 @@ Roadmap generated from GitHub label state by the Guide triage role. Only the
 region between the markers is machine-generated and overwritten each time.
 
 <!-- guide:plan-body:start -->
-_Generated: 2026-11-24T11:45:00Z (snapshot; compare against live labels)_
+_Generated: 2026-11-24T13:43:00Z (snapshot; compare against live labels)_
 ## Operator Attention: Merge-Risk-Hold Pileup
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
@@ -35,8 +35,7 @@ Human-approved issues (`loom:issue`) ready for implementation — excluding held
 
 Issues currently being built (`loom:building`).
 
-- **#158**: Item-10 inventory coverage misses an unlisted Unicode guard filename
-- **#160**: Thread-policy guard silently skips sim/ files with spaces or non-ASCII names (same ls-files defect as #158)
+_None._
 
 ## PRs Awaiting Review
 
@@ -48,9 +47,7 @@ _None._
 
 PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
-- **#159**: fix: read item-10 tracked-file list NUL-delimited from git ls-files -z
 - **#98**: spec: re-anchor ngspice pin to 47 via DR-004, append records for three stale benches — closes #87
-- **#161**: fix: NUL-split sim/ enumeration and fail loudly on unreadable paths in thread-policy guard
 
 ## Proposed
 
@@ -63,7 +60,7 @@ Issues carrying `loom:curated`.
 
 ## Proposed (Architect / Hermit)
 
-_None._
+- **#163**: Remove ROADMAP.md status sections: a stale hand-kept copy of the signoff manifest and work plan *(hermit)*
 
 ## Epics
 
@@ -77,10 +74,10 @@ _None._
 | Very important | 1 |
 | Important | 3 |
 | Ready (`loom:issue`, net of holds/building/merge-pending) | 1 |
-| In Progress (`loom:building`) | 2 |
+| In Progress (`loom:building`) | 0 |
 | PRs awaiting review | 0 |
-| Approved PRs awaiting merge | 3 |
+| Approved PRs awaiting merge | 1 |
 | Curated | 4 |
-| Architect / Hermit proposals | 0 |
+| Architect / Hermit proposals | 1 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
