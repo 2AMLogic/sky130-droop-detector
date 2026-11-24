@@ -4,7 +4,7 @@ Roadmap generated from GitHub label state by the Guide triage role. Only the
 region between the markers is machine-generated and overwritten each time.
 
 <!-- guide:plan-body:start -->
-_Generated: 2026-11-23T07:47:28Z (snapshot; compare against live labels)_
+_Generated: 2026-11-23T16:25:00Z (snapshot; compare against live labels)_
 ## Operator Attention: Merge-Risk-Hold Pileup
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
@@ -35,13 +35,13 @@ _None._
 
 Issues currently being built (`loom:building`).
 
-_None._
+- **#155**: Dedupe hardcoded tests/*.py guard lists across signoff.yml, package.json and READMEs
 
 ## PRs Awaiting Review
 
 PRs waiting on Judge (`loom:review-requested`).
 
-_None._
+- **#156**: chore: discover tests/ guards via git ls-files in CI and npm scripts
 
 ## Approved (Awaiting Merge)
 
@@ -75,8 +75,8 @@ _None._
 | Very important | 1 |
 | Important | 3 |
 | Ready (`loom:issue`, net of holds/building/merge-pending) | 0 |
-| In Progress (`loom:building`) | 0 |
-| PRs awaiting review | 0 |
+| In Progress (`loom:building`) | 1 |
+| PRs awaiting review | 1 |
 | Approved PRs awaiting merge | 2 |
 | Curated | 4 |
 | Architect / Hermit proposals | 0 |
