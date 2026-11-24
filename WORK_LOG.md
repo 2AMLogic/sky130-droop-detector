@@ -5,6 +5,10 @@ triage role. Newest first.
 
 ### 2026-11-24
 
+- **PR #161**: fix: NUL-split sim/ enumeration and fail loudly on unreadable paths in thread-policy guard
+- **Issue #160** (closed): Thread-policy guard silently skips sim/ files with spaces or non-ASCII names (same ls-files defect as #158)
+- **PR #159**: fix: read item-10 tracked-file list NUL-delimited from git ls-files -z
+- **Issue #158** (closed): Item-10 inventory coverage misses an unlisted Unicode guard filename
 - **PR #156**: chore: discover tests/ guards via git ls-files in CI and npm scripts
 - **Issue #155** (closed): Dedupe hardcoded tests/*.py guard lists across signoff.yml, package.json and READMEs
 
