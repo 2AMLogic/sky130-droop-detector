@@ -4,7 +4,7 @@ Roadmap generated from GitHub label state by the Guide triage role. Only the
 region between the markers is machine-generated and overwritten each time.
 
 <!-- guide:plan-body:start -->
-_Generated: 2026-11-23T16:25:00Z (snapshot; compare against live labels)_
+_Generated: 2026-11-24T11:45:00Z (snapshot; compare against live labels)_
 ## Operator Attention: Merge-Risk-Hold Pileup
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
@@ -29,26 +29,28 @@ Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a h
 
 Human-approved issues (`loom:issue`) ready for implementation — excluding held (`loom:blocked`/`loom:operator`/`loom:frozen`), `loom:building`, and issues closed by an open `loom:pr` PR (listed under Approved).
 
-_None._
+- **#83**: Threshold reference drifts into the LDO ±2% window at a 3.63 V detector supply, so the detector flags continuously at a nominal rail
 
 ## In Progress
 
 Issues currently being built (`loom:building`).
 
-- **#155**: Dedupe hardcoded tests/*.py guard lists across signoff.yml, package.json and READMEs
+- **#158**: Item-10 inventory coverage misses an unlisted Unicode guard filename
+- **#160**: Thread-policy guard silently skips sim/ files with spaces or non-ASCII names (same ls-files defect as #158)
 
 ## PRs Awaiting Review
 
 PRs waiting on Judge (`loom:review-requested`).
 
-- **#156**: chore: discover tests/ guards via git ls-files in CI and npm scripts
+_None._
 
 ## Approved (Awaiting Merge)
 
 PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
-- **#93**: measure the threshold reference's supply sensitivity across row 2's box and decide its topology — closes #83
+- **#159**: fix: read item-10 tracked-file list NUL-delimited from git ls-files -z
 - **#98**: spec: re-anchor ngspice pin to 47 via DR-004, append records for three stale benches — closes #87
+- **#161**: fix: NUL-split sim/ enumeration and fail loudly on unreadable paths in thread-policy guard
 
 ## Proposed
 
@@ -74,10 +76,10 @@ _None._
 | Operator merge-risk holds | 1 |
 | Very important | 1 |
 | Important | 3 |
-| Ready (`loom:issue`, net of holds/building/merge-pending) | 0 |
-| In Progress (`loom:building`) | 1 |
-| PRs awaiting review | 1 |
-| Approved PRs awaiting merge | 2 |
+| Ready (`loom:issue`, net of holds/building/merge-pending) | 1 |
+| In Progress (`loom:building`) | 2 |
+| PRs awaiting review | 0 |
+| Approved PRs awaiting merge | 3 |
 | Curated | 4 |
 | Architect / Hermit proposals | 0 |
 | Active epics | 0 |

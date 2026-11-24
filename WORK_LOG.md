@@ -3,6 +3,11 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage role. Newest first.
 
+### 2026-11-24
+
+- **PR #156**: chore: discover tests/ guards via git ls-files in CI and npm scripts
+- **Issue #155** (closed): Dedupe hardcoded tests/*.py guard lists across signoff.yml, package.json and READMEs
+
 ### 2026-11-23
 
 - **Issue #81** (closed): Wire up or drop tests/test_item10_coverage.py: an inventory-completeness guard no runner executes
