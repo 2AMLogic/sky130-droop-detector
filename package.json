@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "worktree:return": "./.loom/scripts/worktree-return.sh",
-    "check:ci": "n=$(git ls-files -z ':(glob)tests/**/*.py' | tr -cd '\\0' | wc -c); [ \"$n\" -gt 0 ] || { echo 'no tracked tests/**/*.py guards found' >&2; exit 1; }; git ls-files -z ':(glob)tests/**/*.py' | xargs -0 -r -n1 python3 -I || { echo 'a tests/ guard failed' >&2; exit 1; }",
+    "check:ci": "t=$(mktemp) || exit 1; git ls-files -z ':(glob)tests/**/*.py' > \"$t\" || { echo 'git ls-files failed' >&2; rm -f \"$t\"; exit 1; }; [ -s \"$t\" ] || { echo 'no tracked tests/**/*.py guards found' >&2; rm -f \"$t\"; exit 1; }; rc=0; xargs -0 -n1 sh -c 'python3 -I \"$0\" || { echo \"$0 failed\" >&2; exit 1; }' < \"$t\" || rc=1; rm -f \"$t\"; [ \"$rc\" -eq 0 ] || { echo 'a tests/ guard failed' >&2; exit 1; }",
     "check:all": "npm run --silent check:ci && RECORD=/dev/null ./sim/smoke/run.sh",
     "test": "npm run --silent check:all"
   }

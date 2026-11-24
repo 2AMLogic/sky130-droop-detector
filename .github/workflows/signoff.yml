@@ -45,7 +45,9 @@ jobs:
       - name: Run PDK-free guards under tests/
         run: |
           set -euo pipefail
-          mapfile -d '' -t guards < <(git ls-files -z ':(glob)tests/**/*.py')
+          list=$(mktemp)
+          git ls-files -z ':(glob)tests/**/*.py' > "$list" || { echo "::error::git ls-files failed"; exit 1; }
+          mapfile -d '' -t guards < "$list"
           [ "${#guards[@]}" -gt 0 ] || { echo "::error::no tracked tests/**/*.py guards found"; exit 1; }
           rc=0
           for f in "${guards[@]}"; do
