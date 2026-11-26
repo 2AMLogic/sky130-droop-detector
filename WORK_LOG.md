@@ -3,6 +3,11 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage role. Newest first.
 
+### 2026-11-26
+
+- **PR #171**: refactor: derive sim/run_all.sh bench list from sim/inventory.json
+- **Issue #170** (closed): Dedupe sim/run_all.sh bench list: read sim/inventory.json instead of hardcoding all 14 benches
+
 ### 2026-11-24
 
 - **PR #161**: fix: NUL-split sim/ enumeration and fail loudly on unreadable paths in thread-policy guard
