@@ -503,11 +503,16 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
         def record_field(key):
             return next((ln.split() for ln in record_path.read_text().splitlines() if ln.startswith(key + ":")), [])
 
+        # The previous bench left one request per code and kind, without a supply suffix.
+        reqdir = keep / "req"
+        reqdir.mkdir(parents=True)
+        for code in range(4):
+            for kind in ("mm", "mc", "ctl"):
+                (reqdir / ("l%d_%s.request.json" % (code, kind))).write_text("{}\n")
         proc, submitted = runner()
-        if not step(proc.returncode == 0, "fresh run: run.sh exited %d, expected 0\n%s" % (proc.returncode, tail(proc))):
+        if not step(proc.returncode == 0, "legacy KEEP: run.sh exited %d, expected 0\n%s" % (proc.returncode, tail(proc))):
             return
-        step(submitted == all_members, "fresh run: submitted %d members, expected all 36 (missing: %s)"
-             % (len(submitted), sorted(set(all_members) - set(submitted))[:6]))
+        step(submitted == all_members, "legacy KEEP: expected exactly the 36 current members, submitted %r" % submitted)
         record_path, yield_path = rec / "record.txt", rec / "klt-yield.json"
         if not step(record_path.is_file(), "fresh run: run.sh wrote no record.txt to RECORD_DIR"):
             return
@@ -632,6 +637,16 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
         proc, submitted = runner({"STUB_YIELD_STATUS": "fail"})
         step(proc.returncode == 7 and submitted == [], "completed failing grade: run.sh exited %d, expected 7\n%s"
              % (proc.returncode, tail(proc)))
+
+        # Simulate an incomplete generation in the scratch copy. A cached report
+        # must not hide a missing file named by the fresh manifest.
+        missing = "l3_mm_3p63.request.json"
+        with (bench / "gen_requests.py").open("a") as f:
+            f.write("\n(pathlib.Path(sys.argv[1]) / %r).unlink()\n" % missing)
+        proc, submitted = runner()
+        step(proc.returncode == 2 and submitted == [] and missing in proc.stderr,
+             "missing manifest request: exit %d, submitted %r, expected exit 2 naming %s\n%s"
+             % (proc.returncode, submitted, missing, tail(proc)))
 
         top_path.write_text(top.replace(".subckt threshold_ref ", ".subckt threshold_rex "))
         proc, submitted = runner()

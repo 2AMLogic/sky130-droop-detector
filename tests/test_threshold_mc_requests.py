@@ -347,12 +347,24 @@ with tempfile.TemporaryDirectory(prefix="tmc-req-") as d:
         check((req2 / "detector_top.spice").read_text() == "\n".join(resized) + "\n",
               "resized ladder: the nominal copy is not the fixture top")
 
+    # Keep comment text intact even when the active length is on a continuation.
+    continued = LADDER.replace(" L=94.073", "") + " $ L=71\n* L=92\n+L=94.073 ; L=82"
+    proc, _, reqdir = run(d, top=top.replace(LADDER, continued))
+    check(proc.returncode == 0 and (reqdir / "detector_top_ctl.spice").read_text()
+          == top.replace(LADDER, continued.replace("+L=94.073", "+L=88")),
+          "continued XR2: expected only the active length to change\n" + proc.stderr)
+
     # ------------------------------------------------- missing / ambiguous target
+    definition = "\n".join(top.splitlines()[lo:hi])
+    no_length = LADDER.replace(" L=94.073", "")
     bad_tops = {
         "no threshold_ref subckt": top.replace(".subckt threshold_ref ", ".subckt threshold_rex "),
+        "two threshold_ref subckts": top.replace(definition, definition + "\n" + definition.upper()),
         "no XR2 in threshold_ref": top.replace(LADDER, LADDER.replace("XR2", "XR9")),
         "two XR2 in threshold_ref": top.replace("XR3 t1 t0 gnd", "XR2 t1 t0 gnd"),
-        "ladder XR2 without L": top.replace(LADDER, LADDER.replace(" L=94.073", "")),
+        "ladder XR2 without L": top.replace(LADDER, no_length),
+        "ladder XR2 with only a commented length": top.replace(LADDER, no_length + " $ L=94.073"),
+        "ladder XR2 with two active lengths": top.replace(LADDER, LADDER + "\n+ L=\n+ 120"),
     }
     for label, bad in bad_tops.items():
         with tempfile.TemporaryDirectory(prefix="tmc-req-bad-") as bd:
@@ -397,5 +409,5 @@ if problems:
     sys.exit("tb_threshold_mc request generation is wrong:\n  - " + "\n  - ".join(problems[:25])
              + ("\n  - ... and %d more" % (len(problems) - 25) if len(problems) > 25 else ""))
 print("ok: tb_threshold_mc generates 216 row-5 groups as 36 corner-specific requests with a "
-      "geometry-derived ladder control and per-request input hashes (4 malformed-target "
-      "refusals, 4 input-hash variants)")
+      "geometry-derived ladder control and per-request input hashes (%d malformed-target "
+      "refusals, 4 input-hash variants)" % len(bad_tops))

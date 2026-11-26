@@ -51,9 +51,12 @@ member_dir() {
 
 todo=()
 dirs=()
-for q in "$work"/req/l*_*.request.json; do
-  n="$(basename "$q" .request.json)"
-  want="$(jq -r --arg n "$n" '.members[$n].sha256 // empty' "$matrix")"
+# KEEP may also contain requests from an older matrix. Submit only current members.
+members="$(jq -er '.members | to_entries[] | [.key, .value.sha256] | @tsv' "$matrix")" \
+  || fail "cannot read request members from the generator's manifest" 2
+while IFS=$'\t' read -r n want; do
+  [ -f "$work/req/$n.request.json" ] && [ -r "$work/req/$n.request.json" ] \
+    || fail "manifest request $n.request.json is missing or unreadable" 2
   [ -n "$want" ] || fail "the generator's manifest has no input hash for $n" 1
   d=""
   if d="$(member_dir "$n")" && [ -r "$d/inputs.json" ] && [ "$(jq -r .sha256 "$d/inputs.json")" = "$want" ] \
@@ -64,7 +67,7 @@ for q in "$work"/req/l*_*.request.json; do
     if [ -e "$old" ]; then mv "$old" "$old.attempt-$(date +%s)"; fi
   done
   todo+=("$n.request.json")
-done
+done <<< "$members"
 rc=0
 if [ "${#todo[@]}" -gt 0 ]; then
   (cd "$work/req" && $KLT sim --batch-set "${todo[@]}" --backend batch --max-in-flight 2 --max-concurrent-jobs 3 --capacity-retries 3 --wait-for-capacity 900 -o "$work/out" --format json \

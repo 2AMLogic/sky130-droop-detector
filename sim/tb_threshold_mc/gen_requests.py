@@ -46,7 +46,10 @@ KINDS = (("mm", MM, "mismatch", NOMINAL_TOP),
          ("mc", ["mc"], "both", NOMINAL_TOP),
          ("ctl", MM, "mismatch", CONTROL_TOP))
 PLACEHOLDER = re.compile(r"__[A-Z0-9]+__")
-L_TOKEN = re.compile(r"(?<![A-Za-z0-9_])L\s*=\s*([^\s]+)", re.I)
+# Mask quoted values before looking for comments or assignments on xschem cards.
+# Preserve columns so the verified value's span also indexes the original line.
+SPICE_NON_CODE = re.compile(r"""^\s*\*.*|(?P<value>"[^"]*"|'[^']*'|\{[^{}]*\})|(?:\$|;|//).*""")
+L_TOKEN = re.compile(r"(?<!\S)L\s*=\s*(\S+)", re.I)
 INCLUDE = re.compile(r"""^\s*\.include\s+(?:"([^"]+)"|'([^']+)'|(\S+))""", re.I | re.M)
 
 here = pathlib.Path(__file__).resolve().parent
@@ -77,13 +80,12 @@ def sha256(data):
     return hashlib.sha256(data).hexdigest()
 
 
-def cards(lines, start, end):
-    """(first line, line after the last, tokens) of every SPICE card in lines[start:end];
-    a line beginning with `+` continues the previous card, comments and blanks are skipped."""
+def cards(lines):
+    """(first line, line after the last, tokens) of each uncommented logical card."""
     out = []
-    for i in range(start, end):
-        body = lines[i].strip()
-        if not body or body.startswith("*"):
+    for i, line in enumerate(lines):
+        body = line.strip()
+        if not body:
             continue
         if body.startswith("+") and out:
             out[-1][1] = i + 1
@@ -94,29 +96,29 @@ def cards(lines, start, end):
 
 
 def ladder_target(text):
-    """(line index of the L= token, old L, the split lines) of the one ladder resistor
+    """Locate the line and value span of the one ladder resistor
     CONTROL_INST inside .subckt CONTROL_SUBCKT. Exits naming the target when it is
     missing, ambiguous or not a resistor with a plain L. Lines are split on "\n" only,
     so joining them back reproduces the input byte for byte."""
     lines = text.split("\n")
-    opened = closed = None
-    for i, line in enumerate(lines):
-        tok = line.split()
-        if len(tok) >= 2 and tok[0].lower() == ".subckt" and tok[1].lower() == CONTROL_SUBCKT:
-            opened = i
-            break
-    if opened is None:
+    active = [SPICE_NON_CODE.sub(lambda m: "?" * len(m[0]) if m["value"] else "", line)
+              for line in lines]
+    deck = cards(active)
+    definitions = [i for i, (_, _, tokens) in enumerate(deck)
+                   if [t.lower() for t in tokens[:2]] == [".subckt", CONTROL_SUBCKT]]
+    if not definitions:
         die("negative-control target not found: %s has no .subckt %s (looking for ladder "
             "resistor %s)" % (TOP, CONTROL_SUBCKT, CONTROL_INST))
-    for j in range(opened + 1, len(lines)):
-        tok = lines[j].split()
-        if tok and tok[0].lower() == ".ends":
-            closed = j
-            break
-    if closed is None:
-        die("negative-control target not usable: .subckt %s in %s is never closed"
-            % (CONTROL_SUBCKT, TOP))
-    hits = [c for c in cards(lines, opened + 1, closed) if c[2][0].lower() == CONTROL_INST.lower()]
+    if len(definitions) != 1:
+        die("negative-control target is ambiguous: %d .subckt %s definitions in %s "
+            "(looking for ladder resistor %s)" % (len(definitions), CONTROL_SUBCKT, TOP, CONTROL_INST))
+    opened = definitions[0]
+    closed = next((i for i in range(opened + 1, len(deck))
+                   if deck[i][2][0].lower() in (".ends", ".subckt")), len(deck))
+    if closed == len(deck) or deck[closed][2][0].lower() != ".ends":
+        die("negative-control target not usable: .subckt %s containing %s in %s is never closed"
+            % (CONTROL_SUBCKT, CONTROL_INST, TOP))
+    hits = [c for c in deck[opened + 1:closed] if c[2][0].lower() == CONTROL_INST.lower()]
     where = "inside .subckt %s of %s" % (CONTROL_SUBCKT, TOP)
     if not hits:
         die("negative-control target not found: no %s card %s" % (CONTROL_INST, where))
@@ -125,15 +127,17 @@ def ladder_target(text):
             % (len(hits), CONTROL_INST, where, ", ".join(str(h[0] + 1) for h in hits)))
     first, last, tok = hits[0]
     # xschem writes X<name> <nodes...> <model> <param=value...>: the model is the token before the first parameter
-    params = next((k for k, t in enumerate(tok) if "=" in t), len(tok))
-    model = tok[params - 1].lower() if params >= 3 else ""
+    header = re.split(r"\s+\w+\s*=", " ".join(tok), maxsplit=1)[0].split()
+    model = header[-1].lower() if len(header) >= 3 else ""
     if "res" not in model:
         die("negative-control target is not a resistor: %s %s is %s" % (CONTROL_INST, where, " ".join(tok)))
-    found = [(i, m) for i in range(first, last) for m in L_TOKEN.finditer(lines[i])]
+    # Parse assignments across continuations, preserving physical lines and columns.
+    body = "\n".join(re.sub(r"^(\s*)\+", r"\1 ", line) for line in active[first:last])
+    found = list(L_TOKEN.finditer(body))
     if len(found) != 1:
         die("negative-control target carries %d L= value(s), expected one: %s %s"
             % (len(found), CONTROL_INST, where))
-    line, m = found[0]
+    m = found[0]
     try:
         old = Decimal(m.group(1))
     except InvalidOperation:
@@ -142,21 +146,23 @@ def ladder_target(text):
     if not old.is_finite() or old <= 0:
         die("negative-control target has a non-positive length: %s %s is L=%s"
             % (CONTROL_INST, where, m.group(1)))
-    return line, old, lines
+    start, end = m.span(1)
+    line = first + body.count("\n", 0, start)
+    line_start = body.rfind("\n", 0, start) + 1
+    return old, line, (start - line_start, end - line_start), lines
 
 
 def offset_ladder(text):
     """A copy of `text` in which the threshold_ref ladder XR2 is shorter by CONTROL_DL,
     with (old L, new L); exits unless the copy re-parses to that one change."""
-    line, old, lines = ladder_target(text)
+    old, line, (start, end), lines = ladder_target(text)
     new = old + CONTROL_DL
     if not new.is_finite() or new <= 0:
         die("the deliberate offset %s um leaves no positive length on the ladder %s "
             "inside %s (L=%s)" % (CONTROL_DL, CONTROL_INST, CONTROL_SUBCKT, num(old)))
-    m = L_TOKEN.search(lines[line])
-    lines[line] = lines[line][:m.start(1)] + num(new) + lines[line][m.end(1):]
+    lines[line] = lines[line][:start] + num(new) + lines[line][end:]
     edited = "\n".join(lines)
-    if ladder_target(edited)[1] != new:
+    if ladder_target(edited)[0] != new:
         die("the deliberate offset did not take effect on the ladder %s inside %s"
             % (CONTROL_INST, CONTROL_SUBCKT))
     moved = [i for i, (a, b) in enumerate(zip(text.split("\n"), edited.split("\n"))) if a != b]
