@@ -3,8 +3,33 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage role. Newest first.
 
+### 2026-11-24
+
+- **PR #161**: fix: NUL-split sim/ enumeration and fail loudly on unreadable paths in thread-policy guard
+- **Issue #160** (closed): Thread-policy guard silently skips sim/ files with spaces or non-ASCII names (same ls-files defect as #158)
+- **PR #159**: fix: read item-10 tracked-file list NUL-delimited from git ls-files -z
+- **Issue #158** (closed): Item-10 inventory coverage misses an unlisted Unicode guard filename
+- **PR #156**: chore: discover tests/ guards via git ls-files in CI and npm scripts
+- **Issue #155** (closed): Dedupe hardcoded tests/*.py guard lists across signoff.yml, package.json and READMEs
+
+### 2026-11-23
+
+- **Issue #81** (closed): Wire up or drop tests/test_item10_coverage.py: an inventory-completeness guard no runner executes
+- **Issue #29** (closed): T1 item 9 (testbenches shipped): the eight planned row benches, inventory and --attest 9
+- **PR #153**: feat(sim): attest T1 item 9 - testbench inventory, cold-start envelope, CI gate
+- **Issue #91** (closed): Remove the redundant 'Validate committed JSON parses' step from signoff.yml: the next step already fails on every case it guards
+- **PR #152**: ci: fold committed-JSON parse check into the klt signoff step
+- **PR #150**: ci: wire thread-policy and record-header guard tests into signoff workflow and npm scripts
+- **Issue #149** (closed): Wire up tests/test_thread_policy.py and tests/test_record_header_threads.py: guards no runner executes
+
+### 2026-11-18
+
+- **PR #143**: ci: add merge_group trigger to the signoff workflow
+- **Issue #142** (closed): Merge queue: add the merge_group trigger to the required-check workflow(s)
+
 ### 2026-11-17
 
+- **PR #138**: chore(loom): resync installed Loom to v0.19.1306
 - **PR #135**: ci: print the item-10 drift remedy in the signoff re-attest step
 - **PR #132**: docs: name tests/ in the item-10 coverage-guard comment in signoff.yml
 - **Issue #133** (closed): signoff.yml: the item-10 re-attest step reports drift without naming the regeneration command

@@ -47,7 +47,9 @@ reported 2 ns stretch case at level 0 changed after the resize.
 ## Decision
 
 1. **Pin ngspice 47.** The `ngspice` field in `sim/toolchain.json` records the
-   simulator version reported for these local runs.
+   simulator version reported for these local runs. The existing item 9
+   cold-start attestation has its own declared tool pins, including ngspice
+   46. [Item 9 inventory](../../sim/inventory.json) and [attested evidence](../../evidence/item9.json)
 2. **Use the version in the banner.** The 47p1 build prints `ngspice-47`.
    The `pdk_record_header` function extracts `ngspice-[0-9.]*` from
    `ngspice --version`, so the version component of the record stamp is

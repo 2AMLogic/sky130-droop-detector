@@ -10,7 +10,7 @@ satisfied by deleting the policy entirely:
   2. sim/lib/ngspice_run.sh must still define SIM_NGSPICE_THREADS and still force it
      into every deck it runs, so the policy is actually applied and not merely absent.
 """
-import pathlib, re, subprocess, sys
+import os, pathlib, re, subprocess, sys
 
 root = pathlib.Path(__file__).resolve().parent.parent
 HELPER = "sim/lib/ngspice_run.sh"
@@ -18,7 +18,8 @@ HELPER = "sim/lib/ngspice_run.sh"
 # `set num_threads=...` (deck or generated deck text) or any OMP_NUM_THREADS mention.
 SETTING = re.compile(r"num_threads\s*=|OMP_NUM_THREADS")
 
-tracked = subprocess.check_output(["git", "ls-files", "sim/"], cwd=root, text=True).split()
+out = subprocess.check_output(["git", "ls-files", "-z", "--", "sim/"], cwd=root)
+tracked = [os.fsdecode(p) for p in out.split(b"\0") if p]
 offenders = []
 for rel in tracked:
     # sim/lib/ is where the policy belongs; prose cannot set a thread count, and sim/README.md
@@ -27,8 +28,11 @@ for rel in tracked:
         continue
     try:
         text = (root / rel).read_text(encoding="utf-8", errors="replace")
-    except (OSError, IsADirectoryError):
+    except FileNotFoundError:
+        # Staged deletion: the index still lists a path the working tree lacks.
         continue
+    except OSError as e:
+        sys.exit(f"cannot read tracked sim/ file {rel}: {e}")
     for n, line in enumerate(text.splitlines(), 1):
         if SETTING.search(line):
             offenders.append(f"{rel}:{n}: {line.strip()}")

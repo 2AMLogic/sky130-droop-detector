@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "kind": "generic",
+  "status": "pass",
+  "t1_item": 9,
+  "summary": "T1 item 9 (Testbenches shipped): 17/17 attestation checks passed (klt signoff --attest)",
+  "source": "sim/inventory.json",
+  "attestation": {
+    "producer": "klt signoff --attest",
+    "inventory_schema_version": 1,
+    "hash_algorithm": "sha256-raw-bytes",
+    "check_count": 17,
+    "passed_count": 17,
+    "checks": [
+      {
+        "check": "present",
+        "role": "testbench",
+        "path": "sim/smoke/run.sh",
+        "passed": true,
+        "content_hash": "sha256:a735949b905e88ebf6b6ec728f8e7b2f7b579be9e7ac16a4672dbfcda08d98f8"
+      },
+      {
+        "check": "present",
+        "role": "testbench",
+        "path": "sim/tb_comparator/run.sh",
+        "passed": true,
+        "content_hash": "sha256:f62445effa2cd189d161d0976121ba67b4087ade4bad5945717a231881d3454b"
+      },
+      {
+        "check": "present",
+        "role": "testbench",
+        "path": "sim/tb_false_flag/run.sh",
+        "passed": true,
+        "content_hash": "sha256:1a832b244f2c7eef4a8488e9267beb59413cae7a3ebb0bd3ceb1fda27e44c553"
+      },
+      {
+        "check": "present",
+        "role": "testbench",
+        "path": "sim/tb_filter/run.sh",
+        "passed": true,
+        "content_hash": "sha256:902c35331eddeb821e4b17f04213e9c25a1f6243fd4c6f9516fe3f390928d409"
+      },
+      {
+        "check": "present",
+        "role": "testbench",
+        "path": "sim/tb_flag_logic/run.sh",
+        "passed": true,
+        "content_hash": "sha256:7f6ccbd21e73dae22501bfeaeaa1bb02f3abd86c5515ccbfb71bac93ae46d84c"
+      },
+      {
+        "check": "present",
+        "role": "testbench",
+        "path": "sim/tb_iq/run.sh",
+        "passed": true,
+        "content_hash": "sha256:1e560ace66602cf9557adac4886d7aece0f169c65800a72deabfdc4c0aa1c28b"
+      },
+      {
+        "check": "present",
+        "role": "testbench",
+        "path": "sim/tb_latency/run.sh",
+        "passed": true,
+        "content_hash": "sha256:83b90d74e9c2e9d7a47346300ab0bed8becfa4f27e52455c7d3a94ac617e584a"
+      },
+      {
+        "check": "present",
+        "role": "testbench",
+        "path": "sim/tb_min_width/run.sh",
+        "passed": true,
+        "content_hash": "sha256:9249a7f5ffc1525090e6d96141461ebef792b4f9774cba7513c7cf7544f446ec"
+      },
+      {
+        "check": "present",
+        "role": "testbench",
+        "path": "sim/tb_rail_model_check/run.sh",
+        "passed": true,
+        "content_hash": "sha256:75693cb0bcd6d4766a22b1d4d87de5215cee9f075053f0631fecbf5438b52de1"
+      },
+      {
+        "check": "present",
+        "role": "testbench",
+        "path": "sim/tb_ref_droop/run.sh",
+        "passed": true,
+        "content_hash": "sha256:816affe03f045aa634df667654979864fb42f40cbd2ef4bc6a6c277b390b36cd"
+      },
+      {
+        "check": "present",
+        "role": "testbench",
+        "path": "sim/tb_supply_headroom/run.sh",
+        "passed": true,
+        "content_hash": "sha256:a45f886ea30bdaa1dc775222914c42273a07e54d5d976d14db58eaed214ac4e6"
+      },
+      {
+        "check": "present",
+        "role": "testbench",
+        "path": "sim/tb_threshold_accuracy/run.sh",
+        "passed": true,
+        "content_hash": "sha256:989362717a9d81bd8d2226986fc1c30f563d3ceccbf99d205157b1255c6b7585"
+      },
+      {
+        "check": "present",
+        "role": "testbench",
+        "path": "sim/tb_threshold_select/run.sh",
+        "passed": true,
+        "content_hash": "sha256:3bb478a951383e93aa412a9e801e3cabcdd82d05feb37c41633091595027e6a8"
+      },
+      {
+        "check": "present",
+        "role": "testbench",
+        "path": "verification/flag_logic/run.sh",
+        "passed": true,
+        "content_hash": "sha256:b8e8ee351a57b442d09d2f22fe002094d6245b03c5bcd56fbceb1bc87a6a2e11"
+      },
+      {
+        "check": "command",
+        "role": "cold_start",
+        "argv": [
+          "bash",
+          "sim/run_all.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true,
+        "local_only": true
+      },
+      {
+        "check": "pin",
+        "role": "pdk",
+        "passed": true,
+        "value": {
+          "name": "sky130A",
+          "revision": "f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7"
+        }
+      },
+      {
+        "check": "pin",
+        "role": "tools",
+        "passed": true,
+        "value": {
+          "klt": "0.8.0",
+          "ngspice": "46",
+          "xschem": "3.4.7"
+        }
+      }
+    ]
+  },
+  "provenance": {
+    "klt_version": "0.8.0",
+    "klayout_version": null,
+    "pdk": null,
+    "deck": null,
+    "input": {
+      "path": {
+        "path": "sim/inventory.json",
+        "scope": "repo"
+      },
+      "content_hash": "sha256:2c824e5713b473b1b44a4b9b8db3040689727ffcdc5190feae5c4dd57436282a"
+    }
+  }
+}
