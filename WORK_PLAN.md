@@ -23,6 +23,8 @@ Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a h
 - **#35**: T1 item 6 (Monte Carlo): tb_threshold_mc klt yield campaign on threshold accuracy (row 5)
 - **#83**: Threshold reference drifts into the LDO ±2% window at a 3.63 V detector supply, so the detector flags continuously at a nominal rail
 - **#87**: sim/toolchain.json pins ngspice 46 but the host runs 47p1, and four benches' numbers move
+- **#90**: Compensate the threshold reference's supply term so code 00 stays below the 1.764 V window edge at 3.63 V
+- **#166**: Row 5 design revision: cut mismatch ≥27%, reduce corner spread, add supply compensation (fix the design, not the spec)
 - **#167**: Reduce trip-point mismatch through ladder and comparator input-pair sizing
 - **#177**: Collect the code-00 baseline and input-pair trial on a batch submit host
 
@@ -75,7 +77,7 @@ _None._
 |------|-------|
 | Operator merge-risk holds | 1 |
 | Very important | 1 |
-| Important | 5 |
+| Important | 7 |
 | Ready (`loom:issue`) | 1 |
 | In Progress (`loom:building`) | 0 |
 | PRs awaiting review | 0 |
