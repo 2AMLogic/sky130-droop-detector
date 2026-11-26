@@ -5,6 +5,8 @@ triage role. Newest first.
 
 ### 2026-11-26
 
+- **Issue #169** (closed): Grade threshold Monte Carlo separately at each detector supply and temperature
+- **PR #179**: feat: grade tb_threshold_mc across supply and temperature corners
 - **PR #182**: fix: resolve tb_threshold_mc's KEEP directory before its batch submit
 - **Issue #180** (closed): Resolve a relative KEEP directory before starting the threshold Monte Carlo batch
 - **Issue #175** (closed): WORK_PLAN.md no longer shows that a held issue is held, now that the region is a verbatim renderer capture
