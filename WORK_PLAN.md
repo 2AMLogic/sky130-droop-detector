@@ -31,14 +31,13 @@ _None._
 Human-approved issues ready for implementation (`loom:issue`).
 
 - **#83**: Threshold reference drifts into the LDO ±2% window at a 3.63 V detector supply, so the detector flags continuously at a nominal rail
+- **#169**: Grade threshold Monte Carlo separately at each detector supply and temperature
 
 ## In Progress
 
 Issues currently being built (`loom:building`).
 
-- **#167**: Reduce trip-point mismatch through ladder and comparator input-pair sizing
-- **#169**: Grade threshold Monte Carlo separately at each detector supply and temperature
-- **#173**: Regenerate the WORK_PLAN.md marker region from the Guide renderer
+_None._
 
 ## PRs Awaiting Review
 
@@ -63,7 +62,6 @@ Issues carrying `loom:curated`.
 - **#167**: Reduce trip-point mismatch through ladder and comparator input-pair sizing *(curated)*
 - **#168**: Measure and reduce the systematic sf/fs trip-point spread *(curated)*
 - **#169**: Grade threshold Monte Carlo separately at each detector supply and temperature *(curated)*
-- **#173**: Regenerate the WORK_PLAN.md marker region from the Guide renderer *(curated)*
 
 ## Proposed (Architect / Hermit)
 
@@ -80,11 +78,11 @@ _None._
 | Operator merge-risk holds | 0 |
 | Very important | 1 |
 | Important | 5 |
-| Ready (`loom:issue`) | 1 |
-| In Progress (`loom:building`) | 3 |
+| Ready (`loom:issue`) | 2 |
+| In Progress (`loom:building`) | 0 |
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 1 |
-| Curated | 8 |
+| Curated | 7 |
 | Architect / Hermit proposals | 1 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->

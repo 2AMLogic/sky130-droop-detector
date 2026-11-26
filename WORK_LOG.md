@@ -5,6 +5,9 @@ triage role. Newest first.
 
 ### 2026-11-26
 
+- **Issue #175** (closed): WORK_PLAN.md no longer shows that a held issue is held, now that the region is a verbatim renderer capture
+- **Issue #173** (closed): Regenerate the WORK_PLAN.md marker region from the Guide renderer
+- **PR #174**: docs: replace WORK_PLAN marker region with verbatim Guide render
 - **PR #171**: refactor: derive sim/run_all.sh bench list from sim/inventory.json
 - **Issue #170** (closed): Dedupe sim/run_all.sh bench list: read sim/inventory.json instead of hardcoding all 14 benches
 
