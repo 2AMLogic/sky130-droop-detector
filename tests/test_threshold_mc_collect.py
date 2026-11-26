@@ -35,7 +35,6 @@ import pathlib
 import random
 import re
 import shutil
-import statistics
 import subprocess
 import sys
 import tempfile
@@ -253,14 +252,17 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
             pos = procs.index(g["process"]) * len(TEMPS) + TEMPS.index(g["temperature_c"])
             for i in range(N):
                 corners.append({
-                    "corner_id": "%s/%sV/%sC/mc%d" % (g["process"], g["supply_v"], g["temperature_c"], i),
+                    "corner_id": "%s/%.3fV/%sC/mc%d" % (g["process"], g["supply_v"], g["temperature_c"], i),
                     "process": g["process"], "supply_v": {"Vdd": g["supply_v"]},
                     "temperature_c": g["temperature_c"], "status": "pass", "runtime_s": 0.1,
                     "measurements": [{"name": "vtrip", "value": (control_of(g) if is_control else nominal(g))[i],
                                       "unit": "V", "status": "pass", "margin": None}],
                     "diagnostics": [],
-                    "monte_carlo": {"sample_index": i, "seed": SEED + pos * 1000003 + i,
-                                    "process_seed": 424243, "mismatch_seed": pos * 7919 + i}})
+                    # klt's seed keying as its dry run states it: mismatch_seed follows the
+                    # corner's position, process_seed its section, the combined seed both
+                    "monte_carlo": {"sample_index": i, "process_seed": 424243 + SECTIONS.index(g["process"]),
+                                    "mismatch_seed": pos * 7919 + i,
+                                    "seed": (424243 + SECTIONS.index(g["process"])) * 1000003 + pos * 7919 + i}})
         rng.shuffle(corners)
         (pool / (name + ".json")).write_text(dump({
             "schema_version": 3, "netlist": {"path": None, "scope": "external"}, "status": "pass",
@@ -289,9 +291,9 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
         install(out, name)
     samples_path, limits_path = tmp / "samples.json", tmp / "limits.json"
 
-    def collect(o=out, s=samples_path, l=limits_path):
+    def collect(o=out, s=samples_path, lim=limits_path):
         return subprocess.run([sys.executable, "-I", str(bench / "build_yield.py"),
-                               str(matrix), str(o), str(s), str(l)],
+                               str(matrix), str(o), str(s), str(lim)],
                               capture_output=True, text=True, timeout=300)
 
     def must_fail(label, needles):
@@ -326,7 +328,7 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
                 check(m.get("samples") == nominal(g),
                       "%s: samples are not this group's %d draws in sample order" % (name, N))
                 check(m.get("unit") == "V", "%s: unit is %r" % (name, m.get("unit")))
-                check(m.get("source_corners") == ["%s/%sV/%sC" % (g["process"], g["supply_v"], g["temperature_c"])],
+                check(m.get("source_corners") == ["%s/%.3fV/%sC" % (g["process"], g["supply_v"], g["temperature_c"])],
                       "%s: source_corners is %r, expected the one corner this population was drawn at"
                       % (name, m.get("source_corners")))
                 nc = m.get("negative_control") or {}
@@ -351,6 +353,17 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
                       "%s: limits are %r, expected its own nominal %s +/- %s V" % (name, L, g["nominal_v"], BAND))
                 check(L.get("target_sigma") == 3 and L.get("min_converged_samples") == N,
                       "%s: target_sigma / min_converged_samples are %r" % (name, L))
+        prov = samples.get("provenance") or {}
+        check(prov.get("seed") == SEED and prov.get("draws_per_population") == N
+              and sorted(prov.get("corner_matrix") or []) == sorted(SECTIONS)
+              and prov.get("temperature_c") == TEMPS
+              and prov.get("supply_v") == SUPPLIES and prov.get("inputs_sha256") == man.get("inputs_sha256"),
+              "samples.json provenance is %r, expected the seed, N, corner box and input hash" % (prov,))
+        check(prov.get("control_groups_paired") == {"all_seeds": 180, "mismatch_seed_only": 36, "none": 0, "unknown": 0}
+              and prov.get("common_random_numbers") is False,
+              "control pairing read from the seeds is %r, common_random_numbers %r; expected the 180 *_mm controls "
+              "to repeat their group's draws, the 36 mc controls to repeat only the mismatch component, and "
+              "common_random_numbers false" % (prov.get("control_groups_paired"), prov.get("common_random_numbers")))
         # a report collected by klt <= 0.9.2 lives in <member>.request/
         old = tmp / "out-old"
         for name in members:
@@ -479,7 +492,7 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
             return ok
 
         def record_field(key):
-            return next((l.split() for l in record_path.read_text().splitlines() if l.startswith(key + ":")), [])
+            return next((ln.split() for ln in record_path.read_text().splitlines() if ln.startswith(key + ":")), [])
 
         proc, submitted = runner()
         if not step(proc.returncode == 0, "fresh run: run.sh exited %d, expected 0\n%s" % (proc.returncode, tail(proc))):
@@ -494,11 +507,11 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
         step("corner box: process {tt,ss,ff,sf,fs}_mm (vary=mismatch) + mc (vary=both), "
              "temperature -40 / 27 / 125 C, detector supply 2.97 / 3.3 / 3.63 V" in head
              and "216 groups" in head, "record does not state the matrix that was run:\n" + head)
-        trip = next((l for l in lines if l.startswith("stimulus:")), "")
+        trip = next((ln for ln in lines if ln.startswith("stimulus:")), "")
         step("xdut.flag" in trip and "half the applied detector supply" in trip
              and "1.485 / 1.65 / 1.815 V at 2.97 / 3.3 / 3.63 V" in trip,
              "record does not state the crossing criterion that was measured:\n" + trip)
-        mc_line = next((l for l in lines if l.startswith("monte_carlo:")), "")
+        mc_line = next((ln for ln in lines if ln.startswith("monte_carlo:")), "")
         try:
             mc = json.loads(mc_line[len("monte_carlo:"):])
         except ValueError:
@@ -516,17 +529,21 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
         step(record_field("inputs_sha256")[1:2] == [man.get("inputs_sha256")],
              "record inputs hash is %r, expected the generator's %r"
              % (record_field("inputs_sha256"), man.get("inputs_sha256")))
-        neg = next((l for l in lines if l.startswith("negative control:")), "")
+        neg = next((ln for ln in lines if ln.startswith("negative control:")), "")
         step("XR2" in neg and "threshold_ref" in neg and "L=94.073 -> 88" in neg and "tt_mm" in neg,
              "record does not state the control that was run:\n" + neg)
-        graded = [l for l in lines if re.match(r"\s+vtrip_l\d_(?:[a-z]+_mm|mc)_m?\d+C_\d+p\d+V: n=%d " % N, l)]
+        grade = next((ln for ln in lines if ln.startswith("grading:")), "")
+        step("target_sigma 3 " in grade and "min_converged_samples 300," in grade and "+/-27 mV" in grade
+             and "confidence 0.95" in grade,
+             "record does not state the grade that was applied (read back from limits.json):\n" + grade)
+        graded = [ln for ln in lines if re.match(r"\s+vtrip_l\d_(?:[a-z]+_mm|mc)_m?\d+C_\d+p\d+V: n=%d " % N, ln)]
         step(len(graded) == 216, "record lists %d graded groups, expected 216" % len(graded))
         if "batch job ids:" in lines:
             block = lines[lines.index("batch job ids:") + 1: lines.index("batch job ids:") + 1 + 36]
-            step([l.split(":")[0].strip() for l in block] == all_members,
+            step([ln.split(":")[0].strip() for ln in block] == all_members,
                  "record lists %d batch job lines (%r), expected one per request in request order"
-                 % (len(block), [l.split(":")[0].strip() for l in block][:4]))
-            step(all("klt-sim-stub-" in l for l in block), "a batch job line carries no job id")
+                 % (len(block), [ln.split(":")[0].strip() for ln in block][:4]))
+            step(all("klt-sim-stub-" in ln for ln in block), "a batch job line carries no job id")
         else:
             problems.append("record has no 'batch job ids:' block")
         if step(yield_path.is_file(), "fresh run: run.sh wrote no klt-yield.json to RECORD_DIR"):

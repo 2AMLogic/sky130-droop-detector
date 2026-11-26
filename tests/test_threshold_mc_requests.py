@@ -122,7 +122,7 @@ def source_texts():
 def subckt_span(text, name):
     """Line-number span [start, end) of `.subckt <name>` ... `.ends`."""
     lines = text.splitlines()
-    start = next(i for i, l in enumerate(lines) if l.split()[:2] == [".subckt", name])
+    start = next(i for i, ln in enumerate(lines) if ln.split()[:2] == [".subckt", name])
     end = next(i for i in range(start, len(lines)) if lines[i].split()[:1] == [".ends"])
     return start, end + 1
 
@@ -286,7 +286,7 @@ with tempfile.TemporaryDirectory(prefix="tmc-req-") as d:
                 check(nominal.read_text() == top, "the nominal netlist copy is not the input netlist")
                 diffs = [i for i, (a, b) in enumerate(zip(nom_lines, ctl_lines)) if a != b]
                 check(len(nom_lines) == len(ctl_lines) and diffs == [lo + next(
-                    i for i, l in enumerate(top.splitlines()[lo:hi]) if l == LADDER)],
+                    i for i, ln in enumerate(top.splitlines()[lo:hi]) if ln == LADDER)],
                     "nominal vs control differ at lines %r of %d/%d; expected exactly the threshold_ref "
                     "ladder XR2 line" % (diffs, len(nom_lines), len(ctl_lines)))
                 for i in diffs:
@@ -329,7 +329,7 @@ with tempfile.TemporaryDirectory(prefix="tmc-req-") as d:
     top, _ = source_texts()
     lo, hi = subckt_span(top, "threshold_ref")
     resized = top.splitlines()
-    resized[lo + next(i for i, l in enumerate(top.splitlines()[lo:hi]) if l == LADDER)] = LADDER.replace("L=94.073", "L=120.5")
+    resized[lo + next(i for i, ln in enumerate(top.splitlines()[lo:hi]) if ln == LADDER)] = LADDER.replace("L=94.073", "L=120.5")
     proc2, man2, req2 = run(d, top="\n".join(resized) + "\n")
     check(proc2.returncode == 0, "generator exited %d on a top whose ladder XR2 is L=120.5:\n%s"
           % (proc2.returncode, proc2.stderr.strip()))
