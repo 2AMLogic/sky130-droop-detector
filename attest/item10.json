@@ -313,6 +313,14 @@
         "-I",
         "tests/check_row5_budget.py"
       ]
+    },
+    {
+      "name": "threshold-mc-collect-guard",
+      "argv": [
+        "python3",
+        "-I",
+        "tests/test_threshold_mc_collect.py"
+      ]
     }
   ]
 }

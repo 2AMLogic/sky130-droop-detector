@@ -11,7 +11,8 @@
 # Env: PDK_ROOT (optional), KLT (sim client, default klt), KLT_YIELD (default pinned uvx klayout-tools[yield]==0.8.0 klt), RECORD_DIR (output dir; default stdout only),
 #      PDK_PIN (pin file; overridden for negative controls), KEEP (dir to keep reports in).
 set -euo pipefail
-here="$(cd "$(dirname "$0")" && pwd)"
+unset CDPATH  # Resolve relative paths from the caller and keep cd silent.
+here="$(cd -P -- "$(dirname "$0")" && pwd -P)"
 sim="$here/.."
 KLT="${KLT:-klt}"   # klt sim client: must match the fleet runner (0.9.x); the 0.8.0 pin is refused with exit 87 (version skew)
 KLT_YIELD="${KLT_YIELD:-uvx --from klayout-tools[yield]==0.8.0 klt}"   # pinned release incl. the klt-yield-native wheel; the host klt lacks it
@@ -21,7 +22,12 @@ fail() { echo "FAIL: $1" >&2; exit "${2:-1}"; }
 pdk_pin_resolve
 [ -r "$sim/../design/detector_top.spice" ] || fail "design/detector_top.spice unreadable" 2
 
-work="${KEEP:-$(mktemp -d)}"; mkdir -p "$work"; [ -n "${KEEP:-}" ] || trap 'rm -rf "$work"' EXIT
+work="${KEEP:-$(mktemp -d)}"
+mkdir -p -- "$work"
+cd -P -- "$work/"  # Follow symlinks before .., just as mkdir did.
+work=$PWD
+cd -- "$OLDPWD"
+[ -n "${KEEP:-}" ] || trap 'rm -rf "$work"' EXIT
 params="$(python3 -I "$here/gen_requests.py" "$work/req")"
 
 # Idempotent re-run: a request whose report is already complete (status pass, KEEP dir) is not

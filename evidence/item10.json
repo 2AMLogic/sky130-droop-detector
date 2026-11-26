@@ -3,14 +3,14 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 10,
-  "summary": "T1 item 10 (Repo hygiene): 46/46 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 10 (Repo hygiene): 47/47 attestation checks passed (klt signoff --attest)",
   "source": "attest/item10.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 46,
-    "passed_count": 46,
+    "check_count": 47,
+    "passed_count": 47,
     "checks": [
       {
         "check": "present",
@@ -52,7 +52,7 @@
         "role": "hygiene",
         "path": "manifests/sky130-droop-detector.json",
         "passed": true,
-        "content_hash": "sha256:65becc5b1796e2f7b9f5fc27a3d38c705e42cafa3f7c7f4317460b208243ddb7"
+        "content_hash": "sha256:1b5813d80b99a3f26ceb8a9a1828c5de9d3c4c0a4356c2606593ce2f7a2732b8"
       },
       {
         "check": "present",
@@ -560,6 +560,19 @@
         "cwd": ".",
         "exit_status": 0,
         "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "threshold-mc-collect-guard",
+        "argv": [
+          "python3",
+          "-I",
+          "tests/test_threshold_mc_collect.py"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
       }
     ]
   },
@@ -573,7 +586,7 @@
         "path": "attest/item10.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:142dcb61a4469715521a2ab9da054593267278e6b8a1b1808400aa76c495c019"
+      "content_hash": "sha256:995c4bbff46b48abb7e988be431c881b97afcfdfcb354909fce4177dc9446f44"
     }
   }
 }
