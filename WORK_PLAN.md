@@ -4,18 +4,18 @@ Roadmap generated from GitHub label state by the Guide triage role. Only the
 region between the markers is machine-generated and overwritten each time.
 
 <!-- guide:plan-body:start -->
-_Generated: 2026-11-24T13:43:00Z (snapshot; compare against live labels)_
+_Generated: 2026-11-26T07:50:00Z (snapshot; compare against live labels)_
 ## Operator Attention: Merge-Risk-Hold Pileup
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
 
-- **#98**: spec: re-anchor ngspice pin to 47 via DR-004, append records for three stale benches — closes #87
+_None._
 
 ## Very Important
 
 `loom:very-important` (one counts per workspace); every stage takes these first.
 
-- **#30**: T1 item 2 (layout): generated detector layout with area recorded *(held)*
+- **#30**: T1 item 2 (layout): generated detector layout with area recorded
 
 ## Important
 
@@ -24,6 +24,8 @@ Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a h
 - **#35**: T1 item 6 (Monte Carlo): tb_threshold_mc klt yield campaign on threshold accuracy (row 5) *(held)*
 - **#83**: Threshold reference drifts into the LDO ±2% window at a 3.63 V detector supply, so the detector flags continuously at a nominal rail
 - **#87**: sim/toolchain.json pins ngspice 46 but the host runs 47p1, and four benches' numbers move
+- **#167**: Reduce trip-point mismatch through ladder and comparator input-pair sizing *(building)*
+- **#169**: Grade threshold Monte Carlo separately at each detector supply and temperature *(building)*
 
 ## Ready
 
@@ -35,28 +37,33 @@ Human-approved issues (`loom:issue`) ready for implementation — excluding held
 
 Issues currently being built (`loom:building`).
 
-_None._
+- **#167**: Reduce trip-point mismatch through ladder and comparator input-pair sizing
+- **#169**: Grade threshold Monte Carlo separately at each detector supply and temperature
+- **#170**: Dedupe sim/run_all.sh bench list: read sim/inventory.json instead of hardcoding all 14 benches
 
 ## PRs Awaiting Review
 
 PRs waiting on Judge (`loom:review-requested`).
 
-_None._
+- **#171**: refactor: derive sim/run_all.sh bench list from sim/inventory.json
 
 ## Approved (Awaiting Merge)
 
 PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
-- **#98**: spec: re-anchor ngspice pin to 47 via DR-004, append records for three stale benches — closes #87
+- **#98**: spec: re-anchor the local ngspice pin to 47 and document its simulation evidence
 
 ## Proposed
 
 Issues carrying `loom:curated`.
 
-- **#30**: T1 item 2 (layout): generated detector layout with area recorded *(curated)* *(held)*
-- **#35**: T1 item 6 (Monte Carlo): tb_threshold_mc klt yield campaign on threshold accuracy (row 5) *(curated)* *(held)*
+- **#30**: T1 item 2 (layout): generated detector layout with area recorded *(curated)*
+- **#35**: T1 item 6 (Monte Carlo): tb_threshold_mc klt yield campaign on threshold accuracy (row 5) *(curated)*
 - **#83**: Threshold reference drifts into the LDO ±2% window at a 3.63 V detector supply, so the detector flags continuously at a nominal rail *(curated)*
 - **#87**: sim/toolchain.json pins ngspice 46 but the host runs 47p1, and four benches' numbers move *(curated)*
+- **#167**: Reduce trip-point mismatch through ladder and comparator input-pair sizing *(curated)*
+- **#168**: Measure and reduce the systematic sf/fs trip-point spread *(curated)*
+- **#169**: Grade threshold Monte Carlo separately at each detector supply and temperature *(curated)*
 
 ## Proposed (Architect / Hermit)
 
@@ -70,14 +77,14 @@ _None._
 
 | Bucket | Count |
 |------|-------|
-| Operator merge-risk holds | 1 |
+| Operator merge-risk holds | 0 |
 | Very important | 1 |
-| Important | 3 |
+| Important | 5 |
 | Ready (`loom:issue`, net of holds/building/merge-pending) | 1 |
-| In Progress (`loom:building`) | 0 |
-| PRs awaiting review | 0 |
+| In Progress (`loom:building`) | 3 |
+| PRs awaiting review | 1 |
 | Approved PRs awaiting merge | 1 |
-| Curated | 4 |
+| Curated | 7 |
 | Architect / Hermit proposals | 1 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
