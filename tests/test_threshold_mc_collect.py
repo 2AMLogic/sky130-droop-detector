@@ -242,12 +242,14 @@ with tempfile.TemporaryDirectory(prefix="tmc-keep-") as d:
         "* fake model library\n", encoding="utf-8")
     bin_dir = tmp / "stub bin"
     bin_dir.mkdir()
-    for name, text in (("klt", KLT_STUB), ("klt-yield", YIELD_STUB)):
-        (bin_dir / name).write_text(text, encoding="utf-8")
-        (bin_dir / name).chmod(0o755)
+    # The stubs are modules run as `python3 -m <name>`, found through PYTHONPATH: no PATH lookup of
+    # `klt`/`klt-yield` and no executable bit, so a noexec TMPDIR or an installed client on the
+    # caller's PATH can never stand in for them and submit real jobs.
+    for name, text in (("tmc_stub_klt", KLT_STUB), ("tmc_stub_klt_yield", YIELD_STUB)):
+        (bin_dir / (name + ".py")).write_text(text, encoding="utf-8")
     sim_log, yield_log = tmp / "sim.log", tmp / "yield.log"
     DROP = ("KEEP", "RECORD_DIR", "PDK_PIN", "PDK_ROOT", "KLT", "KLT_YIELD",
-            "STUB_SIM_LOG", "STUB_YIELD_LOG")
+            "STUB_SIM_LOG", "STUB_YIELD_LOG", "PYTHONPATH")
 
     def scratch(tag):
         """An empty caller directory, and the runner's environment for it: the stubs, the fake
@@ -257,9 +259,9 @@ with tempfile.TemporaryDirectory(prefix="tmc-keep-") as d:
         runner_tmp = tmp / ("runner-tmp-" + tag)
         runner_tmp.mkdir()
         env = {k: v for k, v in os.environ.items() if k not in DROP}
-        env.update(KLT="klt", KLT_YIELD="klt-yield", PDK_ROOT=str(pdk),
-                   STUB_SIM_LOG=str(sim_log), STUB_YIELD_LOG=str(yield_log), TMPDIR=str(runner_tmp),
-                   PATH=str(bin_dir) + os.pathsep + os.environ.get("PATH", ""))
+        env.update(KLT="python3 -m tmc_stub_klt", KLT_YIELD="python3 -m tmc_stub_klt_yield",
+                   PYTHONPATH=str(bin_dir), PDK_ROOT=str(pdk),
+                   STUB_SIM_LOG=str(sim_log), STUB_YIELD_LOG=str(yield_log), TMPDIR=str(runner_tmp))
         return caller, env
 
     def run(caller, env):
