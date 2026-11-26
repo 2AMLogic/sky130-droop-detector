@@ -2,8 +2,9 @@
 # Cold-start entry point for the testbenches declared in sim/inventory.json (T1 item 9),
 # one bench at a time. The bench list is the inventory's `testbenches`, with sim/smoke
 # first so its fast PDK/ngspice check fails before the longer benches start; an
-# inventory that is missing, malformed or empty stops the run before any bench is
-# dispatched (exit 2).
+# inventory that is missing, malformed, empty, holds more than one JSON value, or lists
+# a path containing a control character (a newline would split one entry into two
+# benches) stops the run before any bench is dispatched (exit 2).
 # Each bench is a single local ngspice process, except tb_rail_model_check, whose 4-point
 # netlist-form grid goes to the Spot batch fleet through `klt sim --batch-set`
 # (KLT_SIM_BACKEND=batch; never run locally).
@@ -18,8 +19,10 @@ root="$here/.."
 export RECORD=/dev/null
 inv="$here/inventory.json"
 [ -r "$inv" ] || { echo "FAIL: testbench inventory unreadable: $inv" >&2; exit 2; }
-raw="$(jq -er '
-  (.testbenches | select(type == "array" and length > 0 and all(type == "string" and length > 0))) as $tb
+raw="$(jq -er -s '
+  (select(length == 1) | .[0].testbenches
+    | select(type == "array" and length > 0
+             and all(type == "string" and length > 0 and (test("[[:cntrl:]]") | not)))) as $tb
   | ($tb | map(select(. == "sim/smoke/run.sh")))
     + ($tb | map(select(. != "sim/smoke/run.sh")))
   | .[]
