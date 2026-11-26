@@ -5,6 +5,8 @@ triage role. Newest first.
 
 ### 2026-11-26
 
+- **PR #182**: fix: resolve tb_threshold_mc's KEEP directory before its batch submit
+- **Issue #180** (closed): Resolve a relative KEEP directory before starting the threshold Monte Carlo batch
 - **Issue #175** (closed): WORK_PLAN.md no longer shows that a held issue is held, now that the region is a verbatim renderer capture
 - **Issue #173** (closed): Regenerate the WORK_PLAN.md marker region from the Guide renderer
 - **PR #174**: docs: replace WORK_PLAN marker region with verbatim Guide render

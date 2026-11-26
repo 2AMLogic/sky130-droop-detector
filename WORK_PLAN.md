@@ -38,7 +38,6 @@ Human-approved issues ready for implementation (`loom:issue`).
 Issues currently being built (`loom:building`).
 
 - **#169**: Grade threshold Monte Carlo separately at each detector supply and temperature
-- **#180**: Resolve a relative KEEP directory before starting the threshold Monte Carlo batch
 
 ## PRs Awaiting Review
 
@@ -63,7 +62,6 @@ Issues carrying `loom:curated`.
 - **#167**: Reduce trip-point mismatch through ladder and comparator input-pair sizing *(curated)*
 - **#168**: Measure and reduce the systematic sf/fs trip-point spread *(curated)*
 - **#169**: Grade threshold Monte Carlo separately at each detector supply and temperature *(curated)*
-- **#180**: Resolve a relative KEEP directory before starting the threshold Monte Carlo batch *(curated)*
 
 ## Proposed (Architect / Hermit)
 
@@ -81,10 +79,10 @@ _None._
 | Very important | 1 |
 | Important | 6 |
 | Ready (`loom:issue`) | 1 |
-| In Progress (`loom:building`) | 2 |
+| In Progress (`loom:building`) | 1 |
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 1 |
-| Curated | 8 |
+| Curated | 7 |
 | Architect / Hermit proposals | 1 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
