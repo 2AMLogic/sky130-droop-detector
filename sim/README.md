@@ -55,13 +55,23 @@ evidence.
   `tb_comparator/records/`. Not wired into `package.json` checks.
 - `tb_threshold_mc/` — spec row 5 statistical bench: static trip point of
   `design/detector_top.spice` at all four select codes, mismatch Monte Carlo
-  (N = 300 per process section, fixed recorded seed) over `tt/ss/ff/sf/fs_mm`
-  plus the `mc` process section, 27 C / 3.3 V, ideal slowly-swept rail. Twelve
-  `klt sim` requests run on the batch fleet via `--batch-set` (never a local
-  grid; a failed submit exits 4), graded by `klt yield` (3-sigma lower bound,
-  level +/-27 mV, ladder-mismatch negative control). `sim/tb_threshold_mc/run.sh`
-  (uses the pinned `klayout-tools[yield]==0.8.0` through `uvx`); records in
-  `tb_threshold_mc/records/`. Not wired into `package.json` checks.
+  (N = 300 per group, fixed recorded seed) over `tt/ss/ff/sf/fs_mm` plus the
+  `mc` process section, graded per (select code, section, temperature, detector
+  supply) across the ratified PVT box (-40 / 27 / 125 C, 2.97 / 3.3 / 3.63 V):
+  216 groups, ideal slowly-swept rail. The trip is the first rising crossing of
+  the internal comparator output `xdut.flag` at half the applied supply.
+  Thirty-six `klt sim` requests (one per code, kind and supply) run on the batch
+  fleet via `--batch-set` (never a local grid; a failed submit exits 4), graded
+  by `klt yield` (3-sigma lower bound, each group at its level nominal
+  +/-27 mV, every group with the ladder-offset negative control of its own
+  section at the same code, temperature and supply). `sim/tb_threshold_mc/run.sh`
+  reuses a passing report from a `KEEP` directory when both the report and its
+  inputs (request, generated deck, included netlist) match their recorded hashes. It uses the
+  pinned `klayout-tools[yield]==0.8.0` through `uvx`. Records in
+  `tb_threshold_mc/records/`; the committed one (2026-11-06) predates this
+  matrix and covers 27 C / 3.3 V only. Not wired into `package.json` checks;
+  its PDK-free guards are `tests/test_threshold_mc_requests.py` and
+  `tests/test_threshold_mc_collect.py`.
 - `tb_latency/`, `tb_min_width/`, `tb_supply_headroom/` — the dynamic benches of
   `design/detector_top.spice` (spec rows 6, 7, 2) against the behavioural-envelope
   rail (1 ns edges, 1 kohm load; an assumption, not a measurement), tt / 27 C /

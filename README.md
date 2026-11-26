@@ -156,7 +156,7 @@ these benches yet; until one lands, treat these rows as historical evidence,
 not current measurements.
 
 `sim/rail_envelope` is a Python module used by the benches, with no runner of its own.
-`sim/tb_threshold_mc/run.sh` likewise submits its 12 requests to the batch fleet.
+`sim/tb_threshold_mc/run.sh` likewise submits its 36 requests to the batch fleet.
 `sim/tb_rail_model_check/run.sh` is different in kind: its netlist-form grid
 is four `klt sim --batch-set` requests that run on the Spot batch fleet, never
 as local `ngspice` loops, so it needs batch-fleet access. Its behavioural
