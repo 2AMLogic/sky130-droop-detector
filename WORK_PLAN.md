@@ -15,7 +15,7 @@ _None._
 
 `loom:very-important` (one counts per workspace); every stage takes these first.
 
-- **#30**: T1 item 2 (layout): generated detector layout with area recorded
+- **#30**: T1 item 2 (layout): generated detector layout with area recorded *(held)*
 
 ## Important
 
@@ -57,17 +57,17 @@ PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
 Issues carrying `loom:curated`.
 
-- **#30**: T1 item 2 (layout): generated detector layout with area recorded *(curated)*
-- **#35**: T1 item 6 (Monte Carlo): tb_threshold_mc klt yield campaign on threshold accuracy (row 5) *(curated)*
+- **#30**: T1 item 2 (layout): generated detector layout with area recorded *(curated)* *(held)*
+- **#35**: T1 item 6 (Monte Carlo): tb_threshold_mc klt yield campaign on threshold accuracy (row 5) *(curated)* *(held)*
 - **#83**: Threshold reference drifts into the LDO ±2% window at a 3.63 V detector supply, so the detector flags continuously at a nominal rail *(curated)*
 - **#87**: sim/toolchain.json pins ngspice 46 but the host runs 47p1, and four benches' numbers move *(curated)*
 - **#167**: Reduce trip-point mismatch through ladder and comparator input-pair sizing *(curated)*
-- **#168**: Measure and reduce the systematic sf/fs trip-point spread *(curated)*
+- **#168**: Measure and reduce the systematic sf/fs trip-point spread *(curated)* *(held)*
 - **#169**: Grade threshold Monte Carlo separately at each detector supply and temperature *(curated)*
 
 ## Proposed (Architect / Hermit)
 
-- **#163**: Remove ROADMAP.md status sections: a stale hand-kept copy of the signoff manifest and work plan *(hermit)*
+- **#163**: Remove ROADMAP.md status sections: a stale hand-kept copy of the signoff manifest and work plan *(hermit)* *(held)*
 
 ## Epics
 
