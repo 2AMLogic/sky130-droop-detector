@@ -288,7 +288,7 @@ their runners declare their netlists, so later records carry hashes. Re-run at t
 sizing on 2026-11-14: `tb_supply_headroom`, `tb_latency`, `tb_iq`,
 `tb_comparator`, `tb_min_width`, `tb_filter`, `tb_flag_logic`,
 `tb_false_flag`, `tb_threshold_accuracy`. **Not** re-run:
-`sim/tb_threshold_mc` (12 `klt sim` requests to the batch fleet; Monte Carlo
+`sim/tb_threshold_mc` (36 `klt sim` requests to the batch fleet; Monte Carlo
 is out of scope here and belongs to #35), and `tb_ref_droop` /
 `tb_threshold_select`, which exercise `threshold_ref.spice` only and are
 unaffected.
