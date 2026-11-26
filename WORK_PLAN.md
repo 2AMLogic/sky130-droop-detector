@@ -25,19 +25,20 @@ _None._
 - **#87**: sim/toolchain.json pins ngspice 46 but the host runs 47p1, and four benches' numbers move
 - **#167**: Reduce trip-point mismatch through ladder and comparator input-pair sizing
 - **#169**: Grade threshold Monte Carlo separately at each detector supply and temperature
+- **#177**: Collect the code-00 baseline and input-pair trial on a batch submit host
 
 ## Ready
 
 Human-approved issues ready for implementation (`loom:issue`).
 
 - **#83**: Threshold reference drifts into the LDO ±2% window at a 3.63 V detector supply, so the detector flags continuously at a nominal rail
-- **#169**: Grade threshold Monte Carlo separately at each detector supply and temperature
 
 ## In Progress
 
 Issues currently being built (`loom:building`).
 
-_None._
+- **#169**: Grade threshold Monte Carlo separately at each detector supply and temperature
+- **#180**: Resolve a relative KEEP directory before starting the threshold Monte Carlo batch
 
 ## PRs Awaiting Review
 
@@ -62,6 +63,7 @@ Issues carrying `loom:curated`.
 - **#167**: Reduce trip-point mismatch through ladder and comparator input-pair sizing *(curated)*
 - **#168**: Measure and reduce the systematic sf/fs trip-point spread *(curated)*
 - **#169**: Grade threshold Monte Carlo separately at each detector supply and temperature *(curated)*
+- **#180**: Resolve a relative KEEP directory before starting the threshold Monte Carlo batch *(curated)*
 
 ## Proposed (Architect / Hermit)
 
@@ -77,12 +79,12 @@ _None._
 |------|-------|
 | Operator merge-risk holds | 0 |
 | Very important | 1 |
-| Important | 5 |
-| Ready (`loom:issue`) | 2 |
-| In Progress (`loom:building`) | 0 |
+| Important | 6 |
+| Ready (`loom:issue`) | 1 |
+| In Progress (`loom:building`) | 2 |
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 1 |
-| Curated | 7 |
+| Curated | 8 |
 | Architect / Hermit proposals | 1 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
