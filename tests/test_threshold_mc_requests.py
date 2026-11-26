@@ -30,6 +30,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from decimal import Decimal
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 COPIED = ("design/detector_top.spice", "sim/lib/levels.json",
@@ -42,9 +43,14 @@ SECTIONS = MM + ["mc"]
 KINDS = {"mm": (MM, "mismatch", "detector_top.spice"),
          "mc": (["mc"], "both", "detector_top.spice"),
          "ctl": (MM, "mismatch", "detector_top_ctl.spice")}
-LADDER = "XR2 t0 vref gnd sky130_fd_pr__res_xhigh_po_1p41 L=94.073 mult=1 m=1"
-FLAG_XR2 = "XR2 gnd vlim gnd sky130_fd_pr__res_xhigh_po_1p41 L=1200 mult=1 m=1"
-OFFSET = -6.073   # the recorded control: L = 94.073 -> 88
+# A standalone SPICE fixture for exact control edits and malformed targets.
+LADDER = "XR2 t0 vref gnd sky130_fd_pr__res_xhigh_po_1p41 L=120.5 mult=1 m=1"
+TARGET = f".subckt threshold_ref t0 vref gnd\n{LADDER}\n.ends threshold_ref"
+FIXTURE = TARGET + """
+.subckt flag_logic vlim gnd
+XR2 gnd vlim gnd sky130_fd_pr__res_xhigh_po_1p41 L=1200 mult=1 m=1
+.ends flag_logic
+"""
 
 with (ROOT / "sim/lib/levels.json").open() as _f:
     LEVELS = json.load(_f)["levels"]
@@ -119,12 +125,21 @@ def source_texts():
     return top, template
 
 
-def subckt_span(text, name):
-    """Line-number span [start, end) of `.subckt <name>` ... `.ends`."""
-    lines = text.splitlines()
-    start = next(i for i, ln in enumerate(lines) if ln.split()[:2] == [".subckt", name])
-    end = next(i for i in range(start, len(lines)) if lines[i].split()[:1] == [".ends"])
-    return start, end + 1
+def ladder_lines(text):
+    """Physical lines of the threshold_ref XR2 card, including continuations."""
+    subckt = instance = None
+    for i, line in enumerate(text.lower().splitlines()):
+        words = line.split()
+        if not words or words[0].startswith(("*", "$", ";", "//")):
+            continue
+        if words[0] == ".subckt":
+            subckt = words[1]
+        elif words[0] == ".ends":
+            subckt = None
+        if not words[0].startswith("+"):
+            instance = words[0]
+        if subckt == "threshold_ref" and instance == "xr2":
+            yield i
 
 
 problems = []
@@ -263,9 +278,8 @@ with tempfile.TemporaryDirectory(prefix="tmc-req-") as d:
                           "temperature and supply)" % (name, ctl, ctl_proc, member(code, "ctl", v)))
 
             ctl_edit = man.get("control") or {}
-            check(str(ctl_edit.get("old_l_um")) in ("94.073", "94.0730") and str(ctl_edit.get("new_l_um")) in ("88", "88.0")
-                  and ctl_edit.get("subckt") == "threshold_ref" and ctl_edit.get("instance") == "XR2",
-                  "manifest control record is %r, expected the threshold_ref XR2, L 94.073 -> 88"
+            check(ctl_edit.get("subckt") == "threshold_ref" and ctl_edit.get("instance") == "XR2",
+                  "manifest control record is %r, expected the threshold_ref XR2"
                   % (ctl_edit,))
             check(man.get("seed") == SEED and man.get("n") == N and man.get("levels") == [r["v"] for r in LEVELS],
                   "manifest seed/n/levels are %r" % ({k: man.get(k) for k in ("seed", "n", "levels")},))
@@ -281,20 +295,24 @@ with tempfile.TemporaryDirectory(prefix="tmc-req-") as d:
             top, _ = source_texts()
             nominal, control = reqdir / "detector_top.spice", reqdir / "detector_top_ctl.spice"
             if nominal.is_file() and control.is_file():
-                lo, hi = subckt_span(top, "threshold_ref")
                 nom_lines, ctl_lines = nominal.read_text().splitlines(), control.read_text().splitlines()
                 check(nominal.read_text() == top, "the nominal netlist copy is not the input netlist")
                 diffs = [i for i, (a, b) in enumerate(zip(nom_lines, ctl_lines)) if a != b]
-                check(len(nom_lines) == len(ctl_lines) and diffs == [lo + next(
-                    i for i, ln in enumerate(top.splitlines()[lo:hi]) if ln == LADDER)],
+                check(len(nom_lines) == len(ctl_lines) and len(diffs) == 1 and diffs[0] in ladder_lines(top),
                     "nominal vs control differ at lines %r of %d/%d; expected exactly the threshold_ref "
                     "ladder XR2 line" % (diffs, len(nom_lines), len(ctl_lines)))
-                for i in diffs:
-                    if lo <= i < hi:
-                        check(nom_lines[i] == LADDER and ctl_lines[i] == LADDER.replace("L=94.073", "L=88"),
-                              "control line %d is %r, expected the ladder XR2 with L=88" % (i + 1, ctl_lines[i]))
-                check(FLAG_XR2 in ctl_lines and ctl_lines.count(FLAG_XR2) == top.count(FLAG_XR2),
-                      "the flag_logic XR2 was modified in the control copy")
+                if len(diffs) == 1:
+                    i = diffs[0]
+                    # Match the one numeric substitution against the source line and the recorded edit.
+                    for match in re.finditer(r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?", nom_lines[i]):
+                        old = Decimal(match[0])
+                        new = format((old - Decimal("6.073")).normalize(), "f")
+                        if nom_lines[i][:match.start()] + new + nom_lines[i][match.end():] == ctl_lines[i]:
+                            check(ctl_edit.get("old_l_um") == format(old.normalize(), "f") and ctl_edit.get("new_l_um") == new,
+                                  "manifest control lengths disagree with the netlist edit: %r" % ctl_edit)
+                            break
+                    else:
+                        problems.append("control line %d does not shorten the source length by 6.073 um" % (i + 1))
                 check(man.get("netlist_sha256") == sha256(nominal)
                       and man.get("netlist_control_sha256") == sha256(control),
                       "manifest netlist hashes do not match the two generated copies")
@@ -326,45 +344,35 @@ with tempfile.TemporaryDirectory(prefix="tmc-req-") as d:
             base_all = man.get("inputs_sha256")
 
     # ------------------------------------------------------ a resized ladder XR2
-    top, _ = source_texts()
-    lo, hi = subckt_span(top, "threshold_ref")
-    resized = top.splitlines()
-    resized[lo + next(i for i, ln in enumerate(top.splitlines()[lo:hi]) if ln == LADDER)] = LADDER.replace("L=94.073", "L=120.5")
-    proc2, man2, req2 = run(d, top="\n".join(resized) + "\n")
+    proc2, man2, req2 = run(d, top=FIXTURE)
     check(proc2.returncode == 0, "generator exited %d on a top whose ladder XR2 is L=120.5:\n%s"
           % (proc2.returncode, proc2.stderr.strip()))
     if man2 is not None:
-        want = "L=" + ("%f" % (120.5 + OFFSET)).rstrip("0")
-        text = (req2 / "detector_top_ctl.spice").read_text() if (req2 / "detector_top_ctl.spice").is_file() else ""
-        diff = [(a, b) for a, b in zip(resized, text.splitlines()) if a != b]
-        check(len(diff) == 1 and diff[0][0] == LADDER.replace("L=94.073", "L=120.5") and diff[0][1] == LADDER.replace("L=94.073", want),
-              "resized ladder: nominal-vs-control diff is %r, expected only the threshold_ref XR2 line "
-              "carrying %s" % (diff, want))
-        check(FLAG_XR2 in text, "resized ladder: the flag_logic XR2 did not keep its geometry")
+        check((req2 / "detector_top_ctl.spice").read_text() == FIXTURE.replace("L=120.5", "L=114.427"),
+              "resized ladder: expected only the threshold_ref XR2 length to change to 114.427")
         edit = man2.get("control") or {}
-        check(str(edit.get("old_l_um")) in ("120.5",) and str(edit.get("new_l_um")) in (want[2:],),
-              "resized ladder: manifest control record is %r, expected L 120.5 -> %s" % (edit, want[2:]))
-        check((req2 / "detector_top.spice").read_text() == "\n".join(resized) + "\n",
+        check(edit.get("old_l_um") == "120.5" and edit.get("new_l_um") == "114.427",
+              "resized ladder: manifest control record is %r, expected L 120.5 -> 114.427" % edit)
+        check((req2 / "detector_top.spice").read_text() == FIXTURE,
               "resized ladder: the nominal copy is not the fixture top")
 
     # Keep comment text intact even when the active length is on a continuation.
-    continued = LADDER.replace(" L=94.073", "") + " $ L=71\n* L=92\n+L=94.073 ; L=82"
-    proc, _, reqdir = run(d, top=top.replace(LADDER, continued))
+    no_length = LADDER.replace(" L=120.5", "")
+    continued = no_length + " $ L=71\n* L=92\n+L=120.5 ; L=82"
+    proc, _, reqdir = run(d, top=FIXTURE.replace(LADDER, continued))
     check(proc.returncode == 0 and (reqdir / "detector_top_ctl.spice").read_text()
-          == top.replace(LADDER, continued.replace("+L=94.073", "+L=88")),
+          == FIXTURE.replace(LADDER, continued.replace("+L=120.5", "+L=114.427")),
           "continued XR2: expected only the active length to change\n" + proc.stderr)
 
     # ------------------------------------------------- missing / ambiguous target
-    definition = "\n".join(top.splitlines()[lo:hi])
-    no_length = LADDER.replace(" L=94.073", "")
     bad_tops = {
-        "no threshold_ref subckt": top.replace(".subckt threshold_ref ", ".subckt threshold_rex "),
-        "two threshold_ref subckts": top.replace(definition, definition + "\n" + definition.upper()),
-        "no XR2 in threshold_ref": top.replace(LADDER, LADDER.replace("XR2", "XR9")),
-        "two XR2 in threshold_ref": top.replace("XR3 t1 t0 gnd", "XR2 t1 t0 gnd"),
-        "ladder XR2 without L": top.replace(LADDER, no_length),
-        "ladder XR2 with only a commented length": top.replace(LADDER, no_length + " $ L=94.073"),
-        "ladder XR2 with two active lengths": top.replace(LADDER, LADDER + "\n+ L=\n+ 120"),
+        "no threshold_ref subckt": FIXTURE.replace("threshold_ref", "threshold_rex"),
+        "two threshold_ref subckts": FIXTURE + TARGET.upper(),
+        "no XR2 in threshold_ref": FIXTURE.replace(LADDER, LADDER.replace("XR2", "XR9")),
+        "two XR2 in threshold_ref": FIXTURE.replace(LADDER, LADDER + "\n" + LADDER),
+        "ladder XR2 without L": FIXTURE.replace(LADDER, no_length),
+        "ladder XR2 with only a commented length": FIXTURE.replace(LADDER, no_length + " $ L=120.5"),
+        "ladder XR2 with two active lengths": FIXTURE.replace(LADDER, LADDER + "\n+ L=\n+ 120"),
     }
     for label, bad in bad_tops.items():
         with tempfile.TemporaryDirectory(prefix="tmc-req-bad-") as bd:
@@ -377,13 +385,13 @@ with tempfile.TemporaryDirectory(prefix="tmc-req-") as d:
                   "%s: generator wrote %d request(s) before failing; nothing may be submitted" % (label, len(written)))
 
     # ------------------------------------------- input hash follows each simulated input
-    _, template = source_texts()
+    top, template = source_texts()
     with (ROOT / "sim/lib/levels.json").open() as f:
         levels = json.load(f)
     levels["levels"][2]["v"] = 1.639
     variants = {
         "an identical tree": {},
-        "a changed netlist": {"top": top.replace("L=225.433", "L=225.43")},
+        "a changed netlist": {"top": top + "\n* hash invalidation fixture\n"},
         "a changed deck template": {"template": template.replace("Cl live 0 5f", "Cl live 0 6f")},
         "a changed level nominal": {"levels": levels},
     }

@@ -65,8 +65,8 @@ evidence.
   by `klt yield` (3-sigma lower bound, each group at its level nominal
   +/-27 mV, every group with the ladder-offset negative control of its own
   section at the same code, temperature and supply). `sim/tb_threshold_mc/run.sh`
-  reuses a collected report from a `KEEP` directory only while its recorded
-  input hash (request, generated deck, included netlist) matches; it uses the
+  reuses a passing report from a `KEEP` directory when both the report and its
+  inputs (request, generated deck, included netlist) match their recorded hashes. It uses the
   pinned `klayout-tools[yield]==0.8.0` through `uvx`. Records in
   `tb_threshold_mc/records/`; the committed one (2026-11-06) predates this
   matrix and covers 27 C / 3.3 V only. Not wired into `package.json` checks;

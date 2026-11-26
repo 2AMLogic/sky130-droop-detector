@@ -59,7 +59,7 @@
         "role": "hygiene",
         "path": "sim/README.md",
         "passed": true,
-        "content_hash": "sha256:f38d1938e1289e6d059885a872f77f085a66d0acd715fc9eb6c7c061260f03e0"
+        "content_hash": "sha256:2e780bf7b58c64d5718caf83571ef10731d5d005b46660f5246bab99f053e79f"
       },
       {
         "check": "present",

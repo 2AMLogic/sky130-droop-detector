@@ -22,7 +22,8 @@ a trip value are not a duplicate and must stay accepted.
 
 Part B runs the real `run.sh` on a scratch tree with `klt` and `klt yield` replaced by
 stubs (a fake PDK root satisfies the pin gate), so nothing is simulated or submitted,
-and checks resume (reuse only on identical inputs; fresh output when the netlist, the
+and checks that a swapped report fails direct collection and only its member is retried.
+It checks resume (reuse only on identical inputs; fresh output when the netlist, the
 deck template or one level's request changes), the record's matrix / criterion /
 control / hashes against the inputs actually used, and the exit statuses of an
 undetected control, a completed failing grade and an unusable netlist. It also checks
@@ -359,12 +360,17 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
           "fixture pool holds %d reports / %d draws, expected 36 / %d"
           % (len(pool_draws), sum(pool_draws.values()), (216 + 180) * N))
 
+    def record_inputs(d, name):
+        (d / "inputs.json").write_text(json.dumps({
+            "sha256": members[name]["sha256"], "inputs": members[name]["inputs"],
+            "report_sha256": sha256(d / "report.json"),
+        }))
+
     def install(outdir, name, layout="new"):
         d = outdir / (name if layout == "new" else name + ".request")
         d.mkdir(parents=True, exist_ok=True)
         shutil.copy2(pool / (name + ".json"), d / "report.json")
-        (d / "inputs.json").write_text(json.dumps(
-            {"sha256": members[name]["sha256"], "inputs": members[name]["inputs"]}))
+        record_inputs(d, name)
         return d
 
     out = tmp / "out"
@@ -465,6 +471,7 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
         fn(rep)
         rep["corner_count"] = rep["passed"] = len(rep["corners"])
         (out / name / "report.json").write_text(dump(rep))
+        record_inputs(out / name, name)   # Test the simulated contents as originally collected.
 
     def restore(name):
         install(out, name)
@@ -542,8 +549,8 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
     restore(missing_ctl)
 
     stale = "l1_mc_3p63"
-    (out / stale / "inputs.json").write_text(json.dumps(
-        {"sha256": "0" * 64, "inputs": members[stale]["inputs"]}))
+    stamp = out / stale / "inputs.json"
+    stamp.write_text(dump({**load(stamp), "sha256": "0" * 64}))
     must_fail("evidence produced from other inputs", [stale, "inputs"])
     restore(stale)
 
@@ -814,7 +821,8 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
              "record inputs hash is %r, expected the generator's %r"
              % (record_field("inputs_sha256"), man.get("inputs_sha256")))
         neg = next((ln for ln in lines if ln.startswith("negative control:")), "")
-        step("XR2" in neg and "threshold_ref" in neg and "L=94.073 -> 88" in neg and "tt_mm" in neg,
+        lengths = "L={old_l_um} -> {new_l_um}".format(**man["control"])
+        step("XR2" in neg and "threshold_ref" in neg and lengths in neg and "tt_mm" in neg,
              "record does not state the control that was run:\n" + neg)
         grade = next((ln for ln in lines if ln.startswith("grading:")), "")
         step("target_sigma 3 " in grade and "min_converged_samples 300," in grade and "+/-27 mV" in grade
@@ -851,20 +859,43 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
                      "expected exit 0 and every collected report reused\n%s"
                      % (proc.returncode, submitted, tail(proc))):
             return
+        # The two reports share process, temperatures, supply, seed and draw indices.
+        # Leave the code-0 input record in place and replace just the passing report.
+        reports = keep / "out"
+        swapped = reports / "l0_mm_2p97" / "report.json"
+        shutil.copyfile(reports / "l1_mm_2p97" / "report.json", swapped)
+        rejected = collect(reports, tmp / "swapped-samples.json", tmp / "swapped-limits.json")
+        step(rejected.returncode != 0 and "l0_mm_2p97" in rejected.stderr and "report_sha256" in rejected.stderr,
+             "direct collection must identify the swapped report of l0_mm_2p97: " + tail(rejected))
+        proc, submitted = runner()
+        step(proc.returncode == 0 and submitted == ["l0_mm_2p97"]
+             and sha256(swapped) == sha256(pool / "l0_mm_2p97.json"),
+             "swapped report: exit %d, submitted %r; expected only l0_mm_2p97 to be recollected\n%s"
+             % (proc.returncode, submitted, tail(proc)))
+
         stamped = keep / "out" / "l1_mm_3p30" / "inputs.json"
         if not step(stamped.is_file(), "resume scenarios cannot continue: the fresh run left no inputs.json "
                      "beside out/l1_mm_3p30/report.json, so the runner does not record which inputs "
                      "produced a report"):
             return
         stamped.unlink()
+        legacy = reports / "l3_mc_3p63" / "inputs.json"
+        old_record = load(legacy)
+        old_record.pop("report_sha256", None)
+        legacy.write_text(dump(old_record))
+        rejected = collect(reports, tmp / "legacy-samples.json", tmp / "legacy-limits.json")
+        step(rejected.returncode != 0 and "l3_mc_3p63" in rejected.stderr and "report_sha256" in rejected.stderr,
+             "direct collection must reject a legacy record without a report digest: " + tail(rejected))
         proc, submitted = runner()
-        step(proc.returncode == 0 and submitted == ["l1_mm_3p30"], "a report with no recorded inputs: exit %d, "
-             "submitted %r; expected only that member to run again\n%s" % (proc.returncode, submitted, tail(proc)))
+        step(proc.returncode == 0 and submitted == ["l1_mm_3p30", "l3_mc_3p63"],
+             "missing and legacy input records: exit %d, submitted %r; expected only those two members\n%s"
+             % (proc.returncode, submitted, tail(proc)))
 
         partial = keep / "out" / "l2_ctl_2p97" / "report.json"
         if not step(partial.is_file(), "resume scenarios cannot continue: out/l2_ctl_2p97/report.json is missing"):
             return
         partial.write_text(dump({**load(partial), "status": "error"}))
+        record_inputs(partial.parent, partial.parent.name)
         proc, submitted = runner()
         step(proc.returncode == 0 and submitted == ["l2_ctl_2p97"], "a collected report that is not a pass: "
              "exit %d, submitted %r; expected only that member to run again\n%s"
@@ -873,7 +904,7 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
              and any(p.name.startswith("l2_ctl_2p97.attempt-") for p in (keep / "out").iterdir()),
              "the superseded report of l2_ctl_2p97 was not kept as .attempt-* evidence")
 
-        top_path.write_text(top.replace("L=225.433", "L=225.43"))
+        top_path.write_text(top + "\n* hash invalidation fixture\n")
         proc, submitted = runner()
         if not step(proc.returncode == 0 and submitted == all_members, "netlist changed: exit %d, %d submitted; "
                      "expected all 36 to run again, none of the earlier design's reports reused\n%s"

@@ -7,11 +7,12 @@ controls. A draw is never selected by process alone. It has to sit inside its ow
 (select code, process section, temperature, supply) group: the process, temperature and
 supply stated on the draw, a matching corner_id, sample_index 0..N-1 exactly once, a
 converged corner with a finite vtrip, a report that echoes the seed, N and variation mode, and
-a report produced from the inputs the manifest hashes (run.sh records that hash beside
-each collected report). Each group is graded at its own level nominal +/- BAND and
+a report whose bytes and simulated inputs match the hashes recorded at collection.
+Each group is graded at its own level nominal +/- BAND and
 paired with the control population of its own section at the same code, temperature and
 supply (the `mc` group with tt_mm). Fails closed (exit 1; run.sh reports 4) on any
 missing, short, duplicated, non-finite or misfiled draw, naming every affected group."""
+import hashlib
 import json
 import math
 import pathlib
@@ -102,18 +103,20 @@ def main():
             continue
         side = path.parent / INPUTS
         try:
-            recorded = json.loads(side.read_text()).get("sha256") if side.is_file() else None
+            recorded = json.loads(side.read_text())
         except (OSError, ValueError) as e:
             fail("%s: %s beside report.json is unreadable: %s" % (name, INPUTS, e))
             continue
-        if recorded is None:
-            fail("%s: no %s beside report.json: cannot tell which request, deck and netlist produced it"
-                 % (name, INPUTS))
-        elif recorded != m.get("sha256"):
-            fail("%s: the report was produced from other inputs (%s records %s, the current request, deck "
-                 "and netlist hash to %s)" % (name, INPUTS, recorded, m.get("sha256")))
+        if not isinstance(recorded, dict) or recorded.get("sha256") != m["sha256"]:
+            fail("%s: %s does not match the current simulated inputs (expected %s)"
+                 % (name, INPUTS, m["sha256"]))
+            continue
         try:
-            rep = json.loads(path.read_text())
+            data = path.read_bytes()
+            if recorded.get("report_sha256") != hashlib.sha256(data).hexdigest():
+                fail("%s: report.json does not match the report_sha256 in %s" % (name, INPUTS))
+                continue
+            rep = json.loads(data)
         except (OSError, ValueError) as e:
             fail("%s: report.json is unreadable: %s" % (name, e))
             continue

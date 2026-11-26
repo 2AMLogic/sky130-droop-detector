@@ -13,9 +13,9 @@
 # PDK pin, a missing/short/non-numeric/duplicated/misfiled result, or an undetected negative
 # control. Writes a SIMULATED record whose matrix, criterion, control and input hashes are
 # read back from the generator's manifest, never typed here.
-# Resume (KEEP dir): a collected report is reused only when its status is pass AND the hash
-# of the inputs it was produced from (request JSON + generated deck + included netlist,
-# recorded beside it in inputs.json) equals the hash of the freshly generated request.
+# Resume (KEEP dir): inputs.json binds each collected report's SHA-256 to the hash of its
+# inputs (request JSON + generated deck + included netlist). Both hashes must still match
+# and the report's status must be pass before it can be reused.
 # Anything else is moved aside as .attempt-* evidence and re-submitted with the same
 # request, hence the same seeds, so no report of an earlier design or request is reused.
 # Exit: 0 pass; 1 unexpected; 2 pin / netlist / request generation; 4 evidence incomplete;
@@ -55,6 +55,10 @@ member_dir() {
   return 1
 }
 
+report_sha256() {
+  sha256sum < "$1" | cut -d' ' -f1
+}
+
 todo=()
 dirs=()
 # KEEP may also contain requests from an older matrix. Submit only current members.
@@ -65,7 +69,9 @@ while IFS=$'\t' read -r n want; do
     || fail "manifest request $n.request.json is missing or unreadable" 2
   [ -n "$want" ] || fail "the generator's manifest has no input hash for $n" 1
   d=""
-  if d="$(member_dir "$n")" && [ -r "$d/inputs.json" ] && [ "$(jq -r .sha256 "$d/inputs.json")" = "$want" ] \
+  if d="$(member_dir "$n")" && [ -r "$d/inputs.json" ] && digest="$(report_sha256 "$d/report.json")" \
+     && jq -es --arg want "$want" --arg digest "$digest" \
+          'length == 1 and (.[0] | .sha256 == $want and .report_sha256 == $digest)' "$d/inputs.json" >/dev/null \
      && [ "$(jq -r .status "$d/report.json")" = pass ]; then
     dirs+=("$d"); continue
   fi
@@ -79,13 +85,15 @@ if [ "${#todo[@]}" -gt 0 ]; then
   (cd "$work/req" && $KLT sim --batch-set "${todo[@]}" --backend batch --max-in-flight 2 --max-concurrent-jobs 3 --capacity-retries 3 --wait-for-capacity 900 -o "$work/out" --format json \
     >"$work/set.json" 2>"$work/stderr.log") || rc=$?
 fi
-# Record beside each freshly collected report which inputs produced it (its inputs.json is
-# what the resume test above compares on the next run and build_yield.py insists on).
+# Bind the freshly collected bytes to the inputs submitted for this member.
 if [ "${#todo[@]}" -gt 0 ]; then
   for q in "${todo[@]}"; do
     n="$(basename "$q" .request.json)"
     if d="$(member_dir "$n")"; then
-      jq --arg n "$n" '.members[$n] | {sha256, inputs}' "$matrix" > "$d/inputs.json"
+      digest="$(report_sha256 "$d/report.json")"
+      jq --arg n "$n" --arg digest "$digest" '.members[$n] | {sha256, inputs, report_sha256: $digest}' \
+        "$matrix" > "$d/inputs.json.tmp"
+      mv -- "$d/inputs.json.tmp" "$d/inputs.json"
       dirs+=("$d")
     fi
   done
