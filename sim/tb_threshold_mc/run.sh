@@ -11,6 +11,7 @@
 # Env: PDK_ROOT (optional), KLT (sim client, default klt), KLT_YIELD (default pinned uvx klayout-tools[yield]==0.8.0 klt), RECORD_DIR (output dir; default stdout only),
 #      PDK_PIN (pin file; overridden for negative controls), KEEP (dir to keep reports in).
 set -euo pipefail
+unset CDPATH  # Resolve relative paths from the caller and keep cd silent.
 here="$(cd "$(dirname "$0")" && pwd)"
 sim="$here/.."
 KLT="${KLT:-klt}"   # klt sim client: must match the fleet runner (0.9.x); the 0.8.0 pin is refused with exit 87 (version skew)

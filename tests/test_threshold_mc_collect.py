@@ -240,7 +240,7 @@ with tempfile.TemporaryDirectory(prefix="tmc-keep-") as d:
     (pdk / pin["variant"] / "SOURCES").write_text(pin["sources_line"] + "\n", encoding="utf-8")
     (pdk / pin["variant"] / "libs.tech" / "combined" / "sky130.lib.spice").write_text(
         "* fake model library\n", encoding="utf-8")
-    bin_dir = tmp / "bin"
+    bin_dir = tmp / "stub bin"
     bin_dir.mkdir()
     for name, text in (("klt", KLT_STUB), ("klt-yield", YIELD_STUB)):
         (bin_dir / name).write_text(text, encoding="utf-8")
@@ -257,7 +257,7 @@ with tempfile.TemporaryDirectory(prefix="tmc-keep-") as d:
         runner_tmp = tmp / ("runner-tmp-" + tag)
         runner_tmp.mkdir()
         env = {k: v for k, v in os.environ.items() if k not in DROP}
-        env.update(KLT=str(bin_dir / "klt"), KLT_YIELD=str(bin_dir / "klt-yield"), PDK_ROOT=str(pdk),
+        env.update(KLT="klt", KLT_YIELD="klt-yield", PDK_ROOT=str(pdk),
                    STUB_SIM_LOG=str(sim_log), STUB_YIELD_LOG=str(yield_log), TMPDIR=str(runner_tmp),
                    PATH=str(bin_dir) + os.pathsep + os.environ.get("PATH", ""))
         return caller, env
@@ -336,6 +336,7 @@ with tempfile.TemporaryDirectory(prefix="tmc-keep-") as d:
               "%s: unchanged rerun: the collected reports changed without a submission" % label)
 
     caller, env = scratch("relative")
+    env["CDPATH"] = "."
     env["KEEP"] = RELATIVE_KEEP
     keep = caller / RELATIVE_KEEP
     proc, sim_calls, yield_calls = run(caller, env)
