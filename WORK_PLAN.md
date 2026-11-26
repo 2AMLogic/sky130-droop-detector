@@ -4,7 +4,6 @@ Roadmap generated from GitHub label state by the Guide triage role. Only the
 region between the markers is machine-generated and overwritten each time.
 
 <!-- guide:plan-body:start -->
-_Generated: 2026-11-26T07:50:00Z (snapshot; compare against live labels)_
 ## Operator Attention: Merge-Risk-Hold Pileup
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
@@ -15,21 +14,21 @@ _None._
 
 `loom:very-important` (one counts per workspace); every stage takes these first.
 
-- **#30**: T1 item 2 (layout): generated detector layout with area recorded *(held)*
+- **#30**: T1 item 2 (layout): generated detector layout with area recorded
 
 ## Important
 
 `loom:important`; taken before unlabelled work.
 
-- **#35**: T1 item 6 (Monte Carlo): tb_threshold_mc klt yield campaign on threshold accuracy (row 5) *(held)*
+- **#35**: T1 item 6 (Monte Carlo): tb_threshold_mc klt yield campaign on threshold accuracy (row 5)
 - **#83**: Threshold reference drifts into the LDO ±2% window at a 3.63 V detector supply, so the detector flags continuously at a nominal rail
 - **#87**: sim/toolchain.json pins ngspice 46 but the host runs 47p1, and four benches' numbers move
-- **#167**: Reduce trip-point mismatch through ladder and comparator input-pair sizing *(building)*
-- **#169**: Grade threshold Monte Carlo separately at each detector supply and temperature *(building)*
+- **#167**: Reduce trip-point mismatch through ladder and comparator input-pair sizing
+- **#169**: Grade threshold Monte Carlo separately at each detector supply and temperature
 
 ## Ready
 
-Human-approved issues (`loom:issue`) ready for implementation — excluding held (`loom:blocked`/`loom:operator`/`loom:frozen`), `loom:building`, and issues closed by an open `loom:pr` PR (listed under Approved).
+Human-approved issues ready for implementation (`loom:issue`).
 
 - **#83**: Threshold reference drifts into the LDO ±2% window at a 3.63 V detector supply, so the detector flags continuously at a nominal rail
 
@@ -39,13 +38,13 @@ Issues currently being built (`loom:building`).
 
 - **#167**: Reduce trip-point mismatch through ladder and comparator input-pair sizing
 - **#169**: Grade threshold Monte Carlo separately at each detector supply and temperature
-- **#170**: Dedupe sim/run_all.sh bench list: read sim/inventory.json instead of hardcoding all 14 benches
+- **#173**: Regenerate the WORK_PLAN.md marker region from the Guide renderer
 
 ## PRs Awaiting Review
 
 PRs waiting on Judge (`loom:review-requested`).
 
-- **#171**: refactor: derive sim/run_all.sh bench list from sim/inventory.json
+_None._
 
 ## Approved (Awaiting Merge)
 
@@ -57,17 +56,18 @@ PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
 Issues carrying `loom:curated`.
 
-- **#30**: T1 item 2 (layout): generated detector layout with area recorded *(curated)* *(held)*
-- **#35**: T1 item 6 (Monte Carlo): tb_threshold_mc klt yield campaign on threshold accuracy (row 5) *(curated)* *(held)*
+- **#30**: T1 item 2 (layout): generated detector layout with area recorded *(curated)*
+- **#35**: T1 item 6 (Monte Carlo): tb_threshold_mc klt yield campaign on threshold accuracy (row 5) *(curated)*
 - **#83**: Threshold reference drifts into the LDO ±2% window at a 3.63 V detector supply, so the detector flags continuously at a nominal rail *(curated)*
 - **#87**: sim/toolchain.json pins ngspice 46 but the host runs 47p1, and four benches' numbers move *(curated)*
 - **#167**: Reduce trip-point mismatch through ladder and comparator input-pair sizing *(curated)*
-- **#168**: Measure and reduce the systematic sf/fs trip-point spread *(curated)* *(held)*
+- **#168**: Measure and reduce the systematic sf/fs trip-point spread *(curated)*
 - **#169**: Grade threshold Monte Carlo separately at each detector supply and temperature *(curated)*
+- **#173**: Regenerate the WORK_PLAN.md marker region from the Guide renderer *(curated)*
 
 ## Proposed (Architect / Hermit)
 
-- **#163**: Remove ROADMAP.md status sections: a stale hand-kept copy of the signoff manifest and work plan *(hermit)* *(held)*
+- **#163**: Remove ROADMAP.md status sections: a stale hand-kept copy of the signoff manifest and work plan *(hermit)*
 
 ## Epics
 
@@ -80,11 +80,11 @@ _None._
 | Operator merge-risk holds | 0 |
 | Very important | 1 |
 | Important | 5 |
-| Ready (`loom:issue`, net of holds/building/merge-pending) | 1 |
+| Ready (`loom:issue`) | 1 |
 | In Progress (`loom:building`) | 3 |
-| PRs awaiting review | 1 |
+| PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 1 |
-| Curated | 7 |
+| Curated | 8 |
 | Architect / Hermit proposals | 1 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
