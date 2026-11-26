@@ -2,18 +2,26 @@
 # tb_ref_droop: reference/threshold shift vs a collapsing monitored rail and a sagging detector supply.
 # Single corner (tt, 27 C), local ngspice. Fails closed on a missing/mismatched
 # PDK pin, or a missing result. Writes a SIMULATED record.
+# The detector supply has a fixed 3.3 V nominal baseline and a perturbed corner taken as
+# a parameter: VSUP (default 2.97, spec row 2's lower corner; pass 3.63 for the upper one),
+# so both ends of row 2's supply box come from one deck. Select highs follow the supply in
+# force for each case, matching tb_threshold_accuracy.
 # Env: PDK_ROOT (optional, passed to klt), KLT (default: klt), RECORD (output path),
-#      PDK_PIN (pin file, default sim/pdk.json; overridden for negative controls).
+#      PDK_PIN (pin file, default sim/pdk.json; overridden for negative controls),
+#      VSUP (perturbed detector-supply corner, default 2.97).
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 sim="$here/.."
+VNOM=3.3
+VSUP="${VSUP:-2.97}"
 . "$sim/lib/pdk_pin.sh"
 . "$sim/lib/ngspice_run.sh"
 pdk_pin_resolve
 net="$sim/../design/threshold_ref.spice"
 [ -r "$net" ] || { echo "FAIL: netlist unreadable: $net" >&2; exit 2; }
 sim_workdir
-sed "s#__PDK_LIB__#$lib#;s#__NETLIST__#$net#" "$here/tb_ref_droop.spice" > "$work/tb.spice"
+sed "s#__PDK_LIB__#$lib#;s#__NETLIST__#$net#;s#__VNOM__#$VNOM#;s#__VSUP__#$VSUP#" \
+  "$here/tb_ref_droop.spice" > "$work/tb.spice"
 ngspice_run "$work/tb.spice" "$work/ngspice.log"
 
 require_results "$work/ngspice.log" vref_nom_v vref_shift_rail_mv vref_tran_dev_max_mv vref_tran_dev_min_mv vref_shift_supply_mv \
@@ -31,16 +39,16 @@ lv() { # tag title
   done
 }
 {
-  echo "label: SIMULATED (not measured); testbench sim/tb_ref_droop/tb_ref_droop.spice; corner tt, 27 C"
-  echo "stimulus: IDEAL SOURCES (coupling check only, not the rail-model verdict): monitored rail 1.8 -> 0.9 V (DC and a 5 ns edge); detector supply 3.3 -> 2.97 V (DC)"
+  echo "label: SIMULATED (not measured); testbench sim/tb_ref_droop/tb_ref_droop.spice; corner tt, 27 C; detector supply $VNOM V nominal, perturbed to $VSUP V"
+  echo "stimulus: IDEAL SOURCES (coupling check only, not the rail-model verdict): monitored rail 1.8 -> 0.9 V (DC and a 5 ns edge); detector supply $VNOM -> $VSUP V (DC); select highs driven at the supply in force for each case"
   pdk_record_header netlist_sha256 "$net" design/threshold_ref.spice
   echo "results:"
   echo "  vref_nom_v = $(get vref_nom_v)"
   echo "  vref_shift_mv, monitored rail 1.8 -> 0.9 V: DC $(get vref_shift_rail_mv) mV; during 5 ns edge max $(get vref_tran_dev_max_mv) / min $(get vref_tran_dev_min_mv) mV"
-  echo "  vref_shift_mv, detector supply 3.3 -> 2.97 V: $(get vref_shift_supply_mv) mV (this stimulus legitimately moves the reference: it is derived from the supply)"
+  echo "  vref_shift_mv, detector supply $VNOM -> $VSUP V: $(get vref_shift_supply_mv) mV (this stimulus legitimately moves the reference: it is derived from the supply)"
   echo "  target band: +/-27 mV (+/-1.5% of 1.8 V); fallback band: +/-54 mV (+/-3%); no verdict for spec row 5 is made here (single corner, ideal comparator)"
-  lv nom "levels at nominal (rail 1.8 V, supply 3.3 V):"
+  lv nom "levels at nominal (rail 1.8 V, supply $VNOM V):"
   lv rail "levels with monitored rail at 0.9 V:"
-  lv supply "levels with detector supply at 2.97 V:"
+  lv supply "levels with detector supply at $VSUP V:"
 } > "$work/record"
 cat "$work/record" > "$rec"
