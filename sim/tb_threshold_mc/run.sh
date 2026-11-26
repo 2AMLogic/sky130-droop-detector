@@ -21,7 +21,7 @@ fail() { echo "FAIL: $1" >&2; exit "${2:-1}"; }
 pdk_pin_resolve
 [ -r "$sim/../design/detector_top.spice" ] || fail "design/detector_top.spice unreadable" 2
 
-work="${KEEP:-$(mktemp -d)}"; mkdir -p "$work"; [ -n "${KEEP:-}" ] || trap 'rm -rf "$work"' EXIT
+work="${KEEP:-$(mktemp -d)}"; mkdir -p "$work"; work="$(cd "$work" && pwd)"; [ -n "${KEEP:-}" ] || trap 'rm -rf "$work"' EXIT
 params="$(python3 -I "$here/gen_requests.py" "$work/req")"
 
 # Idempotent re-run: a request whose report is already complete (status pass, KEEP dir) is not
