@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
-# Cold-start entry point for every committed testbench (T1 item 9), one bench at a time.
+# Cold-start entry point for the testbenches declared in sim/inventory.json (T1 item 9),
+# one bench at a time. The bench list is the inventory's `testbenches`, with sim/smoke
+# first so its fast PDK/ngspice check fails before the longer benches start; an
+# inventory that is missing, malformed, empty, holds more than one JSON value, or lists
+# a path containing a control character (a newline would split one entry into two
+# benches) stops the run before any bench is dispatched (exit 2).
 # Each bench is a single local ngspice process, except tb_rail_model_check, whose 4-point
 # netlist-form grid goes to the Spot batch fleet through `klt sim --batch-set`
 # (KLT_SIM_BACKEND=batch; never run locally).
@@ -12,24 +17,19 @@ set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 root="$here/.."
 export RECORD=/dev/null
-benches=(
-  sim/smoke
-  sim/tb_rail_model_check
-  sim/tb_supply_headroom
-  sim/tb_ref_droop
-  sim/tb_threshold_select
-  sim/tb_threshold_accuracy
-  sim/tb_latency
-  sim/tb_min_width
-  sim/tb_false_flag
-  sim/tb_filter
-  sim/tb_flag_logic
-  verification/flag_logic
-  sim/tb_iq
-  sim/tb_comparator
-)
+inv="$here/inventory.json"
+[ -r "$inv" ] || { echo "FAIL: testbench inventory unreadable: $inv" >&2; exit 2; }
+raw="$(jq -er -s '
+  (select(length == 1) | .[0].testbenches
+    | select(type == "array" and length > 0
+             and all(type == "string" and length > 0 and (test("[[:cntrl:]]") | not)))) as $tb
+  | ($tb | map(select(. == "sim/smoke/run.sh")))
+    + ($tb | map(select(. != "sim/smoke/run.sh")))
+  | .[]
+' "$inv")" || { echo "FAIL: could not parse testbenches from $inv" >&2; exit 2; }
+mapfile -t benches <<<"$raw"
 for b in "${benches[@]}"; do
-  echo "== $b" >&2
-  "$root/$b/run.sh" >/dev/null || { echo "FAIL: $b/run.sh exited $?" >&2; exit 1; }
+  echo "== ${b%/run.sh}" >&2
+  "$root/$b" >/dev/null || { echo "FAIL: $b exited $?" >&2; exit 1; }
 done
 echo "all ${#benches[@]} benches ran" >&2
