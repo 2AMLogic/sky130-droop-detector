@@ -3,14 +3,14 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 10,
-  "summary": "T1 item 10 (Repo hygiene): 46/46 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 10 (Repo hygiene): 48/48 attestation checks passed (klt signoff --attest)",
   "source": "attest/item10.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 46,
-    "passed_count": 46,
+    "check_count": 48,
+    "passed_count": 48,
     "checks": [
       {
         "check": "present",
@@ -45,21 +45,21 @@
         "role": "hygiene",
         "path": "README.md",
         "passed": true,
-        "content_hash": "sha256:ea47ac84e8b3e56fb5df76c8bb338fdd419e083b5f279d7ec342397627048992"
+        "content_hash": "sha256:945b3c0d2d055b6af921ec88da966d4107e1f8b2847dcd23e381a84d2b070bf3"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "manifests/sky130-droop-detector.json",
         "passed": true,
-        "content_hash": "sha256:65becc5b1796e2f7b9f5fc27a3d38c705e42cafa3f7c7f4317460b208243ddb7"
+        "content_hash": "sha256:391ba40882ac961baf652f90c147a497779d804b919a62b6bb1e8ad4a4e3af08"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "sim/README.md",
         "passed": true,
-        "content_hash": "sha256:61cdc8ab0dceb523aaccc10572a5468752ff88e3093ad081a9d2d7bc704097e8"
+        "content_hash": "sha256:f38d1938e1289e6d059885a872f77f085a66d0acd715fc9eb6c7c061260f03e0"
       },
       {
         "check": "present",
@@ -560,6 +560,32 @@
         "cwd": ".",
         "exit_status": 0,
         "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "threshold-mc-requests-guard",
+        "argv": [
+          "python3",
+          "-I",
+          "tests/test_threshold_mc_requests.py"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "threshold-mc-collect-guard",
+        "argv": [
+          "python3",
+          "-I",
+          "tests/test_threshold_mc_collect.py"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
       }
     ]
   },
@@ -573,7 +599,7 @@
         "path": "attest/item10.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:142dcb61a4469715521a2ab9da054593267278e6b8a1b1808400aa76c495c019"
+      "content_hash": "sha256:c729df425cddda4478564fb2681d36443ab5cbb4b04f603b304c8416442d9d2e"
     }
   }
 }

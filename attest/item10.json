@@ -2,7 +2,7 @@
   "schema_version": 1,
   "kind": "t1-attestation-inventory",
   "t1_item": 10,
-  "description": "Repo hygiene for sky130-droop-detector: top-level docs, license, CI workflow and spec exist; JSON pins parse; every tracked shell script (.sh) under sim/ and verification/ is syntactically valid and every tracked .py under sim/ and verification/ compiles; the inventory-coverage guard (tests/test_item10_coverage.py) requires every tracked .sh/.py under sim/, verification/ and tests/ to be declared in this inventory; the local-ngspice thread policy has a single source (tests/test_thread_policy.py). PDK-free checks only; the row-5 error-budget note's tables re-derive from the committed records they cite (tests/check_row5_budget.py).",
+  "description": "Repo hygiene for sky130-droop-detector: top-level docs, license, CI workflow and spec exist; JSON pins parse; every tracked shell script (.sh) under sim/ and verification/ is syntactically valid and every tracked .py under sim/ and verification/ compiles; the inventory-coverage guard (tests/test_item10_coverage.py) requires every tracked .sh/.py under sim/, verification/ and tests/ to be declared in this inventory; the local-ngspice thread policy has a single source (tests/test_thread_policy.py). PDK-free checks only; the row-5 error-budget note's tables re-derive from the committed records they cite (tests/check_row5_budget.py). The row-5 Monte Carlo bench is checked without a PDK: its requests cover the whole ratified corner box and its collection keeps every group in its own coordinates (tests/test_threshold_mc_requests.py, tests/test_threshold_mc_collect.py).",
   "hygiene": [
     "README.md",
     "LICENSE",
@@ -312,6 +312,22 @@
         "python3",
         "-I",
         "tests/check_row5_budget.py"
+      ]
+    },
+    {
+      "name": "threshold-mc-requests-guard",
+      "argv": [
+        "python3",
+        "-I",
+        "tests/test_threshold_mc_requests.py"
+      ]
+    },
+    {
+      "name": "threshold-mc-collect-guard",
+      "argv": [
+        "python3",
+        "-I",
+        "tests/test_threshold_mc_collect.py"
       ]
     }
   ]
