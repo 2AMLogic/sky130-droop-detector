@@ -17,7 +17,8 @@ limits documents `klt yield` is fed, then one damaged report at a time:
     input hash is not the current one or is absent, a report that does not echo the
     recorded seed.
 
-Each must fail collection and name the affected group.
+Each must fail collection and name the affected group. Two draws that happen to share
+a trip value are not a duplicate and must stay accepted.
 
 Part B runs the real `run.sh` on a scratch tree with `klt` and `klt yield` replaced by
 stubs (a fake PDK root satisfies the pin gate), so nothing is simulated or submitted,
@@ -403,6 +404,14 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
     must_fail("duplicate draw substituted for the missing one", [vgroup, "duplicate sample_index 4"])
     restore(victim)
 
+    def repeat_value(rep):   # two dice landing on the same trip is legitimate, not a duplicated draw
+        draw(rep, vproc, vtemp, 5)["measurements"][0]["value"] = draw(rep, vproc, vtemp, 4)["measurements"][0]["value"]
+    edit(victim, repeat_value)
+    proc = collect()
+    check(proc.returncode == 0, "two draws of %s that share a trip value were refused (exit %d); only a repeated "
+          "sample index or seed is a duplicate\n%s" % (vgroup, proc.returncode, proc.stderr.strip()[-400:]))
+    restore(victim)
+
     def non_finite(rep):
         draw(rep, vproc, vtemp, 3)["measurements"][0]["value"] = float("nan")
     edit(victim, non_finite)
@@ -636,5 +645,5 @@ if problems:
     sys.exit("tb_threshold_mc collection/runner is wrong:\n  - " + "\n  - ".join(problems[:25])
              + ("\n  - ... and %d more" % (len(problems) - 25) if len(problems) > 25 else ""))
 print("ok: tb_threshold_mc collects 216 coordinate-specific groups with paired controls "
-      "(10 damaged-evidence refusals), resumes only on identical inputs, and reports its "
-      "matrix, criterion, control and hashes (runner exit 0 / 6 / 7 / 2)")
+      "(10 damaged-evidence refusals, repeated values accepted), resumes only on identical "
+      "inputs, and reports its matrix, criterion, control and hashes (runner exit 0 / 6 / 7 / 2)")
