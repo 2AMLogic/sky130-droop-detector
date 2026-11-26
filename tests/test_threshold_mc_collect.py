@@ -332,12 +332,12 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
         corners = []
         for g in cells:
             pos = procs.index(g["process"]) * len(TEMPS) + TEMPS.index(g["temperature_c"])
-            for i in range(N):
+            for i, value in enumerate(control_of(g) if is_control else nominal(g)):
                 corners.append({
                     "corner_id": "%s/%.3fV/%sC/mc%d" % (g["process"], g["supply_v"], g["temperature_c"], i),
                     "process": g["process"], "supply_v": {"Vdd": g["supply_v"]},
                     "temperature_c": g["temperature_c"], "status": "pass", "runtime_s": 0.1,
-                    "measurements": [{"name": "vtrip", "value": (control_of(g) if is_control else nominal(g))[i],
+                    "measurements": [{"name": "vtrip", "value": value,
                                       "unit": "V", "status": "pass", "margin": None}],
                     "diagnostics": [],
                     # klt's seed keying as its dry run states it: mismatch_seed follows the
