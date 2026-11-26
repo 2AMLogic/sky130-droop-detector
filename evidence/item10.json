@@ -80,14 +80,14 @@
         "role": "hygiene",
         "path": "sim/toolchain.json",
         "passed": true,
-        "content_hash": "sha256:baa3ecd93e5649d1f43ef9d61ee41d8aa6ddba0a8bf7393fbf3e0c7e5c1c92a0"
+        "content_hash": "sha256:12c27e1a8ab51e62b1e8f989708b68a12c232f1e98b30845a255a6cc79feeccb"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "spec/target-spec.md",
         "passed": true,
-        "content_hash": "sha256:0dcdae4da4a44d242ae5e6f1bfb6f49befe746e31d2135af9ed4293bb2ac9ca9"
+        "content_hash": "sha256:01f7b5fb9f53b153b2f3d0819f40a39a1ae96cd517b2b78fb9496a3ee396ce7c"
       },
       {
         "check": "command",

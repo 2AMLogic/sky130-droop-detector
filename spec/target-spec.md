@@ -167,7 +167,9 @@ step and ΔV = I·t/C ≈ 1.5 mV in 10 ns. So:
   `f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7` (`sky130A`, installed with
   `ciel`); `sim/toolchain.json` pins ngspice 47
   ([DR-004](decision-records/DR-004-ngspice-toolchain-pin.md)), xschem 3.4.7 and
-  klayout-tools 0.8.0. Every graded row runs against that pin. Note that
+  klayout-tools 0.8.0 (the released signoff version). Use these pins for
+  grading. Each simulation record gives the tool versions used for that run,
+  including earlier simulator versions and development builds of klt. Note that
   `sky130-ldo@aaaae71` is pinned to open_pdks
   `c6d73a35f524070e85faff4a6a9eef49553ebc2b` (its `sim/pdk.json`); the
   combined `.lib` file is identical between the two pins but the FET model
