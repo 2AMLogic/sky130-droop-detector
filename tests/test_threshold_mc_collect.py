@@ -19,7 +19,8 @@ is simulated or submitted, and checks:
   rerun, unchanged       nothing is submitted; the collected reports are reused untouched.
   rerun, one incomplete  a report marked lost_shard: only that member is submitted, and its
                          replacement is written at the same place under results/out/.
-  absolute KEEP          the same, under that directory; the caller directory stays empty.
+  absolute KEEP          following a symlink before resolving .. retains reports under the
+                         symlink target's parent; the caller directory stays empty.
   KEEP unset             a fresh directory under the runner's TMPDIR, gone once it has exited.
 
 No PDK, no klt, no fleet. Repo files are read in place, never modified.
@@ -384,10 +385,17 @@ with tempfile.TemporaryDirectory(prefix="tmc-keep-") as d:
                   "rerun, KEEP=%s: reports other than the one replaced changed" % RELATIVE_KEEP)
 
     caller, env = scratch("absolute")
-    keep = tmp / "abs-keep"
-    env["KEEP"] = str(keep)
+    physical = tmp / "physical"
+    (physical / "run").mkdir(parents=True)
+    link = tmp / "current"
+    link.symlink_to(physical / "run", target_is_directory=True)
+    neighbor = tmp / "results"
+    neighbor.mkdir()  # A logical cd that collapses current/.. could succeed here.
+    keep = physical / "results"
+    env["KEEP"] = str(link / ".." / "results")
     proc, sim_calls, yield_calls = run(caller, env)
     call = first_submission("absolute KEEP", keep, proc, sim_calls, yield_calls)
+    check(not any(neighbor.iterdir()), "absolute KEEP: runner wrote into %s" % neighbor)
     check(sorted(p.name for p in caller.iterdir()) == [],
           "absolute KEEP: the caller directory %s holds %r, expected nothing"
           % (caller, sorted(p.name for p in caller.iterdir())))
