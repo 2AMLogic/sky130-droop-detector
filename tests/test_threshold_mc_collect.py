@@ -25,7 +25,9 @@ stubs (a fake PDK root satisfies the pin gate), so nothing is simulated or submi
 and checks resume (reuse only on identical inputs; fresh output when the netlist, the
 deck template or one level's request changes), the record's matrix / criterion /
 control / hashes against the inputs actually used, and the exit statuses of an
-undetected control, a completed failing grade and an unusable netlist.
+undetected control, a completed failing grade and an unusable netlist. It also checks
+that batch inputs and outputs resolve correctly for relative and absolute KEEP paths,
+including a symlink followed by .., and that an unset KEEP is cleaned up (#180).
 
 Repo files are copied, never modified. No PDK, no klt, no fleet.
 """
@@ -53,12 +55,16 @@ MM = ["tt_mm", "ss_mm", "ff_mm", "sf_mm", "fs_mm"]
 SECTIONS = MM + ["mc"]
 CTRL_SHIFT = 0.060   # the ladder offset moves the trip about two bands away
 
+RELATIVE_KEEP = "results"
+INCOMPLETE = "lost_shard"
+
 problems = []
 
 
 def check(cond, msg):
     if not cond:
         problems.append(msg)
+    return bool(cond)
 
 
 def sha256(path):
@@ -103,45 +109,116 @@ def draw(rep, proc, temp, index):
     return next(c for c in cell(rep, proc, temp) if c["monte_carlo"]["sample_index"] == index)
 
 
-KLT_STUB = """#!/usr/bin/env python3
-# Test double for tests/test_threshold_mc_collect.py: `klt --version`, `klt pdk find`
-# (the fake PDK root) and `klt sim --batch-set` (copies each member's fixture report
-# into <outdir>/<member>/ and logs the member). Anything else fails; no real klt runs.
-import json, os, shutil, sys
+def real(path):
+    return os.path.realpath(str(path))
+
+
+def tree_hashes(dir_path):
+    return {str(p.relative_to(dir_path)): sha256(p) for p in sorted(dir_path.rglob("*")) if p.is_file()}
+
+
+def logged(path):
+    if not path.is_file():
+        return []
+    return [json.loads(ln) for ln in path.read_text(encoding="utf-8").splitlines()]
+
+
+def submitted_files(call):
+    return [m["member"] for m in call["members"]]
+
+
+def tail(proc):
+    return "\n".join((proc.stderr.strip().splitlines() + proc.stdout.strip().splitlines())[-12:])
+
+
+def expected_members(req):
+    """One entry per request the runner submits, in its request order: the member name, the
+    deck and the netlist the deck includes (all read by basename from the request directory,
+    as the batch client reads them), and the populations a complete report must carry."""
+    want = []
+    for req_path in sorted(req.glob("l*_*.request.json")):
+        request = load(req_path)
+        deck = req / request["netlist"]
+        include = next(ln.split('"')[1] for ln in deck.read_text(encoding="utf-8").splitlines()
+                       if ln.startswith(".include "))
+        want.append({"member": req_path.name, "deck": deck.name, "include": include,
+                     "populations": request["monte_carlo"]["n"] * len(request["corners"]["process"])
+                     * len(request["corners"]["temperature_c"])})
+    return want
+
+
+KLT_STUB = r'''#!/usr/bin/env python3
+# Test double for tests/test_threshold_mc_collect.py. `klt --version`, `klt pdk find`
+# (answers the fake PDK root) and `klt sim --batch-set`: reads each member's request, deck
+# and included netlist by basename from the directory it is started in, as the batch
+# client does, writes a synthetic passing report per member under -o, and logs the call.
+# A synthetic trip sits on the level the request sweeps, and 60 mV above it -- outside
+# the row-5 +/-27 mV band -- for the control copy, so klt yield judges the control detected.
+# Anything else, or a member that cannot be read, exits non-zero. No real klt runs.
+import hashlib, json, os, shutil, sys
+
 args = sys.argv[1:]
 if args[:1] == ["--version"]:
     print("klt 0.0.0 (stub for tests/test_threshold_mc_collect.py)")
     sys.exit(0)
 if args[:2] == ["pdk", "find"]:
-    print("root: " + (args[args.index("--pdk-root") + 1] if "--pdk-root" in args else ""))
+    if "--pdk-root" not in args:
+        sys.exit("stub klt: pdk find without --pdk-root")
+    print("root: " + args[args.index("--pdk-root") + 1])
     sys.exit(0)
-if args[:2] == ["sim", "--batch-set"]:
-    members = []
-    for a in args[2:]:
-        if a.startswith("--"):
-            break
-        members.append(a)
-    out = args[args.index("-o") + 1]
-    pool, log = os.environ["STUB_SIM_POOL"], os.environ["STUB_SIM_LOG"]
-    requests = []
-    for m in members:
-        stem = m[:-len(".request.json")]
-        d = os.path.join(out, stem)
-        os.makedirs(d, exist_ok=True)
-        shutil.copyfile(os.path.join(pool, stem + ".json"), os.path.join(d, "report.json"))
-        job = "klt-sim-stub-" + stem
-        with open(os.path.join(d, "batch-receipt-" + job + ".json"), "w") as f:
-            json.dump({"job_id": job}, f)
-        with open(log, "a") as f:
-            f.write(stem + "\\n")
-        requests.append({"request": m, "status": "pass", "exit_code": 0, "job_id": job,
-                         "job_ids": [job], "report": os.path.join(d, "report.json"), "error": None})
-    print(json.dumps({"schema_version": 1, "status": "pass", "request_count": len(members),
-                      "max_in_flight": 2, "submitted": len(members), "refused": 0,
-                      "refused_codes": [], "requests": requests}))
-    sys.exit(0)
-sys.exit("stub klt: unexpected invocation %r" % (args,))
-"""
+if args[:2] != ["sim", "--batch-set"]:
+    sys.exit("stub klt: unexpected invocation %r" % (args,))
+members = []
+for a in args[2:]:
+    if a.startswith("--"):
+        break
+    members.append(a)
+out = args[args.index("-o") + 1]
+log = os.environ["STUB_SIM_LOG"]
+call = sum(1 for _ in open(log)) + 1 if os.path.exists(log) else 1
+
+
+def digest(name):
+    with open(name, "rb") as f:
+        return hashlib.sha256(f.read()).hexdigest()
+
+
+entry = {"call": call, "cwd": os.getcwd(), "out": out, "members": [], "requests": []}
+for m in members:
+    if not m.endswith(".request.json"):
+        sys.exit("stub klt: not a request member: %s" % m)
+    try:
+        with open(m) as f:
+            request = json.load(f)
+        with open(request["netlist"]) as f:
+            deck = f.read()
+    except (OSError, ValueError, KeyError) as e:
+        sys.exit("stub klt: call %d cannot read %s in %s: %s" % (call, m, os.getcwd(), e))
+    include = next((ln.split('"')[1] for ln in deck.splitlines() if ln.startswith(".include ")), None)
+    if include is None:
+        sys.exit("stub klt: call %d: the deck of %s includes no netlist" % (call, m))
+    stem = m[:-len(".request.json")]
+    d = os.path.join(out, stem + os.environ["STUB_MEMBER_SUFFIX"])
+    os.makedirs(d, exist_ok=True)
+    report = os.path.abspath(os.path.join(d, "report.json"))
+    shutil.copyfile(os.path.join(os.environ["STUB_SIM_POOL"], stem + ".json"), report)
+    job = "klt-sim-stub-%d-%s" % (call, m[:-len(".request.json")])
+    with open(os.path.join(d, "batch-receipt-" + job + ".json"), "w") as f:
+        json.dump({"job_id": job}, f)
+    entry["members"].append({"member": m, "report": report, "request_sha256": digest(m),
+                             "deck": request["netlist"], "deck_sha256": digest(request["netlist"]),
+                             "include": include, "include_sha256": digest(include)})
+    entry["requests"].append({"request": m, "status": "pass", "exit_code": 0, "job_id": job,
+                              "job_ids": [job], "report": report, "error": None})
+entry["stdout"] = {"schema_version": 1, "status": "pass", "request_count": len(members),
+                   "max_in_flight": 2, "submitted": len(members), "refused": 0,
+                   "refused_codes": [], "requests": entry["requests"]}
+entry["stderr"] = "stub klt sim: call %d, %d member(s) read in %s\n" % (call, len(members), entry["cwd"])
+with open(log, "a") as f:
+    f.write(json.dumps(entry) + "\n")
+print(json.dumps(entry["stdout"], indent=1))
+sys.stderr.write(entry["stderr"])
+'''
 
 YIELD_STUB = """#!/usr/bin/env python3
 # Test double for tests/test_threshold_mc_collect.py: `klt --version` and
@@ -155,13 +232,13 @@ args = sys.argv[1:]
 if args[:1] == ["--version"]:
     print("klt 0.0.0 (yield stub for tests/test_threshold_mc_collect.py)")
     sys.exit(0)
-if args[:1] != ["yield"]:
+if args[:1] != ["yield"] or args[args.index("--format") + 1:] != ["json"]:
     sys.exit("stub klt yield: unexpected invocation %r" % (args,))
 samples = json.load(open(args[1]))
 limits_path = args[args.index("--limits") + 1]
 limits = json.load(open(limits_path))
 with open(os.environ["STUB_YIELD_LOG"], "a") as f:
-    f.write(json.dumps(args) + "\\n")
+    f.write(json.dumps({"samples": args[1], "limits": limits_path}) + "\\n")
 forced_neg = os.environ.get("STUB_YIELD_NEG_CONTROL")
 forced_status = os.environ.get("STUB_YIELD_STATUS")
 measurements = []
@@ -172,9 +249,11 @@ for m in samples["measurements"]:
     frac = lambda vs: sum(1 for v in vs if inside(v)) / len(vs)
     nom_yield, ctl_yield = frac(xs), frac(cs)
     detected = ctl_yield < nom_yield and forced_neg != "not_detected"
-    status = forced_status or "pass"
     mean, sd = statistics.fmean(xs), statistics.pstdev(xs)
-    sigma = min(mean - lim["min"], lim["max"] - mean) / sd
+    sigma = min(mean - lim["min"], lim["max"] - mean) / (sd or 1e-12)
+    met = sigma >= lim["target_sigma"]
+    enough = len(xs) >= lim["min_converged_samples"]
+    status = forced_status or ("pass" if met and enough else "fail")
     measurements.append({
         "name": m["name"], "unit": m.get("unit"), "n": len(xs), "errored": 0,
         "limits": {k: v for k, v in lim.items()
@@ -196,7 +275,8 @@ print(json.dumps({"schema_version": 1, "samples": args[1], "limits": limits_path
                              "provenance": samples.get("provenance"),
                              "sample_count": sum(len(m["samples"]) for m in samples["measurements"])},
                   "confidence": limits.get("confidence"), "target_ci_halfwidth": 0.01, "min_samples": 2,
-                  "status": forced_status or "pass", "measurement_count": len(measurements),
+                  "status": "pass" if all(m["status"] == "pass" for m in measurements) else "fail",
+                  "measurement_count": len(measurements),
                   "measurements": measurements, "warnings": []}))
 sys.exit(3 if forced_status == "fail" else 0)
 """
@@ -487,26 +567,197 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
     (pdk / pin["variant"] / "libs.tech" / "combined").mkdir(parents=True)
     (pdk / pin["variant"] / "SOURCES").write_text(pin["sources_line"] + "\n")
     (pdk / pin["variant"] / "libs.tech" / "combined" / "sky130.lib.spice").write_text("* fake model library\n")
-    bin_dir = tmp / "bin"
+    bin_dir = tmp / "stub bin"
     bin_dir.mkdir()
-    for fname, text in (("klt", KLT_STUB), ("klt-yield", YIELD_STUB)):
-        (bin_dir / fname).write_text(text)
-        (bin_dir / fname).chmod(0o755)
+    # The stubs are modules run as `python3 -m <name>`, found through PYTHONPATH: no PATH lookup of
+    # `klt`/`klt-yield` and no executable bit, so a noexec TMPDIR or an installed client on the
+    # caller's PATH can never stand in for them and submit real jobs.
+    for name, text in (("tmc_stub_klt", KLT_STUB), ("tmc_stub_klt_yield", YIELD_STUB)):
+        (bin_dir / (name + ".py")).write_text(text, encoding="utf-8")
     sim_log, yield_log = tmp / "sim.log", tmp / "yield.log"
+    DROP = ("KEEP", "RECORD_DIR", "PDK_PIN", "PDK_ROOT", "KLT", "KLT_YIELD",
+            "STUB_SIM_LOG", "STUB_YIELD_LOG", "STUB_YIELD_NEG_CONTROL", "STUB_YIELD_STATUS", "PYTHONPATH")
+
+    def scratch(tag, member_suffix=".request"):
+        """An empty caller directory, and the runner's environment for it: the stubs, the fake
+        PDK root and a TMPDIR of its own, so nothing leaks into the host's when a run fails."""
+        caller = tmp / ("caller-" + tag)
+        caller.mkdir()
+        runner_tmp = tmp / ("runner-tmp-" + tag)
+        runner_tmp.mkdir()
+        env = {k: v for k, v in os.environ.items() if k not in DROP}
+        env.update(KLT="python3 -m tmc_stub_klt", KLT_YIELD="python3 -m tmc_stub_klt_yield",
+                   PYTHONPATH=str(bin_dir), PDK_ROOT=str(pdk),
+                   STUB_MEMBER_SUFFIX=member_suffix, STUB_SIM_POOL=str(pool),
+                   STUB_SIM_LOG=str(sim_log), STUB_YIELD_LOG=str(yield_log), TMPDIR=str(runner_tmp))
+        return caller, env
+
+    def run(caller, env):
+        sim_before, yield_before = len(logged(sim_log)), len(logged(yield_log))
+        proc = subprocess.run(["bash", str(bench / "run.sh")], cwd=caller, env=env, capture_output=True,
+                              text=True, timeout=600, check=False)
+        return proc, logged(sim_log)[sim_before:], logged(yield_log)[yield_before:]
+
+    def first_submission(label, keep, proc, sim_calls, yield_calls):
+        """A first run into `keep`: one batch client call, made from <keep>/req, that read every
+        request the generator wrote, redirected and collected under `keep`. Returns the call,
+        or None when the run cannot be checked further."""
+        req = keep / "req"
+        want = expected_members(req) if req.is_dir() else []
+        if not check(proc.returncode == 0 and len(sim_calls) == 1,
+                     "%s: run.sh exited %d with %d batch client call(s), expected exit 0 and 1 "
+                     "(%d requests generated)\n%s"
+                     % (label, proc.returncode, len(sim_calls), len(want), tail(proc))):
+            return None
+        call = sim_calls[0]
+        check(real(call["cwd"]) == real(req),
+              "%s: the client ran in %s, expected %s" % (label, call["cwd"], req))
+        check(sorted(submitted_files(call)) == sorted(w["member"] for w in want),
+              "%s: the client received %r, expected exactly the generated requests %r"
+              % (label, sorted(submitted_files(call)), sorted(w["member"] for w in want)))
+        read = {m["member"]: m for m in call["members"]}
+        for w in want:
+            g = read.get(w["member"]) or {}
+            check(g.get("request_sha256") == sha256(req / w["member"])
+                  and g.get("deck") == w["deck"] and g.get("deck_sha256") == sha256(req / w["deck"])
+                  and g.get("include") == w["include"]
+                  and g.get("include_sha256") == sha256(req / w["include"]),
+                  "%s: the client did not read the request, deck and included netlist of %s as "
+                  "the generator wrote them in %s" % (label, w["member"], req))
+        set_json, err_log = keep / "set.json", keep / "stderr.log"
+        if check(set_json.is_file() and err_log.is_file(),
+                 "%s: the client's stdout and stderr must land in %s and %s; run.sh exited %d\n%s"
+                 % (label, set_json, err_log, proc.returncode, tail(proc))):
+            try:
+                check(load(set_json) == call["stdout"],
+                      "%s: %s is not what the client printed" % (label, set_json))
+            except ValueError:
+                problems.append("%s: %s is not JSON" % (label, set_json))
+            check(err_log.read_text(encoding="utf-8") == call["stderr"],
+                  "%s: %s is not what the client wrote to stderr" % (label, err_log))
+        check(real(call["out"]) == real(keep / "out"),
+              "%s: the client collected into %s, expected %s" % (label, call["out"], keep / "out"))
+        out = real(keep / "out") + os.sep
+        for w in want:
+            g = read.get(w["member"]) or {}
+            report = pathlib.Path(g.get("report", ""))
+            if check(str(real(report)).startswith(out) and report.is_file(),
+                      "%s: no report of %s under %s (the client wrote %s)"
+                      % (label, w["member"], keep / "out", g.get("report"))):
+                rep = load(report)
+                check(rep.get("status") == "pass" and len(rep.get("corners") or []) == w["populations"],
+                      "%s: the report of %s is %s with %d corners, expected pass and %d"
+                      % (label, w["member"], rep.get("status"), len(rep.get("corners") or []),
+                         w["populations"]))
+        check(len(yield_calls) == 1 and real(yield_calls[0]["samples"]) == real(keep / "samples.json")
+              and real(yield_calls[0]["limits"]) == real(keep / "limits.json"),
+              "%s: klt yield was called %d time(s) with %r, expected once on the documents in %s"
+              % (label, len(yield_calls), yield_calls and yield_calls[0], keep))
+        return call
+
+    def unchanged_rerun(label, caller, env, keep):
+        """A second run over collected reports: nothing submitted, nothing rewritten."""
+        before = tree_hashes(keep / "out")
+        proc, sim_calls, _ = run(caller, env)
+        check(proc.returncode == 0 and sim_calls == [],
+              "%s: unchanged rerun: run.sh exited %d and submitted %r, expected exit 0 and nothing\n%s"
+              % (label, proc.returncode, [m for c in sim_calls for m in submitted_files(c)], tail(proc)))
+        check(tree_hashes(keep / "out") == before,
+              "%s: unchanged rerun: the collected reports changed without a submission" % label)
+
+    caller, env = scratch("relative")
+    env["CDPATH"] = "."
+    env["KEEP"] = RELATIVE_KEEP
+    keep = caller / RELATIVE_KEEP
+    proc, sim_calls, yield_calls = run(caller, env)
+    call = first_submission("fresh run, KEEP=%s" % RELATIVE_KEEP, keep, proc, sim_calls, yield_calls)
+    check(sorted(p.name for p in caller.iterdir()) == [RELATIVE_KEEP],
+          "fresh run, KEEP=%s: the caller directory %s holds %r, expected only %s"
+          % (RELATIVE_KEEP, caller, sorted(p.name for p in caller.iterdir()), RELATIVE_KEEP))
+    if call is not None:
+        unchanged_rerun("KEEP=%s" % RELATIVE_KEEP, caller, env, keep)
+
+        before = tree_hashes(keep / "out")
+        member = call["members"][len(call["members"]) // 2]
+        target = pathlib.Path(member["report"])
+        want = {w["member"]: w for w in expected_members(keep / "req")}[member["member"]]
+        partial = load(target)
+        partial.update(status=INCOMPLETE, corners=partial["corners"][:7])
+        target.write_text(json.dumps(partial, indent=1), encoding="utf-8")
+        proc, sim_calls, yield_calls = run(caller, env)
+        if check(proc.returncode == 0 and len(sim_calls) == 1 and submitted_files(sim_calls[0]) == [member["member"]],
+                 "rerun, KEEP=%s, %s incomplete: run.sh exited %d and submitted %r, expected exit 0 and "
+                 "only %s\n%s" % (RELATIVE_KEEP, member["member"], proc.returncode,
+                                  [m for c in sim_calls for m in submitted_files(c)], member["member"], tail(proc))):
+            again = sim_calls[0]["members"][0]
+            check(real(again["report"]) == real(target),
+                  "rerun, KEEP=%s: the replacement of %s was written to %s, expected %s"
+                  % (RELATIVE_KEEP, member["member"], again["report"], target))
+            rep = load(target)
+            check(rep.get("status") == "pass" and len(rep.get("corners") or []) == want["populations"],
+                  "rerun, KEEP=%s: the replacement of %s is %s with %d corners, expected pass and %d"
+                  % (RELATIVE_KEEP, member["member"], rep.get("status"), len(rep.get("corners") or []),
+                     want["populations"]))
+            moved = [p for p in (keep / "out").iterdir()
+                     if p.name.startswith(target.parent.name + ".attempt-")]
+            check(len(moved) == 1 and load(moved[0] / "report.json").get("status") == INCOMPLETE,
+                  "rerun, KEEP=%s: the incomplete report of %s is kept as %r, expected one %s.attempt-* "
+                  "directory" % (RELATIVE_KEEP, member["member"], [p.name for p in moved],
+                                 target.parent.name))
+
+            def others(hashes):
+                return {k_: v for k_, v in hashes.items() if not k_.startswith(target.parent.name)}
+
+            check(others(tree_hashes(keep / "out")) == others(before),
+                  "rerun, KEEP=%s: reports other than the one replaced changed" % RELATIVE_KEEP)
+
+    caller, env = scratch("absolute")
+    physical = tmp / "physical"
+    (physical / "run").mkdir(parents=True)
+    link = tmp / "current"
+    link.symlink_to(physical / "run", target_is_directory=True)
+    neighbor = tmp / "results"
+    neighbor.mkdir()  # A logical cd that collapses current/.. could succeed here.
+    keep = physical / "results"
+    env["KEEP"] = str(link / ".." / "results")
+    proc, sim_calls, yield_calls = run(caller, env)
+    call = first_submission("absolute KEEP", keep, proc, sim_calls, yield_calls)
+    check(not any(neighbor.iterdir()), "absolute KEEP: runner wrote into %s" % neighbor)
+    check(sorted(p.name for p in caller.iterdir()) == [],
+          "absolute KEEP: the caller directory %s holds %r, expected nothing"
+          % (caller, sorted(p.name for p in caller.iterdir())))
+    if call is not None:
+        check((keep / "record.txt").is_file() and (keep / "yield.json").is_file(),
+              "absolute KEEP: the run left no record.txt / yield.json in %s" % keep)
+
+    caller, env = scratch("unset")
+    proc, sim_calls, yield_calls = run(caller, env)
+    if check(proc.returncode == 0 and len(sim_calls) == 1,
+             "KEEP unset: run.sh exited %d with %d batch client call(s), expected exit 0 and 1\n%s"
+             % (proc.returncode, len(sim_calls), tail(proc))):
+        work = pathlib.Path(sim_calls[0]["cwd"]).parent
+        runner_tmp = pathlib.Path(env["TMPDIR"])
+        check(str(real(work)).startswith(real(runner_tmp) + os.sep),
+              "KEEP unset: the client ran in %s, expected inside the runner's TMPDIR %s"
+              % (work, runner_tmp))
+        check(not work.exists(),
+              "KEEP unset: the work directory %s is still there after the runner exited" % work)
+        check(not any(runner_tmp.iterdir()),
+              "KEEP unset: the runner left %r behind in %s"
+              % (sorted(p.name for p in runner_tmp.iterdir()), runner_tmp))
+        check(sorted(p.name for p in caller.iterdir()) == [],
+              "KEEP unset: the caller directory %s holds %r, expected nothing"
+              % (caller, sorted(p.name for p in caller.iterdir())))
+
+    # Exercise both batch-client layouts: older clients used <member>.request above.
+    caller, env = scratch("matrix", member_suffix="")
     keep, rec = tmp / "keep", tmp / "record"
-    env = dict(os.environ, KLT=str(bin_dir / "klt"), KLT_YIELD=str(bin_dir / "klt-yield"), PDK_ROOT=str(pdk),
-               KEEP=str(keep), RECORD_DIR=str(rec), STUB_SIM_POOL=str(pool), STUB_SIM_LOG=str(sim_log),
-               STUB_YIELD_LOG=str(yield_log), PATH=str(bin_dir) + os.pathsep + os.environ.get("PATH", ""))
+    env.update(KEEP=str(keep), RECORD_DIR=str(rec))
 
     def runner(extra=None):
-        before = sim_log.read_text().splitlines() if sim_log.is_file() else []
-        proc = subprocess.run(["bash", str(bench / "run.sh")], capture_output=True, text=True,
-                              env=dict(env, **(extra or {})), timeout=900)
-        submitted = sim_log.read_text().splitlines()[len(before):] if sim_log.is_file() else []
+        proc, calls, _ = run(caller, dict(env, **(extra or {})))
+        submitted = [name[:-len(".request.json")] for call in calls for name in submitted_files(call)]
         return proc, sorted(submitted)
-
-    def tail(proc):
-        return "\n".join(proc.stderr.strip().splitlines()[-12:])
 
     def runner_scenarios():
         """The scenarios build on each other: each stops the chain when the runner did not
@@ -527,6 +778,7 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
         for code in range(4):
             for kind in ("mm", "mc", "ctl"):
                 (reqdir / ("l%d_%s.request.json" % (code, kind))).write_text("{}\n")
+        yield_before = len(logged(yield_log))
         proc, submitted = runner()
         if not step(proc.returncode == 0, "legacy KEEP: run.sh exited %d, expected 0\n%s" % (proc.returncode, tail(proc))):
             return
@@ -591,7 +843,7 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
             step(all(m.get("source_corners") and m["source_corners"][0].split("/")[0] == by_name[m["name"]]["process"]
                      for m in ym if m["name"] in by_name),
                  "the graded record does not carry each group's own source corner")
-        step(yield_log.is_file() and len(yield_log.read_text().splitlines()) == 1,
+        step(len(logged(yield_log)) == yield_before + 1,
              "klt yield was not called exactly once")
 
         proc, submitted = runner()
@@ -679,4 +931,5 @@ if problems:
              + ("\n  - ... and %d more" % (len(problems) - 25) if len(problems) > 25 else ""))
 print("ok: tb_threshold_mc collects 216 coordinate-specific groups with paired controls "
       "(damaged evidence refused, repeated values accepted), resumes only on identical "
-      "inputs, and reports its matrix, criterion, control and hashes (runner exit 0 / 6 / 7 / 2)")
+      "inputs, resolves relative and absolute KEEP paths and cleans up temporary runs, "
+      "and reports its matrix, criterion, control and hashes (runner exit 0 / 6 / 7 / 2)")
