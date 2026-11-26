@@ -12,10 +12,10 @@ different value for every (group, draw), rows shuffled. It checks the sample-set
 limits documents `klt yield` is fed, then one damaged report at a time:
 
   - a population removed, one draw removed, a duplicate draw substituted for the
-    missing one (count preserved), a non-finite value, a draw filed under another
-    supply, an unconverged draw, a missing control report, evidence whose recorded
-    input hash is not the current one or is absent, a report that does not echo the
-    recorded seed.
+    missing one (count preserved), a whole population relabeled to another temperature,
+    control IDs with the wrong process, supply or index, a non-finite value, a draw
+    filed under another supply, an unconverged draw, a missing control report, a stale
+    or absent input hash, a report that does not echo the recorded seed.
 
 Each must fail collection and name the affected group. Two draws that happen to share
 a trip value are not a duplicate and must stay accepted.
@@ -424,6 +424,24 @@ with tempfile.TemporaryDirectory(prefix="tmc-col-") as d:
     must_fail("a population removed", ["vtrip_l1_ff_mm_m40C_2p97V"])
     restore("l1_mm_2p97")
 
+    def relabel_population(rep):
+        cold = cell(rep, "tt_mm", -40)
+        rep["corners"] = [c for c in rep["corners"] if (c["process"], c["temperature_c"]) != ("tt_mm", 27)]
+        rep["corners"].extend(dict(c, temperature_c=27) for c in cold)
+    edit("l0_mm_2p97", relabel_population)
+    must_fail("300 cold draws relabeled to 27 C", ["vtrip_l0_tt_mm_27C_2p97V", "tt_mm/2.970V/-40C/"])
+    restore("l0_mm_2p97")
+
+    def misidentify_controls(rep):
+        wrong_ids = ("ss_mm/2.970V/27C/mc0", "tt_mm/3.630V/27C/mc1", "tt_mm/2.970V/27C/mc3")
+        for i, wrong_id in enumerate(wrong_ids):
+            draw(rep, "tt_mm", 27, i)["corner_id"] = wrong_id
+    edit("l0_ctl_2p97", misidentify_controls)
+    must_fail("wrong process, supply and sample index in control IDs",
+              ["control of vtrip_l0_tt_mm_27C_2p97V", "tt_mm/2.970V/27C/mc0",
+               "tt_mm/2.970V/27C/mc1", "tt_mm/2.970V/27C/mc2"])
+    restore("l0_ctl_2p97")
+
     def misfiled(rep):
         draw(rep, "tt_mm", 27, 9)["supply_v"]["Vdd"] = 3.63
     edit("l0_mm_2p97", misfiled)
@@ -660,5 +678,5 @@ if problems:
     sys.exit("tb_threshold_mc collection/runner is wrong:\n  - " + "\n  - ".join(problems[:25])
              + ("\n  - ... and %d more" % (len(problems) - 25) if len(problems) > 25 else ""))
 print("ok: tb_threshold_mc collects 216 coordinate-specific groups with paired controls "
-      "(10 damaged-evidence refusals, repeated values accepted), resumes only on identical "
+      "(damaged evidence refused, repeated values accepted), resumes only on identical "
       "inputs, and reports its matrix, criterion, control and hashes (runner exit 0 / 6 / 7 / 2)")

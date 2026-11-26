@@ -5,8 +5,8 @@ usage: build_yield.py <matrix.json> <outdir-with-reports> <samples.json> <limits
 <matrix.json> is gen_requests.py's manifest: the groups, their coordinates and their
 controls. A draw is never selected by process alone. It has to sit inside its own
 (select code, process section, temperature, supply) group: the process, temperature and
-supply stated on the draw, sample_index 0..N-1 exactly once, a converged corner with a
-finite numeric vtrip, a report that echoes the recorded seed, N and variation mode, and
+supply stated on the draw, a matching corner_id, sample_index 0..N-1 exactly once, a
+converged corner with a finite vtrip, a report that echoes the seed, N and variation mode, and
 a report produced from the inputs the manifest hashes (run.sh records that hash beside
 each collected report). Each group is graded at its own level nominal +/- BAND and
 paired with the control population of its own section at the same code, temperature and
@@ -15,7 +15,6 @@ missing, short, duplicated, non-finite or misfiled draw, naming every affected g
 import json
 import math
 import pathlib
-import re
 import sys
 
 BAND = 0.027   # +/-1.5 % of 1.8 V (target), spec row 5, around each level's nominal
@@ -24,7 +23,6 @@ CONFIDENCE = 0.95
 SPEC_ROW = "5"
 MEAS = "vtrip"
 INPUTS = "inputs.json"   # run.sh writes it beside each report it collects
-MC_SUFFIX = re.compile(r"/mc\d+$")
 GROUP_KEYS = ("code", "process", "temperature_c", "supply_v", "nominal_v", "vary")
 SHOWN = 20   # how many sample indices, group names or problems a message lists before "..."
 
@@ -159,13 +157,16 @@ def main():
             gone = [i for i in range(n) if i not in draws]
             if gone:
                 fail("%s: need %d converged samples, got %d; missing sample_index %s" % (label, n, len(draws), listed(gone)))
-            values, seeds, mismatch, origins = [], [], [], set()
+            # klt's single-rail corner ID for this manifest cell, before the draw suffix.
+            origin = f"{key[0]}/{m['supply_v']:.3f}V/{key[1]:g}C"
+            values, seeds, mismatch = [], [], []
             for i in sorted(draws):
                 c = draws[i]
-                if not isinstance(c.get("corner_id"), str):
-                    fail("%s: sample_index %d has no corner_id" % (label, i))
-                else:
-                    origins.add(MC_SUFFIX.sub("", c["corner_id"]))
+                expected_id = f"{origin}/mc{i}"
+                if c.get("corner_id") != expected_id:
+                    fail("%s: sample_index %d has corner_id %r, expected %s"
+                         % (label, i, c.get("corner_id"), expected_id))
+                    continue
                 meas = [x for x in c.get("measurements") or [] if isinstance(x, dict) and x.get("name") == MEAS]
                 value = meas[0].get("value") if len(meas) == 1 else None
                 if c.get("status") != "pass" or len(meas) != 1 or meas[0].get("status") != "pass":
@@ -177,12 +178,10 @@ def main():
                     values.append(value)
                 seeds.append(c["monte_carlo"].get("seed"))
                 mismatch.append(c["monte_carlo"].get("mismatch_seed"))
-            if len(origins) > 1:
-                fail("%s: the draws come from %d corners (%s); a group is one population" % (label, len(origins), listed(origins)))
             twins = {s for s in seeds if seeds.count(s) > 1}
             if twins:
                 fail("%s: %d draws share a seed (%s): the same draw was collected twice" % (label, len(twins), listed(twins)))
-            populations[(name,) + key] = (values, origins.pop() if len(origins) == 1 else None, seeds, mismatch)
+            populations[(name,) + key] = (values, origin, seeds, mismatch)
 
     measurements, limits = [], {}
     ctl = man.get("control") or {}
