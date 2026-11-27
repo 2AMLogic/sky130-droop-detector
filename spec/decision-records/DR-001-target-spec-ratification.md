@@ -92,7 +92,8 @@ could only sit in a 1.8 V-class sub-domain of the detector, not on the
   dropped; it is a row with the deferral recorded.
 - **Corner model files.** Named per `sky130-ldo` DR-004 and verified
   against this repo's own pin, which #4 has since landed (`sim/pdk.json`:
-  open_pdks `f6eeac7d…`; ngspice 46 in `sim/toolchain.json`). The LDO is
+  open_pdks `f6eeac7d…`; ngspice per `sim/toolchain.json`, re-anchored to 47 by
+  [DR-004](DR-004-ngspice-toolchain-pin.md)). The LDO is
   pinned to a different open_pdks revision (`c6d73a35…`); the spec's *PVT
   corner box* records what is and is not identical between the two.
 
