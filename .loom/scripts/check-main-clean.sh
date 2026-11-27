@@ -230,6 +230,20 @@ LOOM_OWNED_PREFIXES=(
     # so filtering it cannot mask contamination. Independent of the .gitignore
     # fix, which only reaches a consumer repo after a resync.
     ".loom-local/"
+    # Daemon-written token-pool runtime files (#15479): the per-repo health
+    # cache and its sibling lock (#5014), and the ranking the refresh tick
+    # rewrites every cycle (#14584). The daemon writes them into every
+    # workspace now, while their ignore rules only reach a consumer repo's
+    # managed block after a resync — until then each is `?? <path>`: exit 3
+    # naming the daemon's own file as builder contamination, and eligible for
+    # `--quarantine`. Same two-defence reasoning as `.loom-local/` above
+    # (#8075). The lock is an empty `mkdir` directory, which `git status` never
+    # reports; it is listed so the three travel together. Machine-checked
+    # against DAEMON_RUNTIME_PATTERNS in loom-daemon/src/init/post_init.rs: a
+    # daemon-written path added there must be added here too.
+    ".loom/account-health.json"
+    ".loom/account-health.lock"
+    ".loom/account-ranking.codex"
 )
 
 # ---- Loom-owned stash producers (#5185) ----------------------------------

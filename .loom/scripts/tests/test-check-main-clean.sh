@@ -43,6 +43,10 @@
 #     tree whose only untracked path is that overlay reports clean and survives
 #     `--quarantine` untouched, even in a repo whose .gitignore predates the fix
 #     (#8075)
+#   - the daemon-written token-pool runtime files (.loom/account-ranking.codex,
+#     .loom/account-health.json, .loom/account-health.lock) are Loom-owned the
+#     same way: a stale .gitignore does not make them contamination, and
+#     `--quarantine` leaves them in place (#15479)
 #
 # Usage:
 #   ./.loom/scripts/tests/test-check-main-clean.sh
@@ -1143,6 +1147,67 @@ else
     fail "expected 3 naming only leaked_module.py, got rc=$RC; out=$out"
 fi
 rm -rf "$REPO"
+
+# ========================================================================
+# Daemon-written runtime files: owned despite a stale managed block (#15479)
+# ========================================================================
+# The token pool writes .loom/account-ranking.codex (every ranking-refresh
+# cycle) and .loom/account-health.json into every workspace. A consumer repo
+# whose installed loom-managed .gitignore block predates the rules for them
+# shows each as `?? <path>`: untracked dirt that made this backstop exit 3
+# naming the daemon's file as builder contamination, and that `--quarantine`
+# then moved into the stash stack. The internal LOOM_OWNED_PREFIXES filter must
+# exclude them regardless of the consumer's .gitignore currency, exactly as it
+# does for `.loom-local/` above (#8075).
+#
+# The loop covers .loom/account-health.lock too. The daemon's lock is an empty
+# `mkdir` directory, which `git status --porcelain` never reports, so that
+# entry is defensive; the file-shaped fixture is what exercises the filter.
+
+echo "Test 46: daemon-written account-* runtime files are Loom-owned (#15479)"
+for RUNTIME_FILE in .loom/account-ranking.codex .loom/account-health.json .loom/account-health.lock; do
+    # make_repo_stale_gitignore's .gitignore ignores ONLY .loom/worktrees/, so
+    # the fixture is a consumer repo that has not re-synced the fixed block.
+    REPO=$(make_repo_stale_gitignore)
+    SNAP="$REPO/.loom/sweep-checkpoint/main-clean-baseline-15479.txt"
+    ( cd "$REPO" && "$SCRIPT" --snapshot "$SNAP" >/dev/null 2>&1 ); RC=$?
+    if [[ "$RC" -ne 0 ]]; then fail "Test 46 setup: --snapshot expected 0, got $RC"; fi
+
+    # The daemon writes the file AFTER the baseline snapshot — new dirt as far
+    # as the baseline is concerned, which is the dangerous case.
+    echo '{}' > "$REPO/$RUNTIME_FILE"
+
+    # Sanity: git really does see it as untracked dirt in this fixture.
+    RAW_STATUS=$(git -C "$REPO" status --porcelain)
+    if ! grep -qF "?? $RUNTIME_FILE" <<<"$RAW_STATUS"; then
+        fail "Test 46 setup: expected an untracked $RUNTIME_FILE in a stale-gitignore repo"
+    fi
+
+    # No `issue=` field in the label: nothing here may reach the forge, even
+    # if the file is wrongly quarantined.
+    out=$( cd "$REPO" && "$SCRIPT" --baseline "$SNAP" --quarantine \
+           --label "run=RUNID-15479" 2>&1 ); RC=$?
+    STASH_COUNT=$(git -C "$REPO" stash list | wc -l | tr -d ' ')
+    if [[ "$RC" -eq 0 ]] \
+       && [[ -f "$REPO/$RUNTIME_FILE" ]] \
+       && [[ "$STASH_COUNT" -eq 0 ]] \
+       && ! grep -qF "$RUNTIME_FILE" <<<"$out"; then
+        pass "--quarantine reports clean and leaves $RUNTIME_FILE in place"
+    else
+        fail "$RUNTIME_FILE: expected rc=0, file intact, no stash; got rc=$RC exists=$([[ -f "$REPO/$RUNTIME_FILE" ]] && echo y || echo n) stashes=$STASH_COUNT out=$out"
+    fi
+
+    # Put the file back if the step above quarantined it, so plain detection
+    # (no baseline, no quarantine) is judged on its own.
+    [[ -f "$REPO/$RUNTIME_FILE" ]] || echo '{}' > "$REPO/$RUNTIME_FILE"
+    ( cd "$REPO" && "$SCRIPT" >/dev/null 2>&1 ); RC=$?
+    if [[ "$RC" -eq 0 && -f "$REPO/$RUNTIME_FILE" ]]; then
+        pass "plain detection treats $RUNTIME_FILE as Loom-owned (exit 0)"
+    else
+        fail "$RUNTIME_FILE: expected 0 from plain detection with the file still present, got rc=$RC exists=$([[ -f "$REPO/$RUNTIME_FILE" ]] && echo y || echo n)"
+    fi
+    rm -rf "${REPO:?}"
+done
 
 # -------- Test: --quarantine never stashes a cargo target tree (#11075) --------
 echo "Test 11075: --quarantine excludes CACHEDIR.TAG trees from refs/stash"
