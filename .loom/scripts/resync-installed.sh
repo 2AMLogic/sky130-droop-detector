@@ -299,6 +299,16 @@
 # creates (and then auto-removes) the staging worktree, so a preview never
 # leaves any residue.
 #
+# Staging mode skips Loom's user-scope (host) provisioning steps too (#15518):
+# the two steps a real run ends with -- the #10238 dispatcher + skill/agent
+# link (re)provisioning (from whatever checkout the run synced from) and the
+# #12121 retired presence-wiring strip, which write ~/.local/bin,
+# ~/.local/share and ~/.claude -- are skipped under --output. Neither would
+# land in the staging worktree: both write the HOST, and --dry-run never
+# previewed them. This covers only those Loom steps, not every byte under
+# $HOME (tools the run invokes may create their own state). A non-staging
+# real run still does both.
+#
 # Local-override convention: list a relative path (e.g. `hooks/guard-destructive.sh`,
 # `scripts/foo.sh`, `roles/custom-role.md`, `docs/notes.md`, `bin/loom`,
 # `commands/loom/mine.md`, `package.json` to pin the #4285 stub version edit,
@@ -467,6 +477,13 @@
 #   LOOM_RESYNC_SYNC_LABELS=1     - same as --sync-labels (for non-interactive
 #                                   callers; the daemon's post-roll resync passes
 #                                   the flag so fleet label auto-heal, #6716, stays).
+#   LOOM_RESYNC_SKIP_USER_SCOPE=1 - skip the #10238 user-scope step of a real
+#                                   run: the (re)provisioning of ~/.local/bin/loom
+#                                   and of the ~/.claude/commands/loom +
+#                                   ~/.claude/agents/loom-*.md links from the
+#                                   source checkout (host-level paths every
+#                                   session on the machine shares). Already
+#                                   implied by --dry-run and by --output (#15518).
 #
 # Exit codes:
 #   0 - Success. Sync applied (or already in sync); or --dry-run found no drift.
@@ -1320,6 +1337,11 @@ N_SKIPPED=0
 # (#14012, prune_stale_manifest_entries()) -- both count as changes for
 # restamp_metadata()'s #11680 no-op logic.
 N_REMOVED=0
+# #15519: the repo-relative paths remove_retired_files() actually deleted
+# this run. A tracked file the run retires has no defaults/ counterpart, so
+# collect_resync_dirt() cannot tell its deletion from a stray it must never
+# commit (#6613) by looking at defaults/ alone -- it asks this list instead.
+RESYNC_REMOVED_PATHS=()
 # #4669: files that could not be staged/renamed into place. A non-empty list
 # means the refresh is PARTIAL and must be reported as such (exit 1), never
 # swallowed into a "success" summary.
@@ -2295,6 +2317,10 @@ remove_retired_files() {
         if rm -f "$dst" 2>/dev/null; then
             printf '%b\n' "  ${GREEN}removed${NC}   $rel ${YELLOW}(retired from defaults/, #5981)${NC}"
             N_REMOVED=$((N_REMOVED + 1))
+            # #15519: remember the deletion in the form `git status` reports
+            # it, so collect_resync_dirt() can stage it. A pinned or
+            # symlink-skipped entry never gets here, so it has nothing to stage.
+            RESYNC_REMOVED_PATHS+=("${dst#"$WRITE_ROOT"/}")
         else
             err "failed to remove retired file $rel"
             record_failure "$rel"
@@ -4093,7 +4119,11 @@ fi
 #                        cover (plus the re-stamped install-metadata.json).
 #                        The ONLY thing any printed `git add` may name.
 #   RESYNC_RETIRED_PATHS pure-copy-surface-shaped paths with no defaults/
-#                        counterpart today (#6613): never committed.
+#                        counterpart today (#6613) that this run did not
+#                        delete itself: never committed. A tracked file the
+#                        retirement pass removed this run has no counterpart
+#                        either, but its deletion IS this run's output, so it
+#                        goes to RESYNC_DIRT_PATHS instead (#15519).
 #   RESYNC_FOREIGN_DIRT  1 when anything else is dirty — a genuine operator
 #                        edit, or (the case this exists for) a credential
 #                        path such as a token-pool copy at
@@ -4119,6 +4149,18 @@ RESYNC_RETIRED_PATHS=()
 RESYNC_FOREIGN_DIRT=0
 RESYNC_DIRT_COLLECTED=0
 
+# _resync_removed_this_run <repo-relative-path> -> succeeds when the
+# retirement pass deleted that path in THIS run (#15519). Indexed array +
+# linear membership test rather than `declare -A`, for bash 3.2 (#7749), and
+# the empty array is expanded the `set -u`-safe way (see _pin_was_hit()).
+_resync_removed_this_run() {
+    local needle="$1" e
+    for e in ${RESYNC_REMOVED_PATHS[@]+"${RESYNC_REMOVED_PATHS[@]}"}; do
+        [[ "$e" == "$needle" ]] && return 0
+    done
+    return 1
+}
+
 collect_resync_dirt() {
     [[ "$RESYNC_DIRT_COLLECTED" -eq 1 ]] && return 0
     RESYNC_DIRT_COLLECTED=1
@@ -4126,16 +4168,31 @@ collect_resync_dirt() {
     RESYNC_RETIRED_PATHS=()
     RESYNC_FOREIGN_DIRT=0
 
-    local status line path src
-    status="$(git -C "$WRITE_ROOT" status --porcelain 2>/dev/null)"
-    [[ -z "$status" ]] && return 0
+    # NUL-delimited status (#15519 review): the default porcelain form
+    # C-quotes a path with a non-ASCII byte
+    # (`".loom/docs/caf\303\251.md"`), which no longer equals the literal
+    # path `remove_retired_files()` recorded. `-z` emits every path verbatim.
+    local line path src
+    local -a status_records=()
+    while IFS= read -r -d '' line; do
+        status_records+=("$line")
+    done < <(git -C "$WRITE_ROOT" status --porcelain=v1 -z 2>/dev/null)
+    [[ "${#status_records[@]}" -eq 0 ]] && return 0
 
-    while IFS= read -r line; do
+    local i=0
+    while [[ "$i" -lt "${#status_records[@]}" ]]; do
+        line="${status_records[$i]}"
+        i=$((i + 1))
         [[ -z "$line" ]] && continue
         path="${line:3}"
-        [[ "$path" == *" -> "* ]] && path="${path##* -> }"
-        path="${path%\"}"
-        path="${path#\"}"
+        # A rename/copy record is followed by its source path as its own
+        # NUL-terminated record; the destination (the record's own path) is
+        # what the recipe stages, as before.
+        # (A `[[ ]]` test, not a `case`: loom-daemon's surface-parity test
+        # reads the FIRST `case` in this function as the managed-path list.)
+        if [[ "${line:0:2}" == *R* || "${line:0:2}" == *C* ]]; then
+            i=$((i + 1))
+        fi
         if _is_loom_pure_copy_surface_path "$path"; then
             # #6613 (mirrored from audit_untracked_loom_paths() above): a path
             # matching the pure-copy-surface *pattern* with no defaults/
@@ -4144,6 +4201,14 @@ collect_resync_dirt() {
             # is excluded from the commit suggestion below instead.
             src="$(_loom_pure_copy_surface_source_path "$path" 2>/dev/null)"
             if [[ -n "$src" && -e "$src" ]]; then
+                RESYNC_DIRT_PATHS+=("$path")
+            elif _resync_removed_this_run "$path"; then
+                # #15519: no counterpart because THIS run just retired it.
+                # The line is the deletion of a tracked file the run itself
+                # deleted, i.e. this run's output: a recipe that leaves it out
+                # commits the resync with the retired file still in it. A
+                # stray, or a deletion older than this run, is not in the
+                # list and stays excluded exactly as before.
                 RESYNC_DIRT_PATHS+=("$path")
             else
                 RESYNC_RETIRED_PATHS+=("$path")
@@ -4159,16 +4224,29 @@ collect_resync_dirt() {
             # touched either surface its own output was classified as foreign
             # dirt: the hint below went silent and `land-resync-commit.sh`
             # refused to land the run it was printed for. `.github/labels.yml`
-            # is refresh_labels_block()'s output (#11033).
-            .claude/commands/loom/*|.claude/agents/*|.claude/README.md|.github/CONFIGURATION.md|.github/labels.yml|.loom/install-metadata.json|.loom/CLAUDE.md|.gitattributes|.gitignore|.agents/skills/*)
+            # is refresh_labels_block()'s output (#11033). `.loom/pricing.json`
+            # is the single-file rate card (#8177): it was on no list here,
+            # so a run that changed it reported its own output as foreign
+            # dirt (#15519).
+            .claude/commands/loom/*|.claude/agents/*|.claude/README.md|.github/CONFIGURATION.md|.github/labels.yml|.loom/install-metadata.json|.loom/CLAUDE.md|.gitattributes|.gitignore|.agents/skills/*|.loom/pricing.json)
                 RESYNC_DIRT_PATHS+=("$path")
                 ;;
             *)
                 RESYNC_FOREIGN_DIRT=1
                 ;;
         esac
-    done <<< "$status"
+    done
     return 0
+}
+
+# Join paths as one shell-escaped argument each (#15519 review): a plain
+# `${arr[*]}` splits a path with a space into two pathspecs.
+_resync_quote_paths() {
+    local p out=""
+    for p in "$@"; do
+        out+="${out:+ }$(printf '%q' "$p")"
+    done
+    printf '%s' "$out"
 }
 
 # ---------- hint: stage + commit resync-only dirt (#4332) ----------
@@ -4205,9 +4283,9 @@ suggest_commit_if_resync_only_dirt() {
     echo ""
     if [[ -n "$OUTPUT_DIR" ]]; then
         note "${BLUE}[resync] The staging worktree is dirty with only resync output above — stage and commit it there:${NC}"
-        printf '%b\n' "    ${BOLD}cd $OUTPUT_DIR && git add -- ${RESYNC_DIRT_PATHS[*]} && git commit -m 'chore: resync installed Loom surfaces'${NC}"
+        printf '%b\n' "    ${BOLD}cd $OUTPUT_DIR && git add -- $(_resync_quote_paths "${RESYNC_DIRT_PATHS[@]}") && git commit -m 'chore: resync installed Loom surfaces'${NC}"
     else
-        note "${BLUE}[resync] The tree is dirty with only resync output above (would be: git add -- ${RESYNC_DIRT_PATHS[*]}) — land it so the main-health gate doesn't skip on it. This commits AND pushes (never rebasing or bypass-pushing — see .loom/docs/troubleshooting.md \"Landing a resync commit on the primary clone (#6646)\"):${NC}"
+        note "${BLUE}[resync] The tree is dirty with only resync output above (would be: git add -- $(_resync_quote_paths "${RESYNC_DIRT_PATHS[@]}")) — land it so the main-health gate doesn't skip on it. This commits AND pushes (never rebasing or bypass-pushing — see .loom/docs/troubleshooting.md \"Landing a resync commit on the primary clone (#6646)\"):${NC}"
         printf '%b\n' "    ${BOLD}./.loom/scripts/land-resync-commit.sh${NC}"
     fi
 }
@@ -4248,7 +4326,7 @@ print_output_mode_next_steps() {
     if [[ "${#RESYNC_DIRT_PATHS[@]}" -eq 0 ]]; then
         note "    (nothing to stage — this run left the staging worktree clean)"
     else
-        printf '%b\n' "    ${BOLD}git add -- ${RESYNC_DIRT_PATHS[*]}${NC}"
+        printf '%b\n' "    ${BOLD}git add -- $(_resync_quote_paths "${RESYNC_DIRT_PATHS[@]}")${NC}"
     fi
     printf '%b\n' "    ${BOLD}git commit -m 'chore: resync installed Loom surfaces'${NC}"
     printf '%b\n' "    ${BOLD}git push -u origin HEAD${NC}   # then open a PR"
@@ -4348,7 +4426,14 @@ clear_resync_marker
 # not change this script's exit status. Skipped under --dry-run, when the
 # source is not a plain git checkout (e.g. a staging worktree), or with
 # LOOM_RESYNC_SKIP_USER_SCOPE=1.
-if [[ "$DRY_RUN" -eq 0 && "${LOOM_RESYNC_SKIP_USER_SCOPE:-0}" != "1" \
+# #15518: also skipped in --output staging mode. Everything this step writes
+# is user-scope (~/.local/bin/loom, ~/.local/share/loom, the
+# ~/.claude/commands/loom and ~/.claude/agents/loom-* links) -- the staging
+# worktree has no surface for it, so a real staging run used to write the HOST
+# instead, from whatever checkout --source named, and --dry-run (which skips
+# the step) never previewed it. A staging run makes no Loom user-scope write
+# at all: the #12121 strip below is skipped there for the same reason.
+if [[ "$DRY_RUN" -eq 0 && -z "$OUTPUT_DIR" && "${LOOM_RESYNC_SKIP_USER_SCOPE:-0}" != "1" \
       && -d "$SOURCE_ROOT/.git" && -r "$SOURCE_ROOT/scripts/install/provision-skills.sh" \
       && -r "$SOURCE_ROOT/scripts/install/provision-dispatcher.sh" ]]; then
     (
@@ -4385,10 +4470,11 @@ fi
 # #12121: operator presence is derived by the daemon, so resync only STRIPS the
 # retired user-scope presence-beat.sh hook entries and LOOM_OPERATOR_PRESENCE=1
 # env entry from ~/.claude/settings.json. A no-op when the machine checkout
-# lacks provision-hooks.sh and in --dry-run. Best-effort: resync never fails
-# on it.
+# lacks provision-hooks.sh and in --dry-run. Skipped in --output staging mode
+# too (#15518): a staged resync never writes user-scope paths; the next
+# non-staging run strips the wiring. Best-effort: resync never fails on it.
 _PRESENCE_LIB="${LOOM_HOME:-$HOME/.local/share/loom}/scripts/install/provision-hooks.sh"
-if [[ "${DRY_RUN:-0}" != "1" && -r "$_PRESENCE_LIB" ]]; then
+if [[ "${DRY_RUN:-0}" != "1" && -z "$OUTPUT_DIR" && -r "$_PRESENCE_LIB" ]]; then
     # shellcheck source=/dev/null
     ( source "$_PRESENCE_LIB" && provision_operator_presence ) \
         || warn "stripping the retired operator presence wiring was not fully applied (see messages above); resync itself completed."

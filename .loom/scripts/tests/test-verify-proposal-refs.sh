@@ -532,6 +532,13 @@ assert_contains "$OUT" "1 miss(es)" "only the ordinary citation fails"
 assert_contains "$OUT" "BAD LINE RANGE: \`tools/last.sh:2\`" "the out-of-range ordinary citation is named"
 assert_contains "$OUT" "has only 1 lines" "the diagnostic counts the unterminated final line"
 
+# The declaration's own diagnostic counts the unterminated final line too
+# (#15471): tools/last.sh has one line, not zero.
+OUT="$("$LOOM_DAEMON_SELF_BIN" verify-output-decl --workspace "$FIXTURE_REPO" --producer=tools/last.sh:2 build/report.json 2>&1)"
+RC=$?
+assert_eq "1" "$RC" "a declaration citing one line past an unterminated final line exits 1"
+assert_contains "$OUT" "has only 1 lines, no line 2" "the declaration diagnostic counts the unterminated final line"
+
 for producer in above-tree.mk absolute.mk tools/absolute.mk; do
     OUT="$("$LOOM_DAEMON_SELF_BIN" verify-output-decl --workspace "$FIXTURE_REPO" --producer="$producer:5" build/verification/verify-fast.json 2>&1)"
     RC=$?
