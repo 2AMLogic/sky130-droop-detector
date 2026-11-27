@@ -9,6 +9,7 @@ region between the markers is machine-generated and overwritten each time.
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
 
 - **#98**: spec: re-anchor the local ngspice pin to 47 and document its simulation evidence
+- **#189**: chore(loom): resync installed Loom to v0.20.43
 
 ## Very Important
 
@@ -38,7 +39,7 @@ Human-approved issues ready for implementation (`loom:issue`).
 
 Issues currently being built (`loom:building`).
 
-_None._
+- **#188**: create-pr.sh exits 126 on the workers: installed Loom 0.19.1306 passes a 138 KB config tier as one jq argument
 
 ## PRs Awaiting Review
 
@@ -51,6 +52,7 @@ _None._
 PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
 - **#98**: spec: re-anchor the local ngspice pin to 47 and document its simulation evidence
+- **#189**: chore(loom): resync installed Loom to v0.20.43
 
 ## Proposed
 
@@ -62,6 +64,7 @@ Issues carrying `loom:curated`.
 - **#87**: sim/toolchain.json pins ngspice 46 but the host runs 47p1, and four benches' numbers move *(curated)*
 - **#167**: Reduce trip-point mismatch through ladder and comparator input-pair sizing *(curated)*
 - **#168**: Measure and reduce the systematic sf/fs trip-point spread *(curated)*
+- **#188**: create-pr.sh exits 126 on the workers: installed Loom 0.19.1306 passes a 138 KB config tier as one jq argument *(curated)*
 
 ## Proposed (Architect / Hermit)
 
@@ -75,14 +78,14 @@ _None._
 
 | Bucket | Count |
 |------|-------|
-| Operator merge-risk holds | 1 |
+| Operator merge-risk holds | 2 |
 | Very important | 1 |
 | Important | 7 |
 | Ready (`loom:issue`) | 1 |
-| In Progress (`loom:building`) | 0 |
+| In Progress (`loom:building`) | 1 |
 | PRs awaiting review | 0 |
-| Approved PRs awaiting merge | 1 |
-| Curated | 6 |
+| Approved PRs awaiting merge | 2 |
+| Curated | 7 |
 | Architect / Hermit proposals | 1 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
