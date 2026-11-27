@@ -27,6 +27,7 @@ Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a h
 - **#90**: Compensate the threshold reference's supply term so code 00 stays below the 1.764 V window edge at 3.63 V
 - **#166**: Row 5 design revision: cut mismatch ≥27%, reduce corner spread, add supply compensation (fix the design, not the spec)
 - **#167**: Reduce trip-point mismatch through ladder and comparator input-pair sizing
+- **#168**: Measure and reduce the systematic sf/fs trip-point spread
 - **#177**: Collect the code-00 baseline and input-pair trial on a batch submit host
 
 ## Ready
@@ -40,6 +41,7 @@ Human-approved issues ready for implementation (`loom:issue`).
 Issues currently being built (`loom:building`).
 
 - **#188**: create-pr.sh exits 126 on the workers: installed Loom 0.19.1306 passes a 138 KB config tier as one jq argument
+- **#190**: Resync strands .loom/pricing.json: the landing allowlist omits it
 
 ## PRs Awaiting Review
 
@@ -53,6 +55,7 @@ PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
 - **#98**: spec: re-anchor the local ngspice pin to 47 and document its simulation evidence
 - **#189**: chore(loom): resync installed Loom to v0.20.43
+- **#192**: chore(loom): resync to 0.20.44 and land the pricing.json rate card
 
 ## Proposed
 
@@ -65,6 +68,7 @@ Issues carrying `loom:curated`.
 - **#167**: Reduce trip-point mismatch through ladder and comparator input-pair sizing *(curated)*
 - **#168**: Measure and reduce the systematic sf/fs trip-point spread *(curated)*
 - **#188**: create-pr.sh exits 126 on the workers: installed Loom 0.19.1306 passes a 138 KB config tier as one jq argument *(curated)*
+- **#190**: Resync strands .loom/pricing.json: the landing allowlist omits it *(curated)*
 
 ## Proposed (Architect / Hermit)
 
@@ -80,12 +84,12 @@ _None._
 |------|-------|
 | Operator merge-risk holds | 2 |
 | Very important | 1 |
-| Important | 7 |
+| Important | 8 |
 | Ready (`loom:issue`) | 1 |
-| In Progress (`loom:building`) | 1 |
+| In Progress (`loom:building`) | 2 |
 | PRs awaiting review | 0 |
-| Approved PRs awaiting merge | 2 |
-| Curated | 7 |
+| Approved PRs awaiting merge | 3 |
+| Curated | 8 |
 | Architect / Hermit proposals | 1 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
