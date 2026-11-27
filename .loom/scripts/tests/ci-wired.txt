@@ -228,6 +228,7 @@ test-resync-installed-output-staging.sh
 test-resync-installed-source.sh
 test-resync-installed.sh
 test-resync-installed-payload-fallback.sh
+test-resync-installed-user-scope.sh
 test-review-feedback-reconciliation.sh
 test-run-ci-suites-daemon-guard.sh
 test-run-ci-suites-failure-excerpt.sh
@@ -311,6 +312,10 @@ tests/hooks/test-post-worktree-target-dir.sh
 # — covers .githooks/pre-commit failing closed on a missing/failing formatter,
 # wired since #10123.
 tests/hooks/test-pre-commit-missing-formatter.sh
+# #15512: the destructive harness's hermetic env baseline — an `env -i` bash
+# sources the real harness with every baseline name exported and asserts each
+# one is unset. Hermetic: temp fixture + the harness's own throwaway repo.
+tests/hooks/test-guard-destructive-harness-baseline.sh
 
 # defaults/hooks/tests/ — remaining unwired guard-hook suites, wired since #4451.
 defaults/hooks/tests/test-guard-background-subagents.sh

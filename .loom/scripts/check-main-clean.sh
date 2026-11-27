@@ -244,6 +244,14 @@ LOOM_OWNED_PREFIXES=(
     ".loom/account-health.json"
     ".loom/account-health.lock"
     ".loom/account-ranking.codex"
+    # The other two daemon-written entries of the audit (#15488), both
+    # directories: `.loom/claims/` (`loom-daemon claim` writes
+    # `issue-<N>.lock/claim.json`) and `.loom/metrics/` (`validate-phase`'s
+    # recovery path writes `recovery-events.json`). Same stale-block hazard
+    # as the three above; listed with their trailing `/` so the subtree
+    # match in is_loom_owned covers every file either writer produces.
+    ".loom/claims/"
+    ".loom/metrics/"
 )
 
 # ---- Loom-owned stash producers (#5185) ----------------------------------
